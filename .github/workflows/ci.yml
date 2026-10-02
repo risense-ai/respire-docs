@@ -1,0 +1,22 @@
+name: Docs CI
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: git diff --check
+      - name: Ensure docs index exists
+        run: test -s docs/README.md
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate cross-repo contracts
+        run: node contracts/validate.mjs

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "distribution": "binary-sdk-staticlib-c-abi",
+  "publish": false,
+  "abiVersion": 65536,
+  "requestSchemaVersion": 1,
+  "artifactVersion": 1,
+  "consumerRepos": [
+    "risense-ai/respire-cli",
+    "risense-ai/respire-server"
+  ],
+  "operations": [
+    "capabilities",
+    "prepare",
+    "query",
+    "remember_candidates",
+    "candidate_report",
+    "analyze_duplicates",
+    "tree_cure",
+    "deepen_plan",
+    "tree_float",
+    "taxonomy_classify",
+    "classify_business",
+    "query_business",
+    "index_generation",
+    "index_status",
+    "model_status",
+    "model_probe",
+    "model_paths",
+    "engine_control"
+  ],
+  "notes": [
+    "Infrastructure consumers never check out Core source.",
+    "Server pins the infrastructure app package by Git commit, without depending on the CLI executable.",
+    "Account keys, auth, sync, HTTP and SQLite stay in infrastructure source.",
+    "Feature artifacts are opaque local derived data, not encrypted secrets; they can be rebuilt.",
+    "Legacy sync ciphertext and SQLite compatibility are retained."
+  ],
+  "repository": "risense-ai/respire-core",
+  "sourceRepository": "risense-ai/respire-cli",
+  "applicationCrates": [
+    {
+      "name": "respire_protocol",
+      "path": "crates/protocol"
+    },
+    {
+      "name": "respire_crypto",
+      "path": "crates/crypto"
+    },
+    {
+      "name": "respire_storage",
+      "path": "crates/storage"
+    },
+    {
+      "name": "respire_core_sdk",
+      "path": "crates/core-sdk"
+    },
+    {
+      "name": "respire_app",
+      "path": "crates/app"
+    }
+  ],
+  "engineCrates": [
+    "respire_core",
+    "respire_core_ffi",
+    "respire_winml"
+  ]
+}

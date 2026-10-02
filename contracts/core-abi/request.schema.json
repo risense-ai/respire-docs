@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Respire business Core request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "operation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "operation": {
+      "enum": [
+        "capabilities",
+        "prepare",
+        "query",
+        "remember_candidates",
+        "candidate_report",
+        "analyze_duplicates",
+        "tree_cure",
+        "deepen_plan",
+        "tree_float",
+        "taxonomy_classify",
+        "classify_business",
+        "query_business",
+        "index_generation",
+        "index_status",
+        "model_status",
+        "model_probe",
+        "model_paths",
+        "engine_control"
+      ]
+    },
+    "payload": {}
+  },
+  "$defs": {
+    "opaqueBytes": {
+      "type": "string",
+      "contentEncoding": "base64",
+      "description": "Opaque bytes; SDK callers must not interpret feature contents."
+    },
+    "prepared": {
+      "type": "object",
+      "required": [
+        "artifact"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/opaqueBytes"
+        }
+      }
+    },
+    "memoryEntry": {
+      "type": "object",
+      "required": ["id", "kind", "tags", "title", "content", "user", "computer", "project", "created_at", "updated_at", "emotion", "parent_id"],
+      "properties": {
+        "id": {"type": "string"},
+        "kind": {"enum": ["Context", "Decision", "Preference", "Task", "Emotion", "Time", "Skill", "Knowledge"]},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "title": {"type": "string"},
+        "content": {"type": "string"},
+        "user": {"type": "string"},
+        "computer": {"type": "string"},
+        "project": {"type": "string"},
+        "created_at": {"type": "string"},
+        "updated_at": {"type": "string"},
+        "emotion": {"type": "number"},
+        "parent_id": {"type": "string"},
+        "importance": {"type": "string", "default": "normal"},
+        "device": {"type": "string", "default": ""},
+        "modified_by": {"type": "string", "default": ""}
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "deleted", "updated_at", "kind", "tags", "title", "project", "computer", "parent_id", "created_at", "content_head", "recall_count", "importance"],
+      "properties": {
+        "id": {"type": "string"},
+        "deleted": {"type": "boolean"},
+        "updated_at": {"type": "string"},
+        "kind": {"type": "string"},
+        "tags": {"type": "string"},
+        "title": {"type": "string"},
+        "project": {"type": "string"},
+        "computer": {"type": "string"},
+        "parent_id": {"type": "string"},
+        "created_at": {"type": "string"},
+        "content_head": {"type": "string"},
+        "recall_count": {"type": "integer"},
+        "importance": {"type": "string"},
+        "entry": {"anyOf": [{"$ref": "#/$defs/memoryEntry"}, {"type": "null"}]},
+        "features": {"anyOf": [{"$ref": "#/$defs/prepared"}, {"type": "null"}]}
+      }
+    },
+    "memoryQuery": {
+      "type": "object",
+      "required": ["text", "limit"],
+      "properties": {
+        "text": {"type": "string"},
+        "limit": {"type": "integer", "minimum": 0},
+        "kind": {"anyOf": [{"enum": ["Context", "Decision", "Preference", "Task", "Emotion", "Time", "Skill", "Knowledge"]}, {"type": "null"}]},
+        "project": {"type": ["string", "null"]},
+        "computer": {"type": ["string", "null"]}
+      }
+    },
+    "preparePayload": {
+      "type": "object",
+      "required": ["model", "index_root"],
+      "properties": {
+        "model": {"type": "string"},
+        "index_root": {"type": "string", "minLength": 1, "description": "Absolute selected library directory."},
+        "entry": {"$ref": "#/$defs/memoryEntry"},
+        "content": {"type": "string"}
+      },
+      "anyOf": [{"required": ["entry"]}, {"required": ["content"]}]
+    },
+    "rememberCandidatesPayload": {
+      "type": "object",
+      "description": "Authorized write-candidate material; Core returns final merge and parent proposal lists without exposing grouping policy.",
+      "required": ["model", "snapshots", "query", "index_root"],
+      "properties": {
+        "model": {"type": "string"},
+        "index_root": {"type": "string", "minLength": 1},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "query": {"$ref": "#/$defs/memoryQuery"}
+      }
+    },
+    "queryPayload": {
+      "type": "object",
+      "required": ["model", "snapshots", "query", "mode", "index_root"],
+      "properties": {
+        "model": {"type": "string"},
+        "index_root": {"type": "string", "minLength": 1},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "query": {"$ref": "#/$defs/memoryQuery"},
+        "mode": {"enum": ["plain", "scored", "contextual"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"operation": {"const": "remember_candidates"}}, "required": ["operation"]},
+      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/rememberCandidatesPayload"}}}
+    },
+    {
+      "if": {"properties": {"operation": {"const": "prepare"}}, "required": ["operation"]},
+      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/preparePayload"}}}
+    },
+    {
+      "if": {"properties": {"operation": {"const": "query"}}, "required": ["operation"]},
+      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/queryPayload"}}}
+    }
+  ]
+}
