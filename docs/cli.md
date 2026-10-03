@@ -60,7 +60,7 @@ flowchart LR
 
 ## Configuration compatibility
 
-The product is named Respire, under risense-ai. The sole command, native binary and sidecar prefix are `rsrs`. Repository/crate names remain `respire-*` and `respire_*`; the Core ABI remains `rs_core_*`. The default data root is independently `~/.respire` and the runtime port is `15169`; no automatic old-session migration or connection to the old `15168` runtime occurs. Existing `ONEMEMORY_*` variables remain explicit compatibility options. SDK controls use `RESPIRE_CORE_SDK_DIR` and `RESPIRE_CORE_TEST_MODE`; there is no new `RS_*` environment namespace.
+The product is named Respire, under risense-ai. The sole command, native binary and sidecar prefix are `rsrs`. Repository/crate names remain `respire-*` and `respire_*`; the Core ABI remains `rs_core_*`. The default data root is `~/.rsrs` and the runtime port is `15169`. Startup migrates older local accounts without connecting to the older runtime on `15168`; the original directories remain intact. `rsrs web` opens the hosted dashboard at `https://dash.rsrs.rs`. Existing `ONEMEMORY_*` variables remain explicit compatibility options. SDK controls use `RESPIRE_CORE_SDK_DIR` and `RESPIRE_CORE_TEST_MODE`; there is no new `RS_*` environment namespace.
 
 The configured default API is `https://api.rsrs.rs`; `--addr` can select a local server. Configured domains are not proof of live deployment.
 

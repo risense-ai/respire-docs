@@ -9,7 +9,7 @@ Deployment environments must use separate database state, credentials and explic
 | Admin dashboard | `https://admin.rsrs.rs` |
 | API | `https://api.rsrs.rs` |
 
-These domains are configured separately from older products. No DNS changes, certificates or running deployment are implied. Local API development uses `http://127.0.0.1:8787`; local identity/runtime state is separately rooted at `~/.respire` with runtime port `15169`.
+These domains are configured separately from older products. Local API development uses `http://127.0.0.1:8787`; local identity/runtime state is rooted at `~/.rsrs` with runtime port `15169`. Startup migrates previous local accounts while retaining their original directories.
 
 ```mermaid
 flowchart TD

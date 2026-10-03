@@ -70,7 +70,7 @@ Keep recovery material outside Git and chat logs. A server cannot recover a lost
 
 The configured default API is `https://api.rsrs.rs`. For a local development server use `--addr http://127.0.0.1:8787`.
 
-Respire uses a separate `~/.respire` data root and runtime port `15169`. It does not automatically connect to the older runtime on `15168`, copy the older session or migrate an existing account. Use deliberate export/import or recovery procedures if you later choose to move data.
+Respire uses `~/.rsrs` and runtime port `15169`. On startup, it discovers existing `~/.onememory` and `~/.respire` accounts and copies their local data, settings and available credentials into the new directory. The original directories remain intact. Migrated accounts use `https://api.rsrs.rs`; an explicit data-directory override selects that directory instead of running default-directory migration. See [Data model](data-model.md) for migration and recovery details.
 
 ```sh
 rsrs inject --targets

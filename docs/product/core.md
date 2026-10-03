@@ -27,9 +27,9 @@ Inputs are authorized business material and opaque features; outputs are final r
 | Compatibility | Preserve legacy encrypted feature and storage formats |
 | Licensing | Core SDK permission is separate from infrastructure-source licensing |
 
-Respire inference settings default to `~/.respire/inference.json`, and models to
-`~/.respire/models/`. Older `yishi` or `.onememory` settings are not loaded
-automatically. Explicit data/model-directory overrides remain available; these
-paths do not change the cryptographic derivation or sync format.
+Respire inference settings default to `~/.rsrs/inference.json`, and models to
+`~/.rsrs/models/`. Startup migrates existing `.onememory` and `.respire` settings
+and model resources. Explicit data/model-directory overrides remain available;
+these paths do not change the cryptographic derivation or sync format.
 
 [Contracts](../contracts.md) · [Development](../development.md)

@@ -1,26 +1,25 @@
-# Local Web
+# Dashboard
 
-`rsrs web` opens the tree UI in a local browser. Business operations remain in the CLI; this is separate from the marketing website and the Tauri shell.
+`rsrs web` opens `https://dash.rsrs.rs` in the browser. It does not start a local website or the background runtime.
 
 ```mermaid
 flowchart LR
-  Browser["Browser UI"] --> HTTP["Local Web endpoint"]
-  HTTP --> Runtime["CLI runtime"]
-  Runtime --> SDK["Core SDK"]
+  CLI["rsrs web"] --> Browser["dash.rsrs.rs"]
+  Browser --> API["Account API"]
+  Commands["Memory commands"] --> Runtime["Local authenticated runtime"]
   Runtime --> Store[("Local SQLite")]
 ```
 
 | Item | Behavior |
 |---|---|
-| Default address | `http://127.0.0.1:15169`, on the same authenticated Respire runtime |
-| UI resources | Embedded in the CLI build |
-| Operations | `POST /api/invoke` with command arguments |
-| Long tasks | Task ID with polling |
-| CLI output | JSON contract |
-| Lifecycle | `rsrs web --status`, `--stop`, `--no-open` |
+| Dashboard | `https://dash.rsrs.rs` |
+| Administration | `https://admin.rsrs.rs` |
+| Open the dashboard | `rsrs web` |
+| Print the destination without opening a browser | `rsrs web --no-open` |
+| Local operations | CLI commands and the authenticated background runtime |
 
-Use a compatible installed CLI. Binding beyond loopback exposes sensitive operations and requires the supported authentication mechanism; do not expose an unauthenticated memory runtime.
+The CLI contains no embedded browser application. Its background runtime continues to handle local commands and queued network synchronization.
 
-Respire Web and its authenticated runtime share port `15169`; there is no additional `5168` or `5169` service. It does not take over an older runtime on `15168`; its local identity is rooted separately at `~/.respire`. The local Web address is distinct from the assigned cloud domains.
+The runtime uses port `15169` and `~/.rsrs`. Its local HTTP interface is for authenticated CLI and tool communication, not a dashboard.
 
 [Client](../client.md) · [CLI JSON](../cli-api.md)
