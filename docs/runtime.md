@@ -75,11 +75,24 @@ remain compatible.
 ## Account login, switching and indexing
 
 `rsrs login` (or `rsrs login --oauth`) authorizes through the hosted dashboard.
-`rsrs login --interactive` prompts for username, login password and, when enabled,
-TOTP in the terminal. After authentication, the CLI requests the memory super
+`rsrs login --interactive` lets the user choose OAuth or password/TOTP. Supplying
+`--pass` explicitly selects password login; `--interactive --oauth` selects OAuth.
+The TUI Accounts > Sign in entry offers the same choices. After authentication,
+the CLI requests the memory super
 password locally and verifies the vault before saving or choosing a profile.
 Normal login does not accept `--secret-key` or reset an existing vault. Legacy
 decryption material is handled by explicit migration/recovery operations.
+
+After copying an old library with `rsrs migrate --source ... --account ...`, select
+that copied account and run `rsrs migrate --vault`. Supply its login password,
+legacy `--super` passphrase for v2/v3, and v3 `--secret-key` when it is not already
+in the session. This operation requires the cloud wrap to match the selected
+legacy library, preserves its URK and raw database, and publishes a v4 wrap only
+after the host/runtime account has been verified. It displays the resulting
+recovery code before publication. `--new-super` may specify that code explicitly;
+a headless host without a keyring must also supply the same verified code through
+`ONEMEMORY_SUPER` to its runtime. The original source library and credentials are
+retained. Normal login performs no legacy vault upgrade or destructive adoption.
 
 The host stops the previous runtime, commits the verified session and selected
 directory, starts the target runtime and reads back its account and path. Startup
