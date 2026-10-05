@@ -66,13 +66,11 @@ writer before enabling relations on a shared library.** The opaque sync server
 cannot enforce encrypted-payload field preservation. Automatic legacy-tailnote
 backfill is not performed because prose references need review.
 
-## Local candidate and release
+## SDK compatibility and validation
 
-The current Windows SDK lock points to a locally built association candidate
-with no download URL, not a published artifact. Supply its matching
-`RESPIRE_CORE_SDK_DIR`. Other target pins still refer to pre-association SDKs;
-they must be rebuilt and repinned before distribution. Do not publish this
-candidate as a seven-platform release. Keep the existing runtime/model notices.
+CLI requires association contract 1 in every target SDK. Use the exact manifest
+and archive pins from the paired seven-platform SDK release. Preserve its
+runtime libraries, license and third-party notices when packaging the CLI.
 
 Use existing workspace tests and SDK native-caller checks. Compare retrieval
 benchmarks with the same library/model and compare end-to-end answer quality
