@@ -68,9 +68,37 @@ share host loopback addresses.
 | Administration | `https://admin.rsrs.rs` |
 | Default API | `https://api.rsrs.rs` |
 
-The default API can be changed through the server settings. Respire uses `~/.rsrs` and port `15169`; supported old default profiles are copied safely on startup while the original directories remain. Explicit
+The default API can be changed through the server settings. Respire uses `~/.rsrs` and port `15169`; startup preserves the selected account and does not import old profiles. Use TUI **Migrate old version** or `rsrs migrate` to choose an explicit source and destination account. Original directories remain intact. Explicit
 `ONEMEMORY_*` overrides remain supported, and the database filename and wire format
 remain compatible.
+
+## Account login, switching and indexing
+
+`rsrs login` (or `rsrs login --oauth`) authorizes through the hosted dashboard.
+`rsrs login --interactive` prompts for username, login password and, when enabled,
+TOTP in the terminal. After authentication, the CLI requests the memory super
+password locally and verifies the vault before saving or choosing a profile.
+Normal login does not accept `--secret-key` or reset an existing vault. Legacy
+decryption material is handled by explicit migration/recovery operations.
+
+The host stops the previous runtime, commits the verified session and selected
+directory, starts the target runtime and reads back its account and path. Startup
+or verification failure restores the prior session and complete client settings,
+then restarts the original runtime. The TUI displays success only after readback.
+TUI polling connects to the running service without repeatedly trying takeover;
+host subprocess diagnostics are captured and rendered inside the interface.
+
+When a usable account has an invalid index, the runtime prepares missing M3
+resources and rebuilds derived indexes in the background. Restart resumes pending
+work. Progress and download errors appear in the TUI; no rebuild confirmation is
+required. Original records, ciphertext and sync state are retained. An explicit
+invalid model path or failed download remains an error instead of silently
+switching models.
+
+See [Browser authorization and TOTP](browser-api-contract.md) for the API contract
+and deployment order. DEV acceptance must exercise the real old binary and
+isolated data, both Windows shells, missing-model/restart behavior and both login
+methods before publication; unexecuted checks are not passes.
 
 ## Hosted dashboard and local transport
 

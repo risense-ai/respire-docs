@@ -26,6 +26,7 @@ Keep credentials in the deployment's secret configuration. Do not commit a live 
 | `GET /health` | Process liveness |
 | `GET /ready` | Database and schema readiness; unavailable dependencies produce 503 |
 | `/register`, `/login`, `/login/totp` | Account authentication |
+| `/oauth/device/code`, `/oauth/token` | Single-use CLI browser authorization after dashboard login/TOTP |
 | `/forgot`, `/reset` | Login-password recovery |
 | `/api/self/*` | Account settings, sessions, key wrapping and two-factor authentication |
 | `/push`, `/push/batch`, `/pull`, `/forget` | Legacy encrypted synchronization |

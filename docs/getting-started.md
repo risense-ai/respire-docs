@@ -62,7 +62,8 @@ rsrs --help
 | Identity | Command |
 |---|---|
 | First cloud account | `rsrs register --user <name> --pass <login-password> --super <recovery-password>` |
-| Existing local account | `rsrs login --user <name> --pass <login-password>` |
+| Browser login | `rsrs login` or `rsrs login --oauth`; complete dashboard login/TOTP and approve the CLI |
+| Terminal login | `rsrs login --interactive`; enter password, TOTP when required, then the super password |
 | New device | Use the recovery options described by `rsrs login --help` and [Sync and keys](sync-and-keys.md) |
 | Local only | `rsrs keygen --pass <password>` |
 
@@ -70,7 +71,7 @@ Keep recovery material outside Git and chat logs. A server cannot recover a lost
 
 The configured default API is `https://api.rsrs.rs`. For a local development server use `--addr http://127.0.0.1:8787`.
 
-Respire uses `~/.rsrs` and runtime port `15169`. On startup, it discovers existing `~/.onememory` and `~/.respire` accounts and copies their local data, settings and available credentials into the new directory. The original directories remain intact. Migrated accounts use `https://api.rsrs.rs`; an explicit data-directory override selects that directory instead of running default-directory migration. See [Data model](data-model.md) for migration and recovery details.
+Respire uses `~/.rsrs` and runtime port `15169`. Startup keeps the selected account and its settings. To import an older account, use `rsrs migrate` or TUI **Migrate old version**, select its source and choose a new account name. Backup-only directories are excluded, existing destinations are refused and original data remains intact. See [Data model](data-model.md) for migration and recovery details.
 
 ```sh
 rsrs inject --targets

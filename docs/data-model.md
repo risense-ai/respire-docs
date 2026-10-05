@@ -1,6 +1,6 @@
 # Data model
 
-Respire uses `~/.rsrs`. Startup discovers existing accounts in `~/.onememory` and `~/.respire` and migrates their data, settings and available credentials. The original directories remain intact. Existing `ONEMEMORY_*` options remain explicit compatibility interfaces.
+Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, data and keys without copying old accounts. Explicit migration discovers supported accounts in `~/.onememory` and `~/.respire`; the user selects a source and destination. Original directories remain intact. Existing `ONEMEMORY_*` options remain explicit compatibility interfaces.
 
 | Local item | Purpose |
 |---|---|
@@ -13,9 +13,9 @@ Respire uses `~/.rsrs`. Startup discovers existing accounts in `~/.onememory` an
 
 `ONEMEMORY_DATA_DIR` selects the data root. Do not commit session files, database copies or recovery material.
 
-An explicitly configured `ONEMEMORY_DATA_DIR` selects that directory and bypasses default-directory migration. Explicit model-directory options remain compatible overrides.
+An explicitly configured `ONEMEMORY_DATA_DIR` selects that directory. Explicit model-directory options remain compatible overrides.
 
-The local runtime defaults to port `15169`; migration does not connect to or stop the older runtime on `15168`. The desktop application identifier is `ai.risense.respire`. Cryptographic derivation and sync formats remain compatible.
+The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. Cryptographic derivation and sync formats remain compatible.
 
 ## Existing accounts
 
@@ -28,7 +28,9 @@ flowchart LR
   New --> API["api.rsrs.rs"]
 ```
 
-Migration retains account identities, encrypted records and pending local changes. Existing destination accounts are not overwritten. Each imported account keeps its original encryption material; the process does not reset a vault, generate replacement keys or send credentials to another service. The configured remote API changes to `https://api.rsrs.rs`.
+Run `rsrs migrate` to list source IDs, then `rsrs migrate --source <source-id> --account <new-name>` to copy a selected account, or use **Migrate old version** in the TUI. Backup-only directories are not account sources. Stable source identity and completion receipts prevent reimport when source ordering changes. Existing destinations are refused; migration does not switch the active account.
+
+Migration retains account identities, encrypted records, pending local changes and available encryption credentials. It does not reset a vault, generate replacement keys or send secrets to another service. Only known obsolete official API addresses are rewritten in the explicitly imported copy; custom addresses and the active account's API preferences remain unchanged.
 
 Saved credentials can unlock the existing account without another login. If a session has expired and its login password was never saved, sign in with the original account password. If the original decryption secret is no longer available in the operating-system credential store, use the original recovery material. Copying an encrypted database alone cannot reconstruct a missing secret.
 
