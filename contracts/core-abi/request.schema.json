@@ -29,6 +29,7 @@
         "taxonomy_classify",
         "classify_business",
         "query_business",
+        "related_business",
         "index_generation",
         "index_status",
         "model_status",
@@ -71,6 +72,9 @@
         "project": {"type": "string"},
         "created_at": {"type": "string"},
         "updated_at": {"type": "string"},
+        "supersedes": {"type": "string", "default": ""},
+        "superseded_by": {"type": "string", "default": ""},
+        "see_also": {"type": "array", "items": {"type": "string"}, "default": []},
         "emotion": {"type": "number"},
         "parent_id": {"type": "string"},
         "importance": {"type": "string", "default": "normal"},
@@ -133,6 +137,20 @@
         "query": {"$ref": "#/$defs/memoryQuery"}
       }
     },
+    "relatedPayload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model", "snapshots", "query", "ids", "pairs", "index_root"],
+      "properties": {
+        "model": {"type": "string"}, "index_root": {"type": "string", "minLength": 1},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "query": {"$ref": "#/$defs/memoryQuery"},
+        "ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "pairs": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["a", "b", "n"],
+          "properties": {"a": {"type": "string"}, "b": {"type": "string"}, "n": {"type": "integer", "minimum": 0}}
+        }}
+      }
+    },
     "queryPayload": {
       "type": "object",
       "required": ["model", "snapshots", "query", "mode", "index_root"],
@@ -146,6 +164,7 @@
     }
   },
   "allOf": [
+    {"if": {"properties": {"operation": {"const": "related_business"}}, "required": ["operation"]}, "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/relatedPayload"}}}},
     {
       "if": {"properties": {"operation": {"const": "remember_candidates"}}, "required": ["operation"]},
       "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/rememberCandidatesPayload"}}}

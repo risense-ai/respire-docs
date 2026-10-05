@@ -46,7 +46,9 @@ export default defineConfig({
       { text: 'Architecture', items: [
         { text: 'Data flow', link: '/architecture' },
         { text: 'Runtime flow', link: '/architecture-internals' },
+        { text: 'Host runtime and upgrades', link: '/runtime' },
         { text: 'Data model', link: '/data-model' },
+        { text: 'Memory associations', link: '/associations' },
         { text: 'Sync and keys', link: '/sync-and-keys' },
         { text: 'Sync v2', link: '/sync-v2-rollout' },
         { text: 'Core SDK', link: '/product/core' },

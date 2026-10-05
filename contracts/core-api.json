@@ -22,6 +22,7 @@
     "taxonomy_classify",
     "classify_business",
     "query_business",
+        "related_business",
     "index_generation",
     "index_status",
     "model_status",

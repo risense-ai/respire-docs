@@ -18,6 +18,19 @@
       }
     }
   },
+  "$defs": {
+    "relatedResult": {
+      "type": "object", "additionalProperties": false, "required": ["related", "superseded"],
+      "properties": {
+        "superseded": {"type": "object", "additionalProperties": {"type": "string"}},
+        "related": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "title", "source_id", "relation"],
+          "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "source_id": {"type": "string"},
+            "relation": {"enum": ["new_version", "old_version", "see_also", "co_recall", "neighbor"]}}
+        }}
+      }
+    }
+  },
   "oneOf": [
     {"required": ["result"], "not": {"required": ["error"]}},
     {"required": ["error"], "not": {"required": ["result"]}}
