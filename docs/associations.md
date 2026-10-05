@@ -61,6 +61,8 @@ New relation writes require a Core SDK advertising `related_business`.
 C ABI and request envelope version remain unchanged because symbols and calling
 conventions are unchanged; the new operation is additive. Rust callers constructing
 MemoryEntry/PayloadV2 literals must supply the three new fields.
+The Rust protocol and binding use 2.0 development crate versions for this
+struct-literal API change; their versions are independent of the binary SDK.
 **Older writers may strip unknown payload fields when resealing. Upgrade every
 writer before enabling relations on a shared library.** The opaque sync server
 cannot enforce encrypted-payload field preservation. Automatic legacy-tailnote
