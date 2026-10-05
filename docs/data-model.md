@@ -55,6 +55,8 @@ flowchart TB
 | `user / computer / project` | Ownership and local scope |
 | `created_at / updated_at` | Record timestamps |
 | `parent_id` | Empty for a root; otherwise the causal parent |
+| `supersedes / superseded_by` | Forward replacement edge and reverse hint; default empty |
+| `see_also` | Explicit related record IDs; default empty array |
 | `importance` | New entries use `important` or `trivial`; legacy values remain readable |
 | `device / modified_by` | Creation and last-update device attribution |
 
@@ -68,3 +70,9 @@ flowchart TB
 Local metadata, `local_embedding`, `local_chunks` and `local_artifact` are skipped by sync serialization. Infrastructure code treats feature payloads as bytes. Artifacts are bound to source records/model generation and can be rebuilt; their internal schema is not public.
 
 Exported entry JSON is plaintext. Imports may create new IDs and rebuild parent mappings; protect exported files accordingly. See [CLI](cli.md) and [Sync and keys](sync-and-keys.md).
+
+Relationships remain inside encrypted payloads; the sync transport does not gain
+plaintext relationship fields. Import/share remap included targets, and local
+`recall_pairs` evidence is not synced. Upgrade all writers of a shared library
+before enabling relations, because old writers can discard unknown fields when
+resealing. See [memory associations](associations.md).

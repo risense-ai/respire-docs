@@ -29,9 +29,10 @@ if (core.distribution !== 'binary-sdk-staticlib-c-abi' || core.abiVersion !== 0x
 if (JSON.stringify([...core.operations].sort()) !== JSON.stringify([...request.properties.operation.enum].sort())) {
   throw new Error('Core operation list differs from request schema');
 }
-for (const type of ['prepared', 'snapshot', 'memoryEntry', 'memoryQuery', 'preparePayload', 'queryPayload', 'rememberCandidatesPayload']) {
+for (const type of ['prepared', 'snapshot', 'memoryEntry', 'memoryQuery', 'preparePayload', 'queryPayload', 'rememberCandidatesPayload', 'relatedPayload']) {
   if (!request.$defs[type]) throw new Error(`Core request schema missing ${type}`);
 }
+if (!response.$defs.relatedResult) throw new Error('Core response schema missing relatedResult');
 const header = readFileSync(join(root, 'core-abi/respire_core.h'), 'utf8');
 for (const name of ['rs_core_abi_version', 'rs_core_create', 'rs_core_call', 'rs_core_buffer_free', 'rs_core_destroy']) {
   if (!header.includes(`${name}(`)) throw new Error(`Core header missing ${name}`);

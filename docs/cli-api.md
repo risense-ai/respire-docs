@@ -10,7 +10,8 @@ Use `--json` when integrating Respire with scripts, agents or applications. Pars
   "items": [],
   "actions": [],
   "errors": [],
-  "details": null
+  "details": null,
+  "related": []
 }
 ```
 
@@ -23,6 +24,7 @@ Use `--json` when integrating Respire with scripts, agents or applications. Pars
 | `actions` | Follow-up actions |
 | `errors` | Reported failures |
 | `details` | Command-specific permitted data |
+| `related` | Bounded recall associations: ID, title, source ID and relation; empty for other commands |
 
 | Exit code | Meaning |
 | --- | --- |
@@ -45,6 +47,12 @@ Read the result envelope for nonzero exits too: a pending candidate decision dif
 | `import`, `export`, `backup` | Paths and counts |
 
 The canonical machine contracts live in the repository's `contracts/` directory. See [contracts](contracts.md) for ownership and compatibility rules.
+
+Recall retains its primary hit order and scores in `details`. Its separate
+`related` array contains title-only associations; `summary.related` counts them.
+Recall detail rows indicate a live replacement with `superseded_by`.
+Clients should accept a missing `related` field from older runtimes as an empty
+array. See [memory associations](associations.md) for write and upgrade rules.
 
 ## Data boundaries
 

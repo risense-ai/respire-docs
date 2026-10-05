@@ -94,3 +94,12 @@ panic=unwind, LTO disabled, and matching target/CRT. Windows uses the dynamic CR
 Cargo validates the pinned manifest and every file SHA-256 and stages runtime DLLs
 beside executables/tests. Distributions must also include runtime libraries and
 third-party notices (`stage-core-runtime.mjs`); an exe alone is incomplete on Windows.
+
+Association contract: `related_business` accepts authorized snapshots, query,
+final hit IDs and local pair evidence. It returns `related` (ID/title/source/type)
+and `superseded` (hit ID to latest active replacement ID). This additive operation
+keeps the existing C ABI, request envelope and opaque index generation unchanged.
+See the request/response schema definitions. Capability negotiation is required
+before relation writes. Public callers never receive intermediate vectors or
+policy thresholds. Empty relation fields are compatible with old payload reads;
+all shared-library writers must be upgraded before enabling relation writes.
