@@ -89,6 +89,6 @@ Health checks and normal RPC use the same compatibility rule, so host upgrades
 can gracefully stop the old runtime before starting the new executable.
 
 Run lifecycle commands from the host terminal; client-only mode does not permit
-shutdown. A missing or rejected legacy token requires the old runtime's existing
+shutdown or the legacy-token retry. A missing or rejected legacy token requires the old runtime's existing
 authentication material, rather than bypassing authentication or killing an
 unverified process. HTTP redirects are disabled for the local runtime client.
