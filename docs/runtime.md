@@ -89,7 +89,11 @@ legacy `--super` passphrase for v2/v3, and v3 `--secret-key` when it is not alre
 in the session. This operation requires the cloud wrap to match the selected
 legacy library, preserves its URK and raw database, and publishes a v4 wrap only
 after the host/runtime account has been verified. It displays the resulting
-recovery code before publication. `--new-super` may specify that code explicitly;
+recovery code before publication. If publication committed but its confirmation
+was lost, rerun the explicit migration with `--new-super <displayed-recovery-code>`;
+the client accepts the v4 cloud wrap only after verifying the same original URK,
+then commits the local session without republishing. `--new-super` may also
+specify the new code for an initial migration;
 a headless host without a keyring must also supply the same verified code through
 `ONEMEMORY_SUPER` to its runtime. The original source library and credentials are
 retained. Normal login performs no legacy vault upgrade or destructive adoption.
