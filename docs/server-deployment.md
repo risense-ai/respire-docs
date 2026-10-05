@@ -65,3 +65,10 @@ docker compose exec -T db pg_dump -U respire -d respire -Fc > respire.dump
 ```
 
 An old dump omits writes made after its creation. An older application must not write to an unsupported newer schema. See [synchronization v2](sync-v2-rollout.md) for recovery semantics.
+
+CLI browser authorization upgrades the cloud schema to version 5 by adding the
+device-grant table. Existing accounts, vaults and memory rows are preserved.
+A schema-4 binary refuses schema 5: rehearse a pre-upgrade backup restore in an
+isolated database before rollout, and do not assume an image rollback can undo
+the schema migration. Stop writes and review backup age and synchronization
+state before restoring data.

@@ -11,7 +11,7 @@
 | Why does sync fail? | Check identity, token, configured server and network. Preserve the local database while diagnosing. |
 | Why is the installed version old? | Check PATH for another `rsrs` before the intended executable. |
 | Why does injection not take effect? | Check the managed block and target tool configuration, then restart long-running sessions. |
-| Does Respire reuse the older local account? | Startup migrates accounts from `~/.onememory` and `~/.respire` into `~/.rsrs`, preserving the original data and available decryption credentials. Missing credentials require recovery; migration never replaces the account's encryption key. |
+| Does Respire reuse the older local account? | Choose a source with `rsrs migrate` or TUI **Migrate old version**. Startup does not import accounts. Migration preserves original data and available decryption credentials, refuses existing destinations and does not reset encryption keys. |
 | Why do some environment variables still start with ONEMEMORY? | They are explicit compatibility interfaces; default data/runtime state is separate. |
 
 [Getting started](getting-started.md) · [Development](development.md) · [Injection](injection.md) · [Sync and keys](sync-and-keys.md)
