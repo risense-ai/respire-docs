@@ -76,6 +76,14 @@ of database locks. No additional inference process is created.
 Index compatibility depends on the model and artifact generation, not the CLI
 or SDK release number. Reuse complete compatible artifacts during upgrades.
 
+The production M3 file is `onnx/model_quantized.onnx`, pinned to
+`Xenova/bge-m3` revision `4de13258303883538bd53b696b452bf8099f0858`:
+569694530 bytes, SHA-256
+`0826f8c1ab9edf1801db86c61919d4d108e8bfc0b809ec823ad366882ff0b77d`.
+The tokenizer remains at the same revision and checksum. This model has a separate
+index generation from FP16 and `model_int8.onnx`; do not mix their vectors.
+Retain resumable checkpoints and activate the new generation only after completion.
+
 `Prepared.artifact` is a base64-encoded locator for a local index owned by Core.
 It contains no returned document or chunk vectors. Select the library's absolute
 `index_root` consistently for preparation and queries. Index rows are bound to
