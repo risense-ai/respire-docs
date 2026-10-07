@@ -36,7 +36,7 @@ Configure hooks in `<data directory>/plugins.json`:
 | `post-forget` | Identifier | No |
 | `post-sync` | Pull and push counts | No |
 
-The envelope is `{"event":"...","ts":"...","data":{}}`. The child receives a restricted environment containing basic process variables and `ONEMEMORY_HOOK_EVENT`; account configuration and credentials are not inherited.
+The envelope is `{"event":"...","ts":"...","data":{}}`. The child receives a restricted environment containing basic process variables and `RSRS_HOOK_EVENT`; account configuration and credentials are not inherited.
 
 For a pre-hook, the final standard-output line may be:
 

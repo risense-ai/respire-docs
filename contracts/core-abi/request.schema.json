@@ -34,7 +34,6 @@
         "index_status",
         "model_status",
         "model_probe",
-        "model_paths",
         "engine_control"
       ]
     },
@@ -42,9 +41,21 @@
   },
   "$defs": {
     "modelProvider": {
-      "type": "object", "additionalProperties": false,
-      "required": ["name", "model"],
-      "properties": {"name": {"type": "string"}, "model": {"type": "string", "minLength": 1}}
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "model"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "opaqueBytes": {
       "type": "string",
@@ -65,126 +76,579 @@
     },
     "memoryEntry": {
       "type": "object",
-      "required": ["id", "kind", "tags", "title", "content", "user", "computer", "project", "created_at", "updated_at", "emotion", "parent_id"],
+      "required": [
+        "id",
+        "kind",
+        "tags",
+        "title",
+        "content",
+        "user",
+        "computer",
+        "project",
+        "created_at",
+        "updated_at",
+        "emotion",
+        "parent_id"
+      ],
       "properties": {
-        "id": {"type": "string"},
-        "kind": {"enum": ["Context", "Decision", "Preference", "Task", "Emotion", "Time", "Skill", "Knowledge"]},
-        "tags": {"type": "array", "items": {"type": "string"}},
-        "title": {"type": "string"},
-        "content": {"type": "string"},
-        "user": {"type": "string"},
-        "computer": {"type": "string"},
-        "project": {"type": "string"},
-        "created_at": {"type": "string"},
-        "updated_at": {"type": "string"},
-        "supersedes": {"type": "string", "default": ""},
-        "superseded_by": {"type": "string", "default": ""},
-        "see_also": {"type": "array", "items": {"type": "string"}, "default": []},
-        "emotion": {"type": "number"},
-        "parent_id": {"type": "string"},
-        "importance": {"type": "string", "default": "normal"},
-        "device": {"type": "string", "default": ""},
-        "modified_by": {"type": "string", "default": ""}
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "Context",
+            "Decision",
+            "Preference",
+            "Task",
+            "Emotion",
+            "Time",
+            "Skill",
+            "Knowledge"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "computer": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "supersedes": {
+          "type": "string",
+          "default": ""
+        },
+        "superseded_by": {
+          "type": "string",
+          "default": ""
+        },
+        "see_also": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "emotion": {
+          "type": "number"
+        },
+        "parent_id": {
+          "type": "string"
+        },
+        "importance": {
+          "type": "string",
+          "default": "normal"
+        },
+        "device": {
+          "type": "string",
+          "default": ""
+        },
+        "modified_by": {
+          "type": "string",
+          "default": ""
+        }
       }
     },
     "snapshot": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "deleted", "updated_at", "kind", "tags", "title", "project", "computer", "parent_id", "created_at", "content_head", "recall_count", "importance"],
+      "required": [
+        "id",
+        "deleted",
+        "updated_at",
+        "kind",
+        "tags",
+        "title",
+        "project",
+        "computer",
+        "parent_id",
+        "created_at",
+        "content_head",
+        "recall_count",
+        "importance"
+      ],
       "properties": {
-        "id": {"type": "string"},
-        "deleted": {"type": "boolean"},
-        "updated_at": {"type": "string"},
-        "kind": {"type": "string"},
-        "tags": {"type": "string"},
-        "title": {"type": "string"},
-        "project": {"type": "string"},
-        "computer": {"type": "string"},
-        "parent_id": {"type": "string"},
-        "created_at": {"type": "string"},
-        "content_head": {"type": "string"},
-        "recall_count": {"type": "integer"},
-        "importance": {"type": "string"},
-        "entry": {"anyOf": [{"$ref": "#/$defs/memoryEntry"}, {"type": "null"}]},
-        "features": {"anyOf": [{"$ref": "#/$defs/prepared"}, {"type": "null"}]}
+        "id": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "computer": {
+          "type": "string"
+        },
+        "parent_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "content_head": {
+          "type": "string"
+        },
+        "recall_count": {
+          "type": "integer"
+        },
+        "importance": {
+          "type": "string"
+        },
+        "entry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/memoryEntry"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "features": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/prepared"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
       }
     },
     "memoryQuery": {
       "type": "object",
-      "required": ["text", "limit"],
+      "required": [
+        "text",
+        "limit"
+      ],
       "properties": {
-        "text": {"type": "string"},
-        "limit": {"type": "integer", "minimum": 0},
-        "kind": {"anyOf": [{"enum": ["Context", "Decision", "Preference", "Task", "Emotion", "Time", "Skill", "Knowledge"]}, {"type": "null"}]},
-        "project": {"type": ["string", "null"]},
-        "computer": {"type": ["string", "null"]}
+        "text": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "Context",
+                "Decision",
+                "Preference",
+                "Task",
+                "Emotion",
+                "Time",
+                "Skill",
+                "Knowledge"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "project": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "computer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
     "preparePayload": {
       "type": "object",
-      "required": ["model", "index_root"],
+      "required": [
+        "model"
+      ],
       "properties": {
-        "model": {"type": "string"},
-        "index_root": {"type": "string", "minLength": 1, "description": "Absolute selected library directory."},
-        "entry": {"$ref": "#/$defs/memoryEntry"},
-        "content": {"type": "string"}
+        "model": {
+          "type": "string"
+        },
+        "entry": {
+          "$ref": "#/$defs/memoryEntry"
+        },
+        "content": {
+          "type": "string"
+        }
       },
-      "anyOf": [{"required": ["entry"]}, {"required": ["content"]}]
+      "anyOf": [
+        {
+          "required": [
+            "entry"
+          ]
+        },
+        {
+          "required": [
+            "content"
+          ]
+        }
+      ]
     },
     "rememberCandidatesPayload": {
       "type": "object",
       "description": "Authorized write-candidate material; Core returns final merge and parent proposal lists without exposing grouping policy.",
-      "required": ["model", "snapshots", "query", "index_root"],
+      "required": [
+        "model",
+        "snapshots",
+        "query"
+      ],
       "properties": {
-        "model": {"type": "string"},
-        "index_root": {"type": "string", "minLength": 1},
-        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
-        "query": {"$ref": "#/$defs/memoryQuery"}
+        "model": {
+          "type": "string"
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/snapshot"
+          }
+        },
+        "query": {
+          "$ref": "#/$defs/memoryQuery"
+        },
+        "query_settings": {
+          "$ref": "#/$defs/querySettings"
+        }
       }
     },
     "relatedPayload": {
-      "type": "object", "additionalProperties": false,
-      "required": ["model", "snapshots", "query", "ids", "pairs", "index_root"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "snapshots",
+        "query",
+        "ids",
+        "pairs"
+      ],
       "properties": {
-        "model": {"type": "string"}, "index_root": {"type": "string", "minLength": 1},
-        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
-        "query": {"$ref": "#/$defs/memoryQuery"},
-        "ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "pairs": {"type": "array", "items": {
-          "type": "object", "additionalProperties": false, "required": ["a", "b", "n"],
-          "properties": {"a": {"type": "string"}, "b": {"type": "string"}, "n": {"type": "integer", "minimum": 0}}
-        }}
+        "model": {
+          "type": "string"
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/snapshot"
+          }
+        },
+        "query": {
+          "$ref": "#/$defs/memoryQuery"
+        },
+        "ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "a",
+              "b",
+              "n"
+            ],
+            "properties": {
+              "a": {
+                "type": "string"
+              },
+              "b": {
+                "type": "string"
+              },
+              "n": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "related_settings": {
+          "$ref": "#/$defs/relatedSettings"
+        }
       }
     },
     "queryPayload": {
       "type": "object",
-      "required": ["model", "snapshots", "query", "mode", "index_root"],
+      "required": [
+        "model",
+        "snapshots",
+        "query",
+        "mode"
+      ],
       "properties": {
-        "model": {"type": "string"},
-        "index_root": {"type": "string", "minLength": 1},
-        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
-        "query": {"$ref": "#/$defs/memoryQuery"},
-        "mode": {"enum": ["plain", "scored", "contextual"]}
+        "model": {
+          "type": "string"
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/snapshot"
+          }
+        },
+        "query": {
+          "$ref": "#/$defs/memoryQuery"
+        },
+        "mode": {
+          "enum": [
+            "plain",
+            "scored",
+            "contextual"
+          ]
+        },
+        "query_settings": {
+          "$ref": "#/$defs/querySettings"
+        }
+      }
+    },
+    "querySettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "recall_min_score": {
+          "type": "number"
+        },
+        "mmr_lambda": {
+          "type": "number"
+        },
+        "ancestor_budget": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ancestor_root_floor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "relatedSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pair_min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "min_cos": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "knn_seeds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "knn_per": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     }
   },
   "allOf": [
-    {"if": {"properties": {"operation": {"const": "classify_business"}}, "required": ["operation"]},
-     "then": {"required": ["payload"], "properties": {"payload": {"type": "object", "properties": {"backend": {"anyOf": [{"$ref": "#/$defs/modelProvider"}, {"type": "null"}]}}}}}},
-    {"if": {"properties": {"operation": {"const": "query_business"}}, "required": ["operation"]},
-     "then": {"required": ["payload"], "properties": {"payload": {"type": "object", "properties": {"provider": {"anyOf": [{"$ref": "#/$defs/modelProvider"}, {"type": "null"}]}}}}}},
-    {"if": {"properties": {"operation": {"const": "related_business"}}, "required": ["operation"]}, "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/relatedPayload"}}}},
     {
-      "if": {"properties": {"operation": {"const": "remember_candidates"}}, "required": ["operation"]},
-      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/rememberCandidatesPayload"}}}
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "classify_business"
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload"
+        ],
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "backend": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/modelProvider"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     },
     {
-      "if": {"properties": {"operation": {"const": "prepare"}}, "required": ["operation"]},
-      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/preparePayload"}}}
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "query_business"
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload"
+        ],
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "provider": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/modelProvider"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     },
     {
-      "if": {"properties": {"operation": {"const": "query"}}, "required": ["operation"]},
-      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/queryPayload"}}}
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "related_business"
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/relatedPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "remember_candidates"
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/rememberCandidatesPayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "prepare"
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/preparePayload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "query"
+          }
+        },
+        "required": [
+          "operation"
+        ]
+      },
+      "then": {
+        "required": [
+          "payload"
+        ],
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/queryPayload"
+          }
+        }
+      }
     }
   ]
 }

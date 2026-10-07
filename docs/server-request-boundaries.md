@@ -4,11 +4,11 @@ These limits apply to the HTTP entry point of `respire-server serve`. They bound
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ONEMEMORY_MAX_BODY_BYTES` | 8,388,608 | Maximum request body size |
-| `ONEMEMORY_HEADER_TIMEOUT_MS` | 10,000 | Header deadline |
-| `ONEMEMORY_BODY_TIMEOUT_MS` | 30,000 | Body deadline |
-| `ONEMEMORY_CONNECTION_TIMEOUT_MS` | 70,000 | Absolute connection deadline, including response writing |
-| `ONEMEMORY_MAX_CONNECTIONS` | 64 | Maximum live connections and associated database tasks |
+| `RSRS_MAX_BODY_BYTES` | 8,388,608 | Maximum request body size |
+| `RSRS_HEADER_TIMEOUT_MS` | 10,000 | Header deadline |
+| `RSRS_BODY_TIMEOUT_MS` | 30,000 | Body deadline |
+| `RSRS_CONNECTION_TIMEOUT_MS` | 70,000 | Absolute connection deadline, including response writing |
+| `RSRS_MAX_CONNECTIONS` | 64 | Maximum live connections and associated database tasks |
 
 Configured values must be positive decimal integers. Invalid configuration fails before listening; capacity and platform bounds are also checked.
 

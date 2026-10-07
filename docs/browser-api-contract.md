@@ -14,7 +14,7 @@ five seconds to the client's interval. Approval creates a normal revocable user
 session once; denial, expiration and replay do not create sessions. Device codes
 are private and are stored only as hashes. Access tokens never enter URLs.
 
-The verification origin is server-owned `RESPIRE_DASHBOARD_URL`, defaulting to
+The verification origin is server-owned `RSRS_DASHBOARD_URL`, defaulting to
 `https://dash.rsrs.rs`; DEV must set `https://dash.dev.rsrs.rs`. The Dashboard
 route `/#/authorize` accepts a displayed user code; `/#/authorize?code=...`
 prefills it. After normal password and TOTP sign-in, the page shows the account,

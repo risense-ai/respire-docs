@@ -60,17 +60,17 @@ flowchart LR
 
 ## Configuration compatibility
 
-The product is named Respire, under risense-ai. The sole command, native binary and sidecar prefix are `rsrs`. Repository/crate names remain `respire-*` and `respire_*`; the Core ABI remains `rs_core_*`. The default data root is `~/.rsrs` and the runtime port is `15169`. Startup migrates older local accounts without connecting to the older runtime on `15168`; the original directories remain intact. `rsrs web` opens the hosted dashboard at `https://dash.rsrs.rs`. Existing `ONEMEMORY_*` variables remain explicit compatibility options. SDK controls use `RESPIRE_CORE_SDK_DIR` and `RESPIRE_CORE_TEST_MODE`; there is no new `RS_*` environment namespace.
+The product is named Respire, under risense-ai. The sole command, native binary and sidecar prefix are `rsrs`. Repository/crate names remain `respire-*` and `respire_*`; the Core ABI remains `rs_core_*`. The default data root is `~/.rsrs` and the runtime port is `15169`. Startup does not migrate older local accounts. Doctor and TUI identify sources not yet migrated; migration runs only after the user explicitly selects a source and account, and keeps the original directory. `rsrs web` opens the hosted dashboard at `https://dash.rsrs.rs`. Existing `ONEMEMORY_*` variables remain host-side compatibility inputs. SDK controls use `RSRS_CORE_SDK_DIR` and `RSRS_CORE_TEST_MODE`; Core itself does not read environment variables. There is no new `RS_*` environment namespace.
 
 The configured default API is `https://api.rsrs.rs`; `--addr` can select a local server. Configured domains are not proof of live deployment.
 
 | Variable | Purpose |
 | --- | --- |
-| `ONEMEMORY_DATA_DIR` | Select a separate local data directory |
-| `ONEMEMORY_NO_AUTOSYNC=1` | Disable automatic synchronization |
-| `ONEMEMORY_ADDR`, `ONEMEMORY_TOKEN` | Remote connection configuration |
-| `ONEMEMORY_JSON=1` | Request JSON output |
-| `ONEMEMORY_MODEL_DIR`, `ONEMEMORY_M3_DIR` | Explicit model directories |
-| `ONEMEMORY_RERANKER_DIR` | Explicit reranker directory |
+| `RSRS_DATA_DIR` | Select a separate local data directory |
+| `RSRS_NO_AUTOSYNC=1` | Disable automatic synchronization |
+| `RSRS_ADDR`, `RSRS_TOKEN` | Remote connection configuration |
+| `RSRS_JSON=1` | Request JSON output |
+| `RSRS_MODEL_DIR`, `RSRS_M3_DIR` | Explicit model directories |
+| `RSRS_RERANKER_DIR` | Explicit reranker directory |
 
 See [synchronization and keys](sync-and-keys.md), [agent integration](injection.md) and [benchmarks](benchmark.md).

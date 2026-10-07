@@ -1,15 +1,17 @@
 # Core C ABI / JSON business contract
 
-ABI version `0x00010001`, JSON schema `1`, opaque artifact format `1`.
+ABI version `0x00010002`, JSON schema `1`, opaque artifact format `1`.
 The canonical header is `respire_core.h`; Core keeps an identical copy.
 
 Core exports only `rs_core_abi_version`, `rs_core_create`, `rs_core_call`,
-`rs_core_call_with_transport`, `rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
+`rs_core_call_with_transport`, `rs_core_model_load`, `rs_core_model_load_with_host`,
+`rs_core_register_providers`, `rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
 each returned buffer until that exact buffer slot is freed once by Core. Handles
 are thread confined. The safe Rust SDK supplies RAII and cannot be sent or shared.
 A panic poisons the handle; destroy and recreate it. Do not share allocators.
 
-`config` may be empty or UTF-8 `{}`; other configuration fields are rejected.
+`config` may be empty or UTF-8 `{}`; its only optional field is `test_mode` (false
+by default), explicitly enabled by a fixture host. Other fields are rejected.
 Inputs are UTF-8 JSON byte slices, without a trailing-NUL requirement. Output
 `rs_buffer.len` is the exact byte length. Initialise output slots to zero before
 each call; release success and error buffers through `rs_core_buffer_free` once.
@@ -42,7 +44,7 @@ for operation-specific report DTOs and classify argument ordering.
 
 | Business operation | Input / output boundary |
 |---|---|
-| prepare | Authorized MemoryEntry or content + model + index root → index locator |
+| prepare | Authorized MemoryEntry or content + model → opaque compressed index bytes |
 | query | Authorized snapshots + MemoryQuery + plain/scored/contextual mode → final entries, final relevance and selected context |
 | remember_candidates | Model + authorized snapshots + MemoryQuery → final merge/parent proposal lists |
 | candidate_report / analyze_duplicates | Snapshots and user settings → final duplicate/parent proposals |
@@ -50,15 +52,16 @@ for operation-specific report DTOs and classify argument ordering.
 | taxonomy_classify / classify_business | Authorized content/tree material and explicit provider configuration → final classification decisions or action preview |
 | query_business | Authorized snapshots and explicit local/quality mode → final selected entries and warnings |
 | index_generation / index_status | Index generation and local index readiness |
-| model_status / model_probe / model_paths / engine_control | Model installation diagnostics and explicit engine controls |
+| model_status / model_probe / engine_control | Injected-model diagnostics and in-memory reset/status controls |
 
 `capabilities.inference_execution` is `in_process`. The resident runtime loads
 and shares the native ONNX session. There is no inference child or pipe protocol.
-Model location and explicit CPU/GPU/NPU settings are global; `index_root` remains
-library-specific. Account switching does not write engine settings. Engine control
-supports `get`, `set`, `reset`, `reset_cpu`, `install_accelerators`, and
-`inference_status`; the private
-`enable_worker` and `run_worker` actions have been removed. Native errors retain
+The host owns all model locations and CPU/GPU/NPU configuration. It injects raw
+model/tokenizer buffers and explicit settings into each handle; matching sessions
+can be shared from an in-memory cache. Account switching does not write settings.
+Engine control supports `get`, `reset` and `inference_status`; `set`, `reset_cpu`
+and accelerator installation/discovery report explicit host-managed errors.
+Native errors retain
 their underlying cause in `error.message`; no engine fallback is applied.
 CPU probes reuse the shared session. Accelerator probes compare with a CPU session.
 Reset invalidates existing session handles. Shared inference uses a FIFO queue
@@ -84,11 +87,13 @@ The tokenizer remains at the same revision and checksum. This model has a separa
 index generation from FP16 and `model_int8.onnx`; do not mix their vectors.
 Retain resumable checkpoints and activate the new generation only after completion.
 
-`Prepared.artifact` is a base64-encoded locator for a local index owned by Core.
-It contains no returned document or chunk vectors. Select the library's absolute
-`index_root` consistently for preparation and queries. Index rows are bound to
-the source ciphertext and generation; they never enter synchronization envelopes.
-Existing encrypted entries remain readable and local indexes can be rebuilt.
+`Prepared.artifact` contains base64-encoded opaque compressed index bytes. Core
+never reads or writes files, directories or databases. The host persists these
+bytes and resolves existing `rsi1` locators into bytes before calling Core; Core
+rejects unresolved locators. The compression payload, revision and generation stay
+unchanged, so this boundary change alone does not require index rebuilding. Hosts
+must not interpret internal index/vector structures. Index rows remain bound to
+source ciphertext and generation and never enter synchronization envelopes.
 Account encryption keys, API credentials, endpoints and HTTP execution remain in
 the host. Core accepts only a provider name and model. For external model work,
 `rs_core_call_with_transport` borrows synchronous host request/release callbacks;
@@ -100,20 +105,31 @@ Callback output is host-owned until the release callback, including failures.
 Callbacks must not unwind or recursively enter the same handle. No callbacks or
 credentials are retained by Core. Local mode makes no external model request.
 Provider configuration is parsed before local dispatch too; local mode does not
-permit credential or endpoint fields. Windows execution-provider installation
-also belongs to the host CLI. `engine_control/accelerator_catalog` returns the
-offline pinned catalog DLL path (or null on other platforms); Core never calls
-Windows ML EnsureReady. The old `install_accelerators` action reports an explicit
-host-managed error. Host installation releases the old runtime, saves installed
-provider paths only after success, and restarts the selected library.
-The original five ABI functions remain available. An old binary without the new
-symbol cannot serve the new transport adapter; use the matching pinned SDK.
+permit credential or endpoint fields. Windows execution-provider library registration and profiling/cache paths
+also belong to the host. `rs_core_register_providers` borrows `OrtEnv*` and
+`OrtApi*` for synchronous registration. `rs_core_model_load_with_host` similarly
+borrows `OrtSessionOptions*`, `OrtApi*`, `OrtEnv*` and an optional selected
+`OrtEpDevice*` while loading. When a device is supplied, the host appends it with
+`SessionOptionsAppendExecutionProvider_V2` and host-owned cache options; Core does
+not append the same provider again. A null device permits profiling configuration. No paths or callbacks are retained by Core. Hosts must
+not retain pointers, unwind, or reenter Core. Cache hits do not reconfigure an
+existing session; include configuration changes in `session_options_id`.
+
+`rs_core_model_load` accepts UTF-8 configuration plus separate borrowed raw model
+and tokenizer buffers, never large base64 JSON or file paths. Configuration
+requires `model`, host-validated `asset_id`, `engine` and
+`execution_timeout_secs`; `session_options_id` is optional. The output is the
+standard JSON envelope with empty request ID and `result.dimensions`. Core retains
+owned bytes. With explicit `reuse_current: true`, both buffers must be empty and
+the complete configuration must match a cached model. Otherwise loading fails and
+the host must provide the verified buffers. Existing ABI entry points remain;
+consumers must use the matching ABI 1.2 SDK for these new symbols.
 
 For `prepare`, provide `model` and either `entry` or `content`; an `entry` takes
 precedence if both are present. The production model is `m3`; legacy BGE is retired.
 `test-hash:<dimensions>` is only an explicit fixture provider and requires
-`RESPIRE_CORE_TEST_MODE=1`; production callers must not select it.
-Successful prepare returns a non-empty `artifact` locator.
+`test_mode: true` in handle creation; production callers must not select it.
+Successful prepare returns non-empty opaque `artifact` bytes.
 
 `query` requires `model`, `snapshots`, `query` and `mode` (`plain`, `scored`,
 `contextual`). Snapshot metadata fields are explicit strings/flags, not the sync
@@ -151,3 +167,10 @@ See the request/response schema definitions. Capability negotiation is required
 before relation writes. Public callers never receive intermediate vectors or
 policy thresholds. Empty relation fields are compatible with old payload reads;
 all shared-library writers must be upgraded before enabling relation writes.
+
+Query tuning is explicit `query_settings` data (`recall_min_score`, `mmr_lambda`,
+`ancestor_budget`, `ancestor_root_floor`). Association tuning is explicit
+`related_settings` data (`enabled`, `max`, `pair_min`, `min_cos`, `knn_seeds`,
+`knn_per`). Core supplies existing algorithm defaults when omitted but never reads
+host environment variables. Hosts translate supported environment/configuration
+inputs before entering Core. No intermediate scoring traces are printed by Core.

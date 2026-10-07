@@ -4,13 +4,13 @@
 flowchart LR
   Host[Host terminal] -->|owns lifecycle| Runtime[Loopback HTTP runtime]
   Sandbox[Sandbox CLI / TUI / MCP] -->|client-only| Runtime
-  Runtime --> Worker[Shared inference worker]
+  Runtime --> Core[In-process Core inference queue]
 ```
 
 | Context | Behavior |
 | --- | --- |
 | Host | Starts, stops, updates and recovers the runtime |
-| Sandbox | Connects to the host loopback runtime without a token |
+| Sandbox | Connects to the host loopback runtime; preserves an existing compatibility token |
 | Restricted Windows token | Automatically selects client-only mode |
 | Other sandboxes | Integration explicitly selects client-only mode |
 
@@ -36,12 +36,14 @@ stopped runtime and does not perform an automatic takeover.
 
 | Setting | Purpose |
 | --- | --- |
-| `ONEMEMORY_CLIENT_ONLY=1` | Host runtime client mode |
-| `ONEMEMORY_NO_AUTOSTART=1` | Compatibility synonym |
-| `ONEMEMORY_RPC_PORT` | Override the default port `15169` |
+| `RSRS_CLIENT_ONLY=1` | Host runtime client mode |
+| `RSRS_NO_AUTOSTART=1` | Compatibility synonym |
+| `RSRS_RPC_PORT` | Override the default port `15169` |
 
-CLI / TUI / MCP stdio connect to `127.0.0.1` without reading a token file or
-requiring token injection. Loopback listeners do not create a token. The runtime
+CLI / TUI / MCP stdio connect to `127.0.0.1`. An existing `RSRS_RPC_TOKEN` or
+runtime token file is attached on the first health, RPC and stop request for
+compatibility with old runtimes. New loopback listeners do not require or create
+a token. The runtime
 currently rejects non-loopback bind addresses, so cross-machine runtime access
 is not supported. Non-loopback peers are never exempt from authentication.
 The server checks the actual peer address, not Host or forwarded headers.
@@ -56,7 +58,7 @@ share host loopback addresses.
 | Error | Meaning | Action |
 | --- | --- | --- |
 | `runtime_unavailable` | Runtime unavailable | Host starts the service |
-| `runtime_unauthorized` | Authentication rejected | Non-loopback client supplies a valid token; a loopback client requires an updated host runtime |
+| `runtime_unauthorized` | Authentication rejected | The host verifies the old runtime's existing token and endpoint; do not bypass authentication |
 | `runtime_transport` | Connection failed | Host checks endpoint/network |
 
 ## Server deployment
@@ -83,20 +85,22 @@ password locally and verifies the vault before saving or choosing a profile.
 Normal login does not accept `--secret-key` or reset an existing vault. Legacy
 decryption material is handled by explicit migration/recovery operations.
 
-After copying an old library with `rsrs migrate --source ... --account ...`, select
-that copied account and run `rsrs migrate --vault`. Supply its login password,
+After fully migrating an old library with `rsrs migrate --source ... --account ...`, select
+that migrated account and run `rsrs migrate --vault`. Supply its original login password,
 legacy `--super` passphrase for v2/v3, and v3 `--secret-key` when it is not already
 in the session. This operation requires the cloud wrap to match the selected
-legacy library, preserves its URK and raw database, and publishes a v4 wrap only
-after the host/runtime account has been verified. It displays the resulting
-recovery code before publication. If publication committed but its confirmation
-was lost, rerun the explicit migration with `--new-super <displayed-recovery-code>`;
-the client accepts the v4 cloud wrap only after verifying the same original URK,
-then commits the local session without republishing. `--new-super` may also
-specify the new code for an initial migration;
-a headless host without a keyring must also supply the same verified code through
-`ONEMEMORY_SUPER` to its runtime. The original source library and credentials are
-retained. Normal login performs no legacy vault upgrade or destructive adoption.
+library. Local migration decrypts all retained records, including tombstones,
+and writes a newly encrypted `rsrs.db` using `rsrs:*` key labels. The original
+source database remains unchanged. Cloud publication preserves the original URK,
+vault factor version, login password and super Key; it does not issue a new
+recovery code or silently upgrade the vault to v4. The same login password is
+used to recalculate the authentication hash with the current salt label.
+Publication requires `/auth/salt` support on the selected API server and a
+verified host/runtime account. If confirmation is lost, repeat the explicit
+migration with the original credentials; committed matching writes are verified
+before completing the local transaction. `--new-super`, if used for compatibility,
+must equal the original super Key. A headless host without a keyring supplies
+that original Key through `RSRS_SUPER`. Normal login performs no migration.
 
 The host stops the previous runtime, commits the verified session and selected
 directory, starts the target runtime and reads back its account and path. Startup
@@ -126,16 +130,14 @@ The hidden `--runtime-internal` entry is reserved for host lifecycle and automat
 ## Upgrading an older runtime
 
 The host command `rsrs --runtime-internal --stop` supports runtimes that still
-require a loopback token, including 1.0.9. After an HTTP 401, the client retries
-once using the existing `ONEMEMORY_RPC_TOKEN` or runtime token file, after the
-host endpoint record and OS listener PID identify a running Respire process. An
-unverified listener receives no token. The client does not
-create or replace credentials. Other HTTP errors and connection failures are
-not retried. Current loopback runtimes continue to work without a token file.
+require a loopback token, including 1.0.9. Health, RPC and stop attach the existing
+`RSRS_RPC_TOKEN` or runtime token file on the first request. A failed request is
+not replayed. The client does not create or replace credentials. Current loopback
+runtimes ignore the compatibility header and work without a token file.
 Health checks and normal RPC use the same compatibility rule, so host upgrades
 can gracefully stop the old runtime before starting the new executable.
 
 Run lifecycle commands from the host terminal; client-only mode does not permit
-shutdown or the legacy-token retry. A missing or rejected legacy token requires the old runtime's existing
+shutdown. A missing or rejected legacy token requires the old runtime's existing
 authentication material, rather than bypassing authentication or killing an
 unverified process. HTTP redirects are disabled for the local runtime client.

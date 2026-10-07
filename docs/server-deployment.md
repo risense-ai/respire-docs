@@ -25,9 +25,9 @@ curl -fsS http://127.0.0.1:8787/ready
 | Configuration | Purpose |
 | --- | --- |
 | `POSTGRES_PASSWORD` | Required database secret |
-| `ONEMEMORY_SERVER_IMAGE` | Explicit image tag |
-| `ONEMEMORY_HOST_BIND`, `ONEMEMORY_HOST_PORT` | Host listener; Compose defaults to loopback and port 8787 |
-| `ONEMEMORY_ADMIN_TOKEN` | Optional administrative token |
+| `RSRS_SERVER_IMAGE` | Explicit image tag |
+| `RSRS_HOST_BIND`, `RSRS_HOST_PORT` | Host listener; Compose defaults to loopback and port 8787 |
+| `RSRS_ADMIN_TOKEN` | Optional administrative token |
 
 The supplied Compose configuration uses Postgres 16 with database/user `respire` and a separate `respire-pg` volume. It does not reuse the older product's database volume. Existing `ONEMEMORY_*` option names remain explicit compatibility interfaces; cryptographic derivation and sync formats are unchanged. Do not remove the volume during an application upgrade.
 

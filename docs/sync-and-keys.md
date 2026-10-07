@@ -14,7 +14,7 @@ flowchart LR
 | Automatic | The runtime schedules synchronization after supported writes |
 | Manual | Run `rsrs sync` explicitly |
 
-`ONEMEMORY_NO_AUTOSYNC` overrides the account's `client.json` setting. Setting it to a nonzero value disables automatic synchronization. Explicit `sync` waits for the synchronization attempt to finish.
+`RSRS_NO_AUTOSYNC` overrides the account's `client.json` setting. Setting it to a nonzero value disables automatic synchronization. Explicit `sync` waits for the synchronization attempt to finish.
 
 ## Record handling
 
