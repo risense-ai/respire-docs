@@ -76,7 +76,7 @@ provider receives authorized plaintext through Core's model request; credentials
 must not be logged or returned. Local mode makes no external model request.
 
 For `prepare`, provide `model` and either `entry` or `content`; an `entry` takes
-precedence if both are present. Production models are `legacy` and `m3`.
+precedence if both are present. The production model is `m3`; legacy BGE is retired.
 `test-hash:<dimensions>` is only an explicit fixture provider and requires
 `RESPIRE_CORE_TEST_MODE=1`; production callers must not select it.
 Successful prepare returns a non-empty `artifact` locator.
