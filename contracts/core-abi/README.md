@@ -64,8 +64,10 @@ CPU probes reuse the shared session. Accelerator probes compare with a CPU sessi
 Reset invalidates existing session handles. Shared inference uses a FIFO queue
 with up to 32 waiting requests and a 120-second queue wait limit. Each native run
 has a separate 120-second execution limit using ONNX cooperative cancellation.
+Session loading uses the same queue and a separate 120-second ONNX load cancellation
+deadline; changing engines waits for the active inference to release its permit.
 Expired queue entries are removed before inference. An expired native run produces
-no embedding. `inference_status` reports queued/active work, capacity, limits and
+no embedding. `inference_status` reports queued/active work, phase, capacity, limits and
 `host_recovery_required` without waiting for the native session mutex. Providers
 may ignore cancellation; an unresponsive native call requires host runtime recovery.
 The execution limit does not guarantee termination of a native thread or release
