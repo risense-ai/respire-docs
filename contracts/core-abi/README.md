@@ -1,10 +1,10 @@
 # Core C ABI / JSON business contract
 
-ABI version `0x00010000`, JSON schema `1`, opaque artifact format `1`.
+ABI version `0x00010001`, JSON schema `1`, opaque artifact format `1`.
 The canonical header is `respire_core.h`; Core keeps an identical copy.
 
 Core exports only `rs_core_abi_version`, `rs_core_create`, `rs_core_call`,
-`rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
+`rs_core_call_with_transport`, `rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
 each returned buffer until that exact buffer slot is freed once by Core. Handles
 are thread confined. The safe Rust SDK supplies RAII and cannot be sent or shared.
 A panic poisons the handle; destroy and recreate it. Do not share allocators.
@@ -52,17 +52,65 @@ for operation-specific report DTOs and classify argument ordering.
 | index_generation / index_status | Index generation and local index readiness |
 | model_status / model_probe / model_paths / engine_control | Model installation diagnostics and explicit engine controls |
 
+`capabilities.inference_execution` is `in_process`. The resident runtime loads
+and shares the native ONNX session. There is no inference child or pipe protocol.
+Model location and explicit CPU/GPU/NPU settings are global; `index_root` remains
+library-specific. Account switching does not write engine settings. Engine control
+supports `get`, `set`, `reset`, `reset_cpu`, `install_accelerators`, and
+`inference_status`; the private
+`enable_worker` and `run_worker` actions have been removed. Native errors retain
+their underlying cause in `error.message`; no engine fallback is applied.
+CPU probes reuse the shared session. Accelerator probes compare with a CPU session.
+Reset invalidates existing session handles. Shared inference uses a FIFO queue
+with up to 32 waiting requests and a 120-second queue wait limit. Each native run
+has a separate 120-second execution limit using ONNX cooperative cancellation.
+Session loading uses the same queue and a separate 120-second ONNX load cancellation
+deadline; changing engines waits for the active inference to release its permit.
+Expired queue entries are removed before inference. An expired native run produces
+no embedding. `inference_status` reports queued/active work, phase, capacity, limits and
+`host_recovery_required` without waiting for the native session mutex. Providers
+may ignore cancellation; an unresponsive native call requires host runtime recovery.
+The execution limit does not guarantee termination of a native thread or release
+of database locks. No additional inference process is created.
+
+Index compatibility depends on the model and artifact generation, not the CLI
+or SDK release number. Reuse complete compatible artifacts during upgrades.
+
+The production M3 file is `onnx/model_quantized.onnx`, pinned to
+`Xenova/bge-m3` revision `4de13258303883538bd53b696b452bf8099f0858`:
+569694530 bytes, SHA-256
+`0826f8c1ab9edf1801db86c61919d4d108e8bfc0b809ec823ad366882ff0b77d`.
+The tokenizer remains at the same revision and checksum. This model has a separate
+index generation from FP16 and `model_int8.onnx`; do not mix their vectors.
+Retain resumable checkpoints and activate the new generation only after completion.
+
 `Prepared.artifact` is a base64-encoded locator for a local index owned by Core.
 It contains no returned document or chunk vectors. Select the library's absolute
 `index_root` consistently for preparation and queries. Index rows are bound to
 the source ciphertext and generation; they never enter synchronization envelopes.
 Existing encrypted entries remain readable and local indexes can be rebuilt.
-Account encryption keys are not supplied to Core. An explicitly selected model
-provider receives authorized plaintext through Core's model request; credentials
-must not be logged or returned. Local mode makes no external model request.
+Account encryption keys, API credentials, endpoints and HTTP execution remain in
+the host. Core accepts only a provider name and model. For external model work,
+`rs_core_call_with_transport` borrows synchronous host request/release callbacks;
+Core plans the request and interprets the response. The host owns authentication,
+proxy, timeout and retry execution. Callback input contains `provider`, `body`,
+`timeout` and `retries`; it is transport traffic, never a returned business plan.
+The host must return JSON and sanitize errors before forwarding them to Core.
+Callback output is host-owned until the release callback, including failures.
+Callbacks must not unwind or recursively enter the same handle. No callbacks or
+credentials are retained by Core. Local mode makes no external model request.
+Provider configuration is parsed before local dispatch too; local mode does not
+permit credential or endpoint fields. Windows execution-provider installation
+also belongs to the host CLI. `engine_control/accelerator_catalog` returns the
+offline pinned catalog DLL path (or null on other platforms); Core never calls
+Windows ML EnsureReady. The old `install_accelerators` action reports an explicit
+host-managed error. Host installation releases the old runtime, saves installed
+provider paths only after success, and restarts the selected library.
+The original five ABI functions remain available. An old binary without the new
+symbol cannot serve the new transport adapter; use the matching pinned SDK.
 
 For `prepare`, provide `model` and either `entry` or `content`; an `entry` takes
-precedence if both are present. Production models are `legacy` and `m3`.
+precedence if both are present. The production model is `m3`; legacy BGE is retired.
 `test-hash:<dimensions>` is only an explicit fixture provider and requires
 `RESPIRE_CORE_TEST_MODE=1`; production callers must not select it.
 Successful prepare returns a non-empty `artifact` locator.
