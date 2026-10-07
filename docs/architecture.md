@@ -2,6 +2,12 @@
 
 The local library is the working source of truth. The server stores encrypted records; local retrieval does not require a server request.
 
+The resident runtime loads ONNX and performs inference in the same process.
+One shared model session queues inference calls. Model files and CPU/GPU/NPU
+selection are global. Account switching selects a different library and index,
+while preserving those global settings. HTTP health and progress handlers remain
+available while command and background threads perform model work.
+
 ```mermaid
 flowchart LR
   Entry["Authorized plaintext entry"] --> Crypto["Application encryption layer"]

@@ -35,7 +35,8 @@
     "Server pins the infrastructure app package by Git commit, without depending on the CLI executable.",
     "Account keys, auth, sync, HTTP and SQLite stay in infrastructure source.",
     "Feature artifacts are opaque local derived data, not encrypted secrets; they can be rebuilt.",
-    "Legacy sync ciphertext and SQLite compatibility are retained."
+    "Legacy sync ciphertext and SQLite compatibility are retained.",
+    "ONNX inference executes in process; model location and engine configuration are global, while index roots are per library."
   ],
   "repository": "risense-ai/respire-core",
   "sourceRepository": "risense-ai/respire-cli",

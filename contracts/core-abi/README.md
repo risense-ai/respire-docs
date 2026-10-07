@@ -52,6 +52,20 @@ for operation-specific report DTOs and classify argument ordering.
 | index_generation / index_status | Index generation and local index readiness |
 | model_status / model_probe / model_paths / engine_control | Model installation diagnostics and explicit engine controls |
 
+`capabilities.inference_execution` is `in_process`. The resident runtime loads
+and shares the native ONNX session. There is no inference child or pipe protocol.
+Model location and explicit CPU/GPU/NPU settings are global; `index_root` remains
+library-specific. Account switching does not write engine settings. Engine control
+supports `get`, `set`, `reset`, `reset_cpu`, and `install_accelerators`; the private
+`enable_worker` and `run_worker` actions have been removed. Native errors retain
+their underlying cause in `error.message`; no engine fallback is applied.
+CPU probes reuse the shared session. Accelerator probes compare with a CPU session.
+Reset invalidates existing session handles. Native inference has no worker response
+deadline; an unresponsive native call requires host runtime recovery.
+
+Index compatibility depends on the model and artifact generation, not the CLI
+or SDK release number. Reuse complete compatible artifacts during upgrades.
+
 `Prepared.artifact` is a base64-encoded locator for a local index owned by Core.
 It contains no returned document or chunk vectors. Select the library's absolute
 `index_root` consistently for preparation and queries. Index rows are bound to
