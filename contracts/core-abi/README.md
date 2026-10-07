@@ -99,6 +99,13 @@ The host must return JSON and sanitize errors before forwarding them to Core.
 Callback output is host-owned until the release callback, including failures.
 Callbacks must not unwind or recursively enter the same handle. No callbacks or
 credentials are retained by Core. Local mode makes no external model request.
+Provider configuration is parsed before local dispatch too; local mode does not
+permit credential or endpoint fields. Windows execution-provider installation
+also belongs to the host CLI. `engine_control/accelerator_catalog` returns the
+offline pinned catalog DLL path (or null on other platforms); Core never calls
+Windows ML EnsureReady. The old `install_accelerators` action reports an explicit
+host-managed error. Host installation releases the old runtime, saves installed
+provider paths only after success, and restarts the selected library.
 The original five ABI functions remain available. An old binary without the new
 symbol cannot serve the new transport adapter; use the matching pinned SDK.
 

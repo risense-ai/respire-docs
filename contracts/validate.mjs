@@ -21,7 +21,7 @@ for (const name of files) {
 const core = JSON.parse(readFileSync(join(root, 'core-api.json'), 'utf8'));
 const request = JSON.parse(readFileSync(join(root, 'core-abi/request.schema.json'), 'utf8'));
 const response = JSON.parse(readFileSync(join(root, 'core-abi/response.schema.json'), 'utf8'));
-if (core.distribution !== 'binary-sdk-staticlib-c-abi' || core.abiVersion !== 0x00010000
+if (core.distribution !== 'binary-sdk-staticlib-c-abi' || core.abiVersion !== 0x00010001
     || core.requestSchemaVersion !== request.properties.schema_version.const
     || core.requestSchemaVersion !== response.properties.schema_version.const) {
   throw new Error('Core distribution / ABI / JSON schema version mismatch');
@@ -34,7 +34,7 @@ for (const type of ['prepared', 'snapshot', 'memoryEntry', 'memoryQuery', 'prepa
 }
 if (!response.$defs.relatedResult) throw new Error('Core response schema missing relatedResult');
 const header = readFileSync(join(root, 'core-abi/respire_core.h'), 'utf8');
-for (const name of ['rs_core_abi_version', 'rs_core_create', 'rs_core_call', 'rs_core_buffer_free', 'rs_core_destroy']) {
+for (const name of ['rs_core_abi_version', 'rs_core_create', 'rs_core_call', 'rs_core_call_with_transport', 'rs_core_buffer_free', 'rs_core_destroy']) {
   if (!header.includes(`${name}(`)) throw new Error(`Core header missing ${name}`);
 }
 
