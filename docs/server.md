@@ -14,8 +14,8 @@ flowchart LR
 | Variable | Purpose |
 | --- | --- |
 | `DATABASE_URL` | Required Postgres connection string |
-| `ONEMEMORY_ADMIN_TOKEN` | Optional administrative entry point |
-| `ONEMEMORY_DB_WORKERS` | Database worker pool size, from 1 to 16 |
+| `RSRS_ADMIN_TOKEN` | Optional administrative entry point |
+| `RSRS_DB_WORKERS` | Database worker pool size, from 1 to 16 |
 
 Keep credentials in the deployment's secret configuration. Do not commit a live connection string or administrative token.
 

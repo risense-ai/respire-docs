@@ -26,10 +26,10 @@ flowchart TD
 |---|---|
 | Toolchain | Use the repository's pinned Rust toolchain |
 | Lock | Match `sdk/core-sdk.lock.json` manifest SHA-256 |
-| Local SDK | Set `RESPIRE_CORE_SDK_DIR` to a complete SDK directory |
+| Local SDK | Set `RSRS_CORE_SDK_DIR` to a complete SDK directory |
 | Download helper | `node scripts/fetch-core-sdk.mjs <target-triple> [output-directory]`; requires a configured download URL or complete local SDK |
 | Build validation | Exact compiler release/commit, ABI, target, panic mode, CRT and file hashes must match |
-| Test fixture provider | Set `RESPIRE_CORE_TEST_MODE=1` only when running existing fixture tests |
+| Test fixture provider | Set host `RSRS_CORE_TEST_MODE=1` only for existing fixture tests; the SDK passes explicit `test_mode: true`, and Core never reads this variable |
 | Distribution | Stage runtime libraries and third-party notices, not just an executable |
 
 Keep test data in a separate data directory. The SDK test provider is not a production model fallback.

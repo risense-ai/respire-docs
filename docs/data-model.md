@@ -1,21 +1,21 @@
 # Data model
 
-Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, data and keys without copying old accounts. Explicit migration discovers supported accounts in `~/.onememory` and `~/.respire`; the user selects a source and destination. Original directories remain intact. Existing `ONEMEMORY_*` options remain explicit compatibility interfaces.
+Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, data and keys without copying old accounts. Explicit migration discovers supported accounts in `~/.onememory`, `~/.respire` and legacy-format `.rsrs` profiles; the user selects a source and destination. Original directories remain intact. Current options use `RSRS_*`; `ONEMEMORY_*` and old `RESPIRE_*` options are read-only compatibility aliases. A present current option takes precedence.
 
 | Local item | Purpose |
 |---|---|
-| `~/.rsrs/onememory.db` | Encrypted records plus local metadata and feature indexes; the filename remains compatible |
+| `~/.rsrs/rsrs.db` | New-format encrypted records, local metadata and feature indexes; existing `onememory.db` remains readable until explicit migration |
 | `session.json` | Identity, address, token and key material |
 | `client.json` | Client preferences, server address and autosync settings |
 | `lock.db` | Exclusive local runtime lock |
 | `~/.rsrs/models/` | Default tokenizer/model resources |
 | `~/.rsrs/inference.json` | Inference-engine settings |
 
-`ONEMEMORY_DATA_DIR` selects the data root. Do not commit session files, database copies or recovery material.
+`RSRS_DATA_DIR` selects the data root. Do not commit session files, database copies or recovery material.
 
-An explicitly configured `ONEMEMORY_DATA_DIR` selects that directory. Explicit model-directory options remain compatible overrides.
+An explicitly configured `RSRS_DATA_DIR` selects that directory. Explicit model-directory options remain compatible overrides.
 
-The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. Cryptographic derivation and sync formats remain compatible.
+The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. New encrypted values carry a `rsrs:v1:` marker and use `rsrs:*` HKDF labels. Unmarked old values retain their original decryptor. Older clients cannot decrypt new-format ciphertext; update each client before migrating and synchronizing the account.
 
 ## Existing accounts
 
@@ -23,14 +23,16 @@ The local runtime defaults to port `15169`. Explicit migration snapshots its cho
 flowchart LR
   Old[".onememory / .respire"] --> Snapshot["Consistent database snapshot"]
   Credentials["Existing session and credential store"] --> Check["Verify the original encryption key"]
-  Snapshot --> New[".rsrs accounts"]
-  Check --> New
+  Snapshot --> Reencrypt["Decrypt and re-encrypt with rsrs labels"]
+  Check --> Reencrypt
+  Reencrypt --> Verify["Verify every record and key wrap"]
+  Verify --> New[".rsrs accounts / rsrs.db"]
   New --> API["api.rsrs.rs"]
 ```
 
-Run `rsrs migrate` to list source IDs, then `rsrs migrate --source <source-id> --account <new-name>` to copy a selected account, or use **Migrate old version** in the TUI. Backup-only directories are not account sources. Stable source identity and completion receipts prevent reimport when source ordering changes. Existing destinations are refused; migration does not switch the active account.
+Run `rsrs migrate` to list source IDs, then `rsrs migrate --source <source-id> --account <new-name>` to migrate a selected account, or use **Migrate old version** in the TUI. Backup-only directories are not account sources. Stable source identity and completion receipts prevent reimport when source ordering changes. Existing destinations are refused; migration does not switch the active account. Doctor and TUI suggest only pending sources and never start migration automatically.
 
-Migration retains account identities, encrypted records, pending local changes and available encryption credentials. It does not reset a vault, generate replacement keys or send secrets to another service. Only known obsolete official API addresses are rewritten in the explicitly imported copy; custom addresses and the active account's API preferences remain unchanged.
+Migration retains usernames, login passwords, original super Keys, record IDs, metadata and pending changes. It recalculates internal derived keys, re-encrypts records and rewraps the unchanged URK using the original user factors. It does not reset a vault or generate replacement super Keys. The old immutable sync journal remains in the original library; the new projection queues new operations while preserving acknowledged base revisions. Any undecryptable record, including a deleted record, prevents full migration and its completion marker. Only known obsolete official API addresses are rewritten in the imported copy; custom addresses and the active account's API preferences remain unchanged.
 
 Saved credentials can unlock the existing account without another login. If a session has expired and its login password was never saved, sign in with the original account password. If the original decryption secret is no longer available in the operating-system credential store, use the original recovery material. Copying an encrypted database alone cannot reconstruct a missing secret.
 

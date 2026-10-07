@@ -19,7 +19,7 @@ Explicit relation flags imply an intentional new write, bypassing duplicate
 proposals. Both flags reject diary memories and cannot be combined with
 `--merge-ids`. IDs must resolve to live important entries. Targets are validated
 before embedding or saving; the new entry and all reverse links commit together
-or roll back together. Metadata-only reverse edits preserve Core index locators;
+or roll back together. Metadata-only reverse edits preserve opaque Core index data;
 SQLite rebinds their source to the new ciphertext.
 
 Fast and quality modes expand only final selected hits. Model selection still
@@ -29,9 +29,10 @@ intermediate cosine value, strategy threshold or selector plan is returned.
 The main hit IDs and scores are unchanged by associations.
 
 `--no-related` disables expansion and superseded hints for this request. The
-Core compatibility environment switch `ONEMEMORY_RELATED=0` disables expansion
+Host compatibility environment switch `RSRS_RELATED=0` disables expansion
 while retaining replacement warnings; process-environment changes require a
-runtime restart by the host owner. Association settings are Core-owned.
+runtime restart by the host owner. The host passes explicit association settings
+to Core; Core owns the association policy and does not read the environment.
 
 Co-recall evidence is a local `recall_pairs` SQLite table, not synced content.
 The first five final hit IDs form distinct unordered pairs; each pair increments

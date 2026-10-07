@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "distribution": "binary-sdk-staticlib-c-abi",
   "publish": false,
-  "abiVersion": 65537,
+  "abiVersion": 65538,
   "requestSchemaVersion": 1,
   "artifactVersion": 1,
   "consumerRepos": [
@@ -22,12 +22,11 @@
     "taxonomy_classify",
     "classify_business",
     "query_business",
-        "related_business",
+    "related_business",
     "index_generation",
     "index_status",
     "model_status",
     "model_probe",
-    "model_paths",
     "engine_control"
   ],
   "notes": [
@@ -36,7 +35,7 @@
     "Account keys, auth, sync, HTTP and SQLite stay in infrastructure source.",
     "Feature artifacts are opaque local derived data, not encrypted secrets; they can be rebuilt.",
     "Legacy sync ciphertext and SQLite compatibility are retained.",
-    "ONNX inference executes in process; model location and engine configuration are global, while index roots are per library."
+    "ONNX inference executes in process from host-owned input buffers. Core has no filesystem, database, path discovery or environment access; the host persists opaque index bytes."
   ],
   "repository": "risense-ai/respire-core",
   "sourceRepository": "risense-ai/respire-cli",

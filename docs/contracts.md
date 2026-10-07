@@ -24,6 +24,7 @@ node contracts/validate.mjs
 | Rule | Requirement |
 |---|---|
 | ABI | Business C interface; no public vector/mathematics API |
+| Resource boundary | Host supplies model/tokenizer and opaque index bytes; Core does not accept storage paths or open files/databases |
 | SDK | Pin target, compiler, manifest hash and runtime files |
 | Server | Pin the infrastructure app crate, not the CLI executable |
 | Sidecar | Include its runtime libraries and notices |
