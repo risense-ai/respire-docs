@@ -15,7 +15,7 @@ Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, 
 
 An explicitly configured `RSRS_DATA_DIR` selects that directory. Explicit model-directory options remain compatible overrides.
 
-The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. New encrypted values carry a `rsrs:v1:` marker and use `rsrs:*` HKDF labels. Unmarked old values retain their original decryptor. Older clients cannot decrypt new-format ciphertext; update each client before migrating and synchronizing the account.
+The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. New accounts and accounts that have completed explicit migration write encrypted values with a `rsrs:v1:` marker and `rsrs:*` HKDF labels. Unmigrated libraries keep their original read and write format until the user explicitly migrates them; startup and ordinary writes do not convert them. Migration leaves the original source intact. Unmarked old values retain their original decryptor. Older clients cannot decrypt new-format ciphertext; update each client before migrating and synchronizing the account.
 
 ## Existing accounts
 
