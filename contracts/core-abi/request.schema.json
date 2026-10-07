@@ -41,6 +41,11 @@
     "payload": {}
   },
   "$defs": {
+    "modelProvider": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "model"],
+      "properties": {"name": {"type": "string"}, "model": {"type": "string", "minLength": 1}}
+    },
     "opaqueBytes": {
       "type": "string",
       "contentEncoding": "base64",
@@ -164,6 +169,10 @@
     }
   },
   "allOf": [
+    {"if": {"properties": {"operation": {"const": "classify_business"}}, "required": ["operation"]},
+     "then": {"properties": {"payload": {"type": "object", "properties": {"backend": {"anyOf": [{"$ref": "#/$defs/modelProvider"}, {"type": "null"}]}}}}}},
+    {"if": {"properties": {"operation": {"const": "query_business"}}, "required": ["operation"]},
+     "then": {"properties": {"payload": {"type": "object", "properties": {"provider": {"anyOf": [{"$ref": "#/$defs/modelProvider"}, {"type": "null"}]}}}}}},
     {"if": {"properties": {"operation": {"const": "related_business"}}, "required": ["operation"]}, "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/relatedPayload"}}}},
     {
       "if": {"properties": {"operation": {"const": "remember_candidates"}}, "required": ["operation"]},

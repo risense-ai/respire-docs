@@ -1,10 +1,10 @@
 # Core C ABI / JSON business contract
 
-ABI version `0x00010000`, JSON schema `1`, opaque artifact format `1`.
+ABI version `0x00010001`, JSON schema `1`, opaque artifact format `1`.
 The canonical header is `respire_core.h`; Core keeps an identical copy.
 
 Core exports only `rs_core_abi_version`, `rs_core_create`, `rs_core_call`,
-`rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
+`rs_core_call_with_transport`, `rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
 each returned buffer until that exact buffer slot is freed once by Core. Handles
 are thread confined. The safe Rust SDK supplies RAII and cannot be sent or shared.
 A panic poisons the handle; destroy and recreate it. Do not share allocators.
@@ -89,9 +89,18 @@ It contains no returned document or chunk vectors. Select the library's absolute
 `index_root` consistently for preparation and queries. Index rows are bound to
 the source ciphertext and generation; they never enter synchronization envelopes.
 Existing encrypted entries remain readable and local indexes can be rebuilt.
-Account encryption keys are not supplied to Core. An explicitly selected model
-provider receives authorized plaintext through Core's model request; credentials
-must not be logged or returned. Local mode makes no external model request.
+Account encryption keys, API credentials, endpoints and HTTP execution remain in
+the host. Core accepts only a provider name and model. For external model work,
+`rs_core_call_with_transport` borrows synchronous host request/release callbacks;
+Core plans the request and interprets the response. The host owns authentication,
+proxy, timeout and retry execution. Callback input contains `provider`, `body`,
+`timeout` and `retries`; it is transport traffic, never a returned business plan.
+The host must return JSON and sanitize errors before forwarding them to Core.
+Callback output is host-owned until the release callback, including failures.
+Callbacks must not unwind or recursively enter the same handle. No callbacks or
+credentials are retained by Core. Local mode makes no external model request.
+The original five ABI functions remain available. An old binary without the new
+symbol cannot serve the new transport adapter; use the matching pinned SDK.
 
 For `prepare`, provide `model` and either `entry` or `content`; an `entry` takes
 precedence if both are present. The production model is `m3`; legacy BGE is retired.

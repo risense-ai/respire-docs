@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-#define RS_CORE_ABI_VERSION UINT32_C(0x00010000)
+#define RS_CORE_ABI_VERSION UINT32_C(0x00010001)
 #define RS_CORE_OK 0
 #define RS_CORE_INVALID_ARGUMENT 1
 #define RS_CORE_ABI_MISMATCH 2
@@ -18,6 +18,9 @@ extern "C" {
 
 typedef struct rs_core rs_core;
 typedef struct rs_buffer { uint8_t *data; size_t len; } rs_buffer;
+typedef int32_t (*rs_host_request)(void *context, const uint8_t *request,
+                                  size_t request_len, rs_buffer *out_response);
+typedef void (*rs_host_release)(void *context, rs_buffer *response);
 
 /* All calls on one handle are serial. Inputs are borrowed only for the call.
  * Initialize output slots to zero. Release output buffers with the function
@@ -29,6 +32,13 @@ int32_t rs_core_create(const uint8_t *config, size_t config_len,
                        rs_core **out_core, rs_buffer *out_error);
 int32_t rs_core_call(rs_core *core, const uint8_t *request, size_t request_len,
                      rs_buffer *out_response);
+/* Synchronous host transport. Core receives provider name/model, never credentials
+ * or endpoint. Host owns callback output until host_release; callbacks must not
+ * unwind or reenter the handle. Host handles HTTP, credentials, retries and proxy.
+ * Local calls continue to use rs_core_call. */
+int32_t rs_core_call_with_transport(rs_core *core, const uint8_t *request,
+    size_t request_len, void *context, rs_host_request host_request,
+    rs_host_release host_release, rs_buffer *out_response);
 void rs_core_buffer_free(rs_buffer *buffer);
 void rs_core_destroy(rs_core *core);
 

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "distribution": "binary-sdk-staticlib-c-abi",
   "publish": false,
-  "abiVersion": 65536,
+  "abiVersion": 65537,
   "requestSchemaVersion": 1,
   "artifactVersion": 1,
   "consumerRepos": [
