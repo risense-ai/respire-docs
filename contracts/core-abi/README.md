@@ -56,12 +56,20 @@ for operation-specific report DTOs and classify argument ordering.
 and shares the native ONNX session. There is no inference child or pipe protocol.
 Model location and explicit CPU/GPU/NPU settings are global; `index_root` remains
 library-specific. Account switching does not write engine settings. Engine control
-supports `get`, `set`, `reset`, `reset_cpu`, and `install_accelerators`; the private
+supports `get`, `set`, `reset`, `reset_cpu`, `install_accelerators`, and
+`inference_status`; the private
 `enable_worker` and `run_worker` actions have been removed. Native errors retain
 their underlying cause in `error.message`; no engine fallback is applied.
 CPU probes reuse the shared session. Accelerator probes compare with a CPU session.
-Reset invalidates existing session handles. Native inference has no worker response
-deadline; an unresponsive native call requires host runtime recovery.
+Reset invalidates existing session handles. Shared inference uses a FIFO queue
+with up to 32 waiting requests and a 120-second queue wait limit. Each native run
+has a separate 120-second execution limit using ONNX cooperative cancellation.
+Expired queue entries are removed before inference. An expired native run produces
+no embedding. `inference_status` reports queued/active work, capacity, limits and
+`host_recovery_required` without waiting for the native session mutex. Providers
+may ignore cancellation; an unresponsive native call requires host runtime recovery.
+The execution limit does not guarantee termination of a native thread or release
+of database locks. No additional inference process is created.
 
 Index compatibility depends on the model and artifact generation, not the CLI
 or SDK release number. Reuse complete compatible artifacts during upgrades.
