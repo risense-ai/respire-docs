@@ -45,6 +45,10 @@ flowchart TD
 | New device | Requires authentication and the necessary key-recovery material |
 | Logout | Follow `logout --help`; removing local identity is separate from revoking a remote session |
 
+Legacy v1 recovery uses the original login password plus Account Secret, with no separate super password. The wrapping diagram above describes accounts with a separate super/recovery factor; do not request a replacement super password for v1 recovery. Normal login preserves the vault version and encrypted read/write format. Only explicit namespace migration rewrites the selected copy, and it retains the original factors and source.
+
+The server stores opaque vault versions 1 through 4 at `POST /api/self/vault`. For the first upload of recovery material, send `If-None-Match: *` to create only a missing vault. If another vault already exists, the server returns `412` and preserves that vault; the client must read and verify it instead of overwriting it. Invalid fields, versions or unsupported conditions return `400`. A request without the condition keeps the existing upsert behavior and is not safe for first-time recovery initialization.
+
 Keep migration credentials, Account Secret and session files private. Do not add them to repositories or send them through ordinary plugin payloads.
 
 ## Backup
