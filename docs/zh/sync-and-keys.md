@@ -49,9 +49,9 @@ flowchart TD
 
 服务端在 `POST /api/self/vault` 存储不透明 vault versions 1 至 4。首次上传恢复材料时发送 `If-None-Match: *`，仅创建不存在的 vault。若已有另一 vault，服务端返回 `412` 并保留它；客户端必须读取并验证，不可覆盖。无效字段、版本或不受支持的条件返回 `400`。未带条件的请求保留原 upsert 行为，不适合首次恢复初始化。
 
-`POST /api/self/vault` 还接受可选的 `wrapped_urk_server` 与 `server_urk_nonce` 字段：同一 URK 在服务端 KMS 信封密钥下的第二层不透明封装。二者均为附加且可选——缺省时保留现有 vault 及已存的信封，`GET /api/self/vault` 会返回它们，未设置前为空。服务端仍只存储不透明字符串、不派生任何客户端密钥；持有信封密钥的宿主机无需 super 密码即可解包 URK，当设置 `RSRS_SERVER_KEK` 时 CLI 会这样做。
+服务端的可选信封目前**仅为提案、尚未发布**：它将新增 `wrapped_urk_server` 与 `server_urk_nonce`，即同一 URK 在服务端 KMS 信封密钥下的第二层不透明封装，使持有信封密钥的宿主机可在设置 `RSRS_SERVER_KEK` 时无需 super 密码解包 URK。已发布的服务端尚不接受也不返回这些字段；当前的 `POST /api/self/vault` 仍只接受上述四个字段。
 
-vault API 契约在两仓之间镜像：`respire-server/service/openapi.yaml` 携带请求字段，`respire-docs/contracts/openapi.yaml` 保留权威副本。可选字段属附加，因此两份副本保持兼容，无需 bump consumer pin。对应的服务端 schema 迁移（`0007_vault_server_envelope`，schema 版本 8）必须在客户端写入信封字段前应用，因为旧服务端会忽略未知 JSON 字段、仅存储不含信封的 vault。
+在该版本落地前，该能力有意不进入现行契约。它预计随新的服务端 schema 迁移（`0007_vault_server_envelope`，schema 版本 8）到来，并在 `respire-server/service/openapi.yaml` 与 `respire-docs/contracts/openapi.yaml` 中镜像请求与响应字段；旧服务端会忽略未知 JSON 字段、仅存储不含信封的 vault。生产者发布后，本页与契约才会把这些字段记为受支持。
 
 迁移凭据、Account Secret 及 session 文件应保持私密。不要加入仓库，也不要通过普通插件 payload 发送。
 
