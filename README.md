@@ -32,6 +32,12 @@ to `docs/.vitepress/dist`. `.node-version` pins Node.js 22, matching Docs CI, an
 `wrangler.toml` keeps the publish directory in version control. Publish only this
 generated directory, never the repository root.
 
+The Cloudflare Workers and Pages GitHub App must have access to this repository.
+If Pages shows a disconnected Git account warning, check that `respire-docs` is
+included in the App's selected repositories. A successful manual build does not
+verify automatic deployments; confirm that a Git push produces a new deployment
+for the corresponding commit.
+
 Pull requests receive Pages previews. After merging to `main`, check the production
 deployment in Cloudflare. To roll back, select a previous successful production
 deployment in Pages; revert the corresponding commit before the next automatic
