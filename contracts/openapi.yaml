@@ -348,6 +348,20 @@ paths:
       security: [{ bearerAuth: [] }]
       parameters:
         - { name: If-None-Match, in: header, schema: { type: string, enum: ['*'] }, description: Create only when no account vault exists }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kdf_salt, wrapped_urk, urk_nonce]
+              properties:
+                kdf_salt: { type: string }
+                wrapped_urk: { type: string }
+                urk_nonce: { type: string }
+                version: { type: integer }
+                wrapped_urk_server: { type: string, description: Optional opaque URK wrap under the server KMS envelope key }
+                server_urk_nonce: { type: string, description: Optional nonce for wrapped_urk_server }
       responses:
         "200": { description: Stored }
         "400": { description: Invalid vault fields, version, or unsupported condition }

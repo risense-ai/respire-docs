@@ -49,6 +49,10 @@ Legacy v1 recovery uses the original login password plus Account Secret, with no
 
 The server stores opaque vault versions 1 through 4 at `POST /api/self/vault`. For the first upload of recovery material, send `If-None-Match: *` to create only a missing vault. If another vault already exists, the server returns `412` and preserves that vault; the client must read and verify it instead of overwriting it. Invalid fields, versions or unsupported conditions return `400`. A request without the condition keeps the existing upsert behavior and is not safe for first-time recovery initialization.
 
+`POST /api/self/vault` additionally accepts the optional `wrapped_urk_server` and `server_urk_nonce` fields: a second, opaque wrapping of the same URK under a server KMS envelope key. Both are additive and optional — omitting them keeps the existing vault and any stored envelope, and `GET /api/self/vault` returns them, empty until set. The server still stores only opaque strings and derives no client keys; a host that holds the envelope key can unwrap the URK without the super password, which the CLI does when `RSRS_SERVER_KEK` is set.
+
+The vault API contract is mirrored between repositories: `respire-server/service/openapi.yaml` carries the request fields and `respire-docs/contracts/openapi.yaml` keeps the canonical copy. Optional fields are additive, so the copies stay compatible without a consumer pin bump. The corresponding server schema migration (`0007_vault_server_envelope`, schema version 8) must be applied before clients write the envelope fields, because an older server ignores unknown JSON fields and stores the vault without the envelope.
+
 Keep migration credentials, Account Secret and session files private. Do not add them to repositories or send them through ordinary plugin payloads.
 
 ## Backup
