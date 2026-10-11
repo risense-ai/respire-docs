@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev docs --host 127.0.0.1 --port 4173",
-    "build": "vitepress build docs",
+    "build": "vitepress build docs && node scripts/validate-locales.mjs",
     "preview": "vitepress preview docs --host 127.0.0.1 --port 4173"
   },
   "devDependencies": {

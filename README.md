@@ -21,6 +21,17 @@ npm run build
 
 The development server listens on `http://127.0.0.1:4173`.
 
+## Documentation languages
+
+English is the default at `/`; Simplified Chinese is available at `/zh/`. The
+language menu switches to the same document and section, including nested pages.
+Browser language preferences do not redirect readers. Keep every public Markdown
+page paired with the same relative path under `docs/zh/`, retain the English
+heading IDs in translated headings, and preserve commands and API identifiers.
+Local search indexes each language separately; Chinese queries use word
+segmentation. `npm run build` checks page coverage, executable examples, technical
+identifiers, heading anchors, language metadata and internal links/resources.
+
 Pushing `main` builds a development documentation artifact in Actions. A stable `vX.Y.Z` tag publishes the built documentation and checksums in this repository's Releases. This workflow does not enable Pages or deploy production.
 
 ## Cloudflare Pages
