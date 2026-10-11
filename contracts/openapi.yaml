@@ -341,13 +341,35 @@ paths:
       summary: Read wrapped vault material
       security: [{ bearerAuth: [] }]
       responses:
-        "200": { description: Vault fields }
+        "200":
+          description: Vault fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version: { type: integer, enum: [1, 2, 3, 4] }
+                  kdf_salt: { type: string }
+                  wrapped_urk: { type: string }
+                  urk_nonce: { type: string }
     post:
       summary: Write wrapped vault material
       description: Stores opaque vault versions 1 through 4 without changing password authentication or deriving client keys. Version 1 preserves legacy password and Account Secret factors; an explicit namespace migration can retain that version. If-None-Match '*' atomically creates only a missing vault; requests without that header preserve existing upsert behavior.
       security: [{ bearerAuth: [] }]
       parameters:
         - { name: If-None-Match, in: header, schema: { type: string, enum: ['*'] }, description: Create only when no account vault exists }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kdf_salt, wrapped_urk, urk_nonce]
+              properties:
+                kdf_salt: { type: string }
+                wrapped_urk: { type: string }
+                urk_nonce: { type: string }
+                version: { type: integer, enum: [1, 2, 3, 4] }
       responses:
         "200": { description: Stored }
         "400": { description: Invalid vault fields, version, or unsupported condition }
