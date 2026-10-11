@@ -6,3 +6,4 @@ target/
 
 docs/.vitepress/cache/
 docs/.vitepress/dist/
+.translation-cache.json
