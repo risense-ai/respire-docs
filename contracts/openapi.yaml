@@ -341,7 +341,19 @@ paths:
       summary: Read wrapped vault material
       security: [{ bearerAuth: [] }]
       responses:
-        "200": { description: Vault fields }
+        "200":
+          description: Vault fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version: { type: integer, enum: [1, 2, 3, 4] }
+                  kdf_salt: { type: string }
+                  wrapped_urk: { type: string }
+                  urk_nonce: { type: string }
+                  wrapped_urk_server: { type: string, description: Optional opaque URK wrap under the server KMS envelope key }
+                  server_urk_nonce: { type: string, description: Optional nonce for wrapped_urk_server }
     post:
       summary: Write wrapped vault material
       description: Stores opaque vault versions 1 through 4 without changing password authentication or deriving client keys. Version 1 preserves legacy password and Account Secret factors; an explicit namespace migration can retain that version. If-None-Match '*' atomically creates only a missing vault; requests without that header preserve existing upsert behavior.
@@ -359,7 +371,7 @@ paths:
                 kdf_salt: { type: string }
                 wrapped_urk: { type: string }
                 urk_nonce: { type: string }
-                version: { type: integer }
+                version: { type: integer, enum: [1, 2, 3, 4] }
                 wrapped_urk_server: { type: string, description: Optional opaque URK wrap under the server KMS envelope key }
                 server_urk_nonce: { type: string, description: Optional nonce for wrapped_urk_server }
       responses:
