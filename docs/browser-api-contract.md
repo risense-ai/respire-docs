@@ -35,4 +35,4 @@ matching DEV dashboard before accepting the new CLI dev release; an older API
 returns an explicit failure rather than silently falling back to password login.
 
 
-See the [producer API contract](https://github.com/risense-ai/respire-server/blob/main/docs/browser-api-contract.md) for deployment transport details and [OpenAPI](../contracts/openapi.yaml) for request and response schemas.
+See the [producer API contract](https://github.com/risense-ai/respire-server/blob/main/docs/browser-api-contract.md) for deployment transport details and [OpenAPI](https://github.com/risense-ai/respire-docs/blob/main/contracts/openapi.yaml) for request and response schemas.
