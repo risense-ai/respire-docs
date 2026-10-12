@@ -50,6 +50,13 @@ export default defineConfig({
             { text: 'AI 工具注入', link: '/zh/injection' },
             { text: '常见问题', link: '/zh/faq' },
           ] },
+          { text: '操作指南', items: [
+            { text: 'Windows 安装', link: '/zh/guides/windows-install' },
+            { text: '迁移与升级', link: '/zh/guides/migrate-and-upgrade' },
+            { text: '批量整理提取记忆', link: '/zh/guides/batch-tidy-extracted' },
+            { text: '示例：注入豆包', link: '/zh/guides/agent-example-doubao' },
+            { text: '技能仓库安装与使用', link: '/zh/guides/skills-repo' },
+          ] },
           { text: '架构', items: [
             { text: '数据流', link: '/zh/architecture' },
             { text: '运行流程', link: '/zh/architecture-internals' },
@@ -151,6 +158,13 @@ export default defineConfig({
         { text: 'Local Web', link: '/product/web' },
         { text: 'AI tool injection', link: '/injection' },
         { text: 'FAQ', link: '/faq' },
+      ] },
+      { text: 'Guides', items: [
+        { text: 'Installing on Windows', link: '/guides/windows-install' },
+        { text: 'Migrating and upgrading', link: '/guides/migrate-and-upgrade' },
+        { text: 'Batch-tidying extracted memories', link: '/guides/batch-tidy-extracted' },
+        { text: 'Worked example: Doubao', link: '/guides/agent-example-doubao' },
+        { text: 'Skills repository', link: '/guides/skills-repo' },
       ] },
       { text: 'Architecture', items: [
         { text: 'Data flow', link: '/architecture' },
