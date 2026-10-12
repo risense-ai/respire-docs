@@ -30,7 +30,7 @@ jobs:
           name: docs-${{ github.sha }}
           path: docs/.vitepress/dist/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 1
 
   publish:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
