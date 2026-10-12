@@ -4,8 +4,8 @@ A skill is a directory that contains a `SKILL.md` file, optionally alongside `sc
 
 ## Principle
 
-- A skill is one directory plus `SKILL.md`. A host, such as opencode, recursively scans skill directories for `**/SKILL.md` and loads every match.
-- The `description` field in `SKILL.md` contains trigger words. After installation, the AI invokes the skill when the user says a trigger phrase; no command is typed by the user.
+- A skill is one directory plus `SKILL.md`. A host, such as opencode, recursively scans skill directories for `**/SKILL.md` and exposes every match with its `name`, `description` and `location`.
+- The `description` field in `SKILL.md` contains trigger words that guide the model. The model loads a skill on demand, so a trigger phrase is guidance rather than a guaranteed activation; naming the skill explicitly is more reliable.
 - Installation is therefore one of two choices: place the skill in a directory the host scans, or register the repository directory as a scan path.
 
 ## Prerequisites
@@ -107,8 +107,8 @@ Naming the skill explicitly is also possible and is more reliable:
 
 ## Troubleshooting
 
-- GitHub connection times out: route through a proxy before running `git` or `npx`, for example `set HTTPS_PROXY=http://127.0.0.1:7890`, replacing the address with your proxy.
-- `npx` hangs waiting for input: add `-y`; if required, set `NODE_TLS_REJECT_UNAUTHORIZED=0`.
+- GitHub connection times out: route through a proxy before running `git` or `npx`. In PowerShell set `$env:HTTPS_PROXY = "http://127.0.0.1:7890"`; in bash or zsh use `export HTTPS_PROXY=http://127.0.0.1:7890`. Replace the address with your proxy.
+- `npx` hangs waiting for input: add `-y`. If certificate errors appear, configure your proxy's trusted CA (for example, `NODE_EXTRA_CA_CERTS`) instead of disabling TLS verification.
 - Installed but inactive: the host was probably not restarted, or the path is wrong or not scanned. Check `location` with `opencode debug skill`.
 - Duplicate same-name skills: only one copy of a given name takes effect. Avoid placing directories with the same name in multiple scan locations.
 

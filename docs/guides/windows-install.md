@@ -79,11 +79,11 @@ Reported items such as missing injection or a pending tidy counter are not insta
 
 ```powershell
 rsrs model install
-rsrs model activate
+rsrs model activate m3
 rsrs model probe
 ```
 
-A successful probe returns `ready:true` with `dimensions:1024`. Activation is required from `1.0.11` onward.
+A successful probe returns `ready:true` with `dimensions:1024`. Activation is required from `1.0.11` onward and takes the model argument `m3`.
 
 ## Create an account and log in
 
@@ -102,15 +102,23 @@ rsrs status
 
 Pass every argument so the command does not drop into an interactive prompt.
 
-On a new device, log in with an existing account:
+On a new device, log in with an existing account. `rsrs login` opens browser authorization by default; add `--interactive` to enter the password and TOTP at hidden prompts. Normal login does not accept `--secret-key`:
 
 ```powershell
-rsrs login --user <user-name> --pass "<login-password>" --secret-key "<secret-key>"
-rsrs logout
-rsrs keys-export --json
+# Browser authorization (default).
+rsrs login
+
+# Or password/TOTP login with hidden prompts.
+rsrs login --interactive --user <user-name>
 ```
 
-The super password is displayed once and cannot be recovered if lost. Keep it offline for recovery. Do not share or commit `session.json` or the account secret; an export contains plaintext. See [Sync and keys](../sync-and-keys.md) for recovery options.
+The super password is displayed once and cannot be recovered if lost. Keep it offline for recovery. Do not share or commit `session.json` or the account secret. Export the decrypt keys only when you need them, because the output is plaintext; `--out` writes a `600` file instead of printing it:
+
+```powershell
+rsrs keys-export --out <path>\rsrs-keys.txt
+```
+
+`rsrs logout` ends the session but keeps the local identity and keys, so login brings them back; run it separately when you want to end the session. See [Sync and keys](../sync-and-keys.md) for recovery options.
 
 ## Store and retrieve a first memory
 
@@ -147,7 +155,7 @@ The `normal` value is deprecated. Prefer a three-section body describing the cau
 
 ## Understand the runtime
 
-Commands connect to a resident local runtime on `127.0.0.1:15169` rather than starting a process each time. Do not run `rsrs` commands concurrently against the same profile; competing commands contend for the runtime and stall. Add a timeout when scripting, and pass every argument to `register` and `login` to avoid an interactive prompt.
+Commands connect to a resident local runtime on `127.0.0.1:15169` rather than starting a process each time. Do not run `rsrs` commands concurrently against the same profile; competing commands contend for the runtime and stall. Add a timeout when scripting, and pass every argument to `register` to avoid an interactive prompt; `login` uses browser authorization or `--interactive` for a hidden password prompt.
 
 | Option | Effect |
 | --- | --- |
@@ -190,7 +198,7 @@ Injection writes policy text that tells an agent when to recall and remember. It
 | Symptom | Cause | Action |
 | --- | --- | --- |
 | `ERR_PNPM_NO_GLOBAL_BIN_DIR` | pnpm global bin not configured | Set `global-bin-dir` before installing |
-| `BGE-M3 files missing` | Embedding model missing | Run `rsrs model install`, then `rsrs model activate` |
+| `BGE-M3 files missing` | Embedding model missing | Run `rsrs model install`, then `rsrs model activate m3` |
 | Recall times out with `os error 10060` | A local address is routed through a proxy | Add `127.0.0.1,localhost` to `NO_PROXY` |
 | A command stops responding | Inference worker saturated or a stray process exists | Run `rsrs model reset-cpu`; inspect with `Get-Process rsrs` |
 | `another model operation is running` | Concurrent model operations | Wait for the current operation; do not run concurrently |

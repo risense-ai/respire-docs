@@ -4,8 +4,8 @@
 
 ## 原理 {#principle}
 
-- 一个技能是一个目录加上 `SKILL.md`。主机（如 opencode）会递归扫描技能目录中的 `**/SKILL.md`，并加载所有匹配项。
-- `SKILL.md` 中的 `description` 字段包含触发词。安装后，AI 会在用户说出触发短语时调用技能；用户无需输入命令。
+- 一个技能是一个目录加上 `SKILL.md`。主机（如 opencode）会递归扫描技能目录中的 `**/SKILL.md`，并暴露每个匹配项的 `name`、`description` 和 `location`。
+- `SKILL.md` 中的 `description` 字段包含用于引导模型的触发词。模型按需加载技能，因此触发短语只是引导而非保证激活；显式命名技能更可靠。
 - 因此，安装是两种选择之一：将技能放在主机扫描的目录中，或注册仓库目录为扫描路径。
 
 ## 先决条件 {#prerequisites}
@@ -107,8 +107,8 @@ opencode debug skill
 
 ## 故障排除 {#troubleshooting}
 
-- GitHub 连接超时：在运行 `git` 或 `npx` 前通过代理路由，例如 `set HTTPS_PROXY=http://127.0.0.1:7890`，替换为您的代理地址。
-- `npx` 挂起等待输入：添加 `-y`；如需，设置 `NODE_TLS_REJECT_UNAUTHORIZED=0`。
+- GitHub 连接超时：在运行 `git` 或 `npx` 前通过代理路由。PowerShell 中设置 `$env:HTTPS_PROXY = "http://127.0.0.1:7890"`；bash 或 zsh 中使用 `export HTTPS_PROXY=http://127.0.0.1:7890`。将地址替换为您的代理。
+- `npx` 挂起等待输入：添加 `-y`。如果出现证书错误，请配置代理的受信任 CA（例如 `NODE_EXTRA_CA_CERTS`），而不要关闭 TLS 验证。
 - 已安装但未激活：主机可能未重启，或路径错误或未扫描。使用 `opencode debug skill` 检查 `location`。
 - 同名技能重复：同一名称仅一个副本生效。避免在多个扫描位置放置同名目录。
 

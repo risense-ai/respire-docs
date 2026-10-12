@@ -1,6 +1,6 @@
 # Batch-tidying extracted memories
 
-`rsrs extract` imports sessions from supported platforms and writes one summary memory per session. Each summary is created without a parent, so a large import leaves many scattered root nodes. This page describes a deterministic, model-free way to group those roots under archive anchors and attach them in a single pass with `resort`. The approach is reversible and does not depend on any model service.
+`rsrs extract` imports sessions from supported platforms and writes one summary memory per session. Each summary is created without a parent, so a large import leaves many scattered root nodes. This page describes a deterministic, model-free way to group those roots under archive anchors and attach them in a single pass with `resort`. The approach can be reversed with another `resort` call and does not depend on any model service.
 
 ## The problem
 
@@ -78,7 +78,7 @@ Treat most same-title groups and defrag clusters as false positives. The entry t
 
 ### Back up the data
 
-Export a full plaintext snapshot to a persistent directory before writing. Do not use a temporary directory.
+Export a full plaintext snapshot to a persistent directory before writing. Do not use a temporary directory. The export contains every record in plaintext, so restrict access to the directory (for example, a user-only ACL) and encrypt it when appropriate.
 
 ```powershell
 rsrs export C:\Users\<user>\rsrs-backups\memories_YYYYMMDD.json
@@ -141,7 +141,7 @@ rsrs resort --status
 rsrs tree --outline --json
 ```
 
-Acceptance criteria: `roots` drops clearly, `lone leaf` falls to or near zero, `orphans=0`, and the TIDY counter is reset. The sum of children under the anchors must equal the number of roots attached in this pass.
+Acceptance criteria: `roots` drops clearly, `lone leaf` falls to or near zero, `orphans=0`, and the TIDY counter is reset. For anchors created empty in this pass, the child count must equal the number of roots attached to them; for anchors that already had children, compare the increase in child count before and after the run instead of the total.
 
 ## Diagnosis signals
 
@@ -172,7 +172,7 @@ Acceptance criteria: `roots` drops clearly, `lone leaf` falls to or near zero, `
 
 ## Single command helper script
 
-A helper script can run the whole sequence on the same host. It exports a snapshot, finds the unparented roots, classifies them, creates or reuses anchors, and then previews or writes a `resort --spec`. It runs a dry run by default.
+A helper script can run the whole sequence on the same host. It exports a snapshot, finds the unparented roots, classifies them, creates or reuses anchors, and then previews or writes a `resort --spec`. It is not fully read-only: before the `--go` gate it creates any missing anchors with `remember`, so even a preview can write, and without `--backup` it writes a temporary snapshot instead of a persistent one. Supply a persistent, protected `--backup` path and review the helper before using it, or create the anchors yourself first.
 
 Edit the configuration block at the top of the script:
 
@@ -201,11 +201,11 @@ The script ships with the related skill in `memory-batch-tidy/scripts/tidy_extra
 
 ## Rollback
 
-Re-attachment is reversible. Point each child back to its original parent, or to the target tree root, with another `resort` call, or replay the changes against the snapshot from the backup step.
+An attachment can be reversed by pointing each child back to its recorded original parent with another `resort` call. Pointing a child at the target tree root does not restore an originally parentless entry, so it is not an exact rollback.
 
 An empty anchor can be removed with `rsrs forget <anchor-id>`, and a soft-deleted entry can be restored with `rsrs restore <full-id>`.
 
-For a full restore, use the export snapshot. The local store keeps no version history, so `update` and `merge` are not reversible and a backup is required before any write.
+For an exact restore, use the export snapshot from the backup step. It is not an in-place restore: `rsrs import` mints new ids and appends copies, so importing into the changed library leaves the changed originals in place and duplicates records. Restore into a fresh profile instead. The local store keeps no version history, so `update` and `merge` are not reversible and a backup is required before any write.
 
 ## Related pages
 

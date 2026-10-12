@@ -30,12 +30,12 @@ rsrs status
 
 ## 三步操作 {#three-steps}
 
-工作流将规则注入客户端，可选地检查MCP端点，并重启客户端。
+工作流将规则注入客户端，可选地启动MCP服务器，并重启客户端。
 
 | 步骤 | 命令 | 效果 |
 | --- | --- | --- |
 | 注入规则 | `rsrs --client-only inject --id doubao` | 为客户端写入指令文件 |
-| 验证MCP | `rsrs mcp` | 启动stdio服务器暴露记忆工具 |
+| 可选的MCP服务器 | `rsrs mcp` | 启动stdio服务器暴露记忆工具 |
 | 重启客户端 | 重启客户端 | 启动时加载指令文件 |
 
 ### 注入工作流规则 {#inject-the-workflow-rules}
@@ -44,7 +44,7 @@ rsrs status
 rsrs --client-only inject --id doubao
 ```
 
-`doubao PASS updated`结果确认写入成功。命令将写入`~/.doubao/AGENTS.md`，或Windows上的`C:\Users\<user>\.doubao\AGENTS.md`。该文件包含客户端遵循的记忆规则：
+使用`rsrs --client-only inject --targets`查看`doubao`解析出的路径和检测状态；预设路径只是约定，自定义配置可能不同。该文件包含客户端遵循的记忆规则：
 
 - 每个回合首次行动前回忆记忆；
 - 使用`--json`读取记忆；
@@ -52,7 +52,7 @@ rsrs --client-only inject --id doubao
 - 标记可重用结论为`important`，日记条目为`trivial`；
 - 以原因、行动和效果部分结构化每个记录。
 
-### 验证MCP端点 {#verify-the-mcp-endpoint}
+### 可选：启动MCP服务器 {#optional-start-the-mcp-server}
 
 ```powershell
 rsrs mcp
@@ -79,7 +79,7 @@ rsrs list --limit 10 --json
 rsrs recall "project keyword" --titles --json
 ```
 
-在`inject --targets`输出中，`doubao`行显示`PASS fresh ~/.doubao/AGENTS.md`时规则存在。`rsrs list`和`rsrs recall`命令返回的JSON确认存储可达。
+使用`inject --targets`输出确认当前`doubao`状态和解析出的路径。`rsrs list`和`rsrs recall`命令返回的JSON确认存储可达。
 
 ## 常见问题 {#pitfalls}
 

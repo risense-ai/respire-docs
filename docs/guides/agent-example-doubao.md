@@ -30,12 +30,12 @@ rsrs status
 
 ## Three steps
 
-The workflow injects rules into the client, optionally checks the MCP endpoint, and restarts the client.
+The workflow injects rules into the client, optionally starts the MCP server, and restarts the client.
 
 | Step | Command | Effect |
 | --- | --- | --- |
 | Inject rules | `rsrs --client-only inject --id doubao` | Writes the instruction file for the client |
-| Verify MCP | `rsrs mcp` | Starts a stdio server that exposes memory tools |
+| Optional MCP server | `rsrs mcp` | Starts a stdio server that exposes memory tools |
 | Restart client | Restart the client | Loads the instruction file at startup |
 
 ### Inject the workflow rules
@@ -44,7 +44,7 @@ The workflow injects rules into the client, optionally checks the MCP endpoint, 
 rsrs --client-only inject --id doubao
 ```
 
-A `doubao PASS updated` result confirms the write. The command writes `~/.doubao/AGENTS.md`, or `C:\Users\<user>\.doubao\AGENTS.md` on Windows. The file contains the memory rules the client follows:
+Use `rsrs --client-only inject --targets` to read the resolved path and detection state for `doubao`; preset paths are conventions, so a custom configuration may differ. The instruction file contains the memory rules the client follows:
 
 - recall memory before the first action in each turn;
 - read memory with `--json`;
@@ -52,7 +52,7 @@ A `doubao PASS updated` result confirms the write. The command writes `~/.doubao
 - mark reusable conclusions `important` and diary entries `trivial`;
 - structure each record with cause, action and effect sections.
 
-### Verify the MCP endpoint
+### Optional: start the MCP server
 
 ```powershell
 rsrs mcp
@@ -79,7 +79,7 @@ rsrs list --limit 10 --json
 rsrs recall "project keyword" --titles --json
 ```
 
-In the `inject --targets` output, the `doubao` row shows `PASS fresh ~/.doubao/AGENTS.md` when the rules are present. The `rsrs list` and `rsrs recall` commands return JSON that confirms the store is reachable.
+Use the `inject --targets` output to confirm the current `doubao` status and resolved path. The `rsrs list` and `rsrs recall` commands return JSON that confirms the store is reachable.
 
 ## Pitfalls
 

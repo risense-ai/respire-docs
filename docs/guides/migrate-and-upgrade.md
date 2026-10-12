@@ -52,7 +52,7 @@ rsrs export <path>\main_export_<yyyymmdd>.json   # plaintext JSON
 rsrs backup <path>\main_backup_<yyyymmdd>.db     # full SQLite copy (ciphertext and index)
 ```
 
-`backup` does not overwrite: an existing target fails with `file exists (os error 80)`, so delete or rename it first. After a backup or migration, check `complete` and `verified_ciphertexts` in `~/.rsrs/.rsrs-migration.json`. That file is written by a migration run and records whether the snapshot completed and how many ciphertexts were verified.
+`backup` does not overwrite: an existing target fails with `file exists (os error 80)`, so delete or rename it first. A migration run writes its schema-2 receipt `.rsrs-migration.json` into the destination account directory, not the `~/.rsrs` root. Check `complete` in that receipt after a migration; it records the source and destination but has no ciphertext-verification count, and a `backup` alone does not create it.
 
 Migration is a snapshot. Unsynced writes left in the old `1memory` library stay there and do not enter the new library automatically; the two libraries remain independent. See [Data model](../data-model.md) and [Sync and keys](../sync-and-keys.md).
 
@@ -64,14 +64,16 @@ Migration is a snapshot. Unsynced writes left in the old `1memory` library stay 
 | 1.0.11 and later | Startup auto-migration is removed; run an explicit command |
 
 ```powershell
-rsrs migrate                                         # list candidate old libraries
-rsrs migrate --source <legacy-dir> --account <name>  # migrate a chosen source to a destination account
-rsrs migrate --vault                                 # upgrade only the old vault, keeping the data keys
+rsrs migrate                                         # list candidate old libraries with their source_id
+rsrs migrate --source <source_id> --account <name>   # migrate the chosen source to a new account
+rsrs migrate --vault                                 # upgrade only the selected account vault, keeping the data keys
 ```
+
+`--source` takes the `source_id` returned by the listing, not a directory path, and `--account` must be a new name (not `main`). Select the migrated account before an optional `rsrs migrate --vault`.
 
 ### Legacy account layout
 
-Migration recognizes only a flat `~/.onememory/session.json`. It does not recognize an `accounts/<user>/` layout and reports `legacy library has ciphertext but no session`. Copy `accounts/<user>/{onememory.db,session.json}` into the `~/.onememory` root, then run the migration.
+Migration discovery enumerates both a flat `~/.onememory` root and every `~/.onememory/accounts/<user>/` profile. Do not copy `accounts/<user>/*` into the root: overwriting the root database or session can replace a different main profile and bypass the SQLite snapshot handling. Run `rsrs migrate` to list the profiles, take the `source_id` of the one you want, and migrate it to a new named account.
 
 ## Upgrade checklist
 
@@ -96,17 +98,17 @@ rsrs status
 
 ```powershell
 rsrs model install
-rsrs model activate
+rsrs model activate m3
 rsrs model probe
 ```
 
-`model install` downloads and verifies the model; from 1.0.11 it no longer rebuilds the index, so `model activate` is required. On the first run the new runtime downloads the model automatically, and `recall` returns `index_pending` until the download finishes. Do not run concurrent model operations; a second one fails with `another model operation is running`. The runtime downloader is slow; a stopped runtime accepts a manually placed `model_quantized.onnx` under `~/.rsrs/models/bge-m3/onnx/`, after which `model install` recognizes it. `model probe` reports `ready:true` when the model is usable.
+`model install` downloads and verifies the model; from 1.0.11 it no longer rebuilds the index, so `model activate m3` is required. On the first run the new runtime downloads the model automatically, and `recall` returns `index_pending` until the download finishes. Do not run concurrent model operations; a second one fails with `another model operation is running`. The runtime downloader is slow; a stopped runtime accepts a manually placed `model_quantized.onnx` under `~/.rsrs/models/bge-m3/onnx/`, after which `model install` recognizes it. `model probe` reports `ready:true` when the model is usable.
 
-**Step 3, waiting for the index rebuild.** `model activate` or `rsrs reembed` recomputes the old library into M3 vectors; during this, other model operations fail with `another model operation is running`.
+**Step 3, waiting for the index rebuild.** `model activate m3` builds the index generation and activates it after validation, so it already recomputes the old library into M3 vectors; during this, other model operations fail with `another model operation is running`.
 
 ```powershell
 rsrs status    # model operation active/done/total; complete at total with retrieval index State=ok
-rsrs reembed
+rsrs reembed   # only if activation did not rebuild the index
 ```
 
 Large libraries on CPU rebuild slowly; do not run concurrent model operations while it runs.
@@ -121,11 +123,13 @@ Large libraries on CPU rebuild slowly; do not run concurrent model operations wh
 | `--client-only` | Connects only to the host HTTP runtime and does not manage its lifecycle (or set `ONEMEMORY_CLIENT_ONLY=1`); in a sandbox use `rsrs --client-only <command>`, and a non-loopback peer needs a token |
 
 ```powershell
-rsrs account <name>              # switch while the runtime runs
+rsrs account main                # switch away from <name> while the runtime runs
 rsrs --runtime-internal --stop   # stop before profile writes
 rsrs --direct account remove <name> --yes
 rsrs status
 ```
+
+A profile cannot be deleted while it is active; select `main` (or another retained profile) first.
 
 `rsrs web` opens the hosted dashboard `https://dash.rsrs.rs` and does not start the local runtime. See [Host runtime and sandbox clients](../runtime.md) for lifecycle and token rules.
 
@@ -145,12 +149,12 @@ Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host
 | Symptom | Cause | Action |
 | --- | --- | --- |
 | `os error 10060` or recall times out through a proxy | `NO_PROXY` does not include `127.0.0.1` | Append `127.0.0.1,localhost` to `NO_PROXY` |
-| `BGE-M3 files missing` | M3 model not installed (expected after an upgrade) | `rsrs model install` and `rsrs model activate` |
+| `BGE-M3 files missing` | M3 model not installed (expected after an upgrade) | `rsrs model install` and `rsrs model activate m3` |
 | Cross-version `--stop` reports `runtime_unauthorized` | The old runtime is still running | Kill the `rsrs.exe --runtime-internal` process |
 | `another model operation is running` | Concurrent model operations | Wait for the current operation; do not run them in parallel |
 | `backup` reports `file exists (os error 80)` | The target already exists | Delete or rename it first |
 | `keygen would overwrite it` | The profile already holds key material | Only run `keygen` on a new profile |
-| `legacy library has ciphertext but no session` | Multi-account layout | Copy `accounts/<user>/*` into the `~/.onememory` root, then migrate |
+| `legacy library has ciphertext but no session` | A profile the flat root scan did not cover | Run `rsrs migrate` to list profiles and migrate by `source_id` |
 | defrag reports `no usable vectors` | The library has no records | Not a fault; normal once the library is non-empty |
 | Read commands block for more than 40 seconds | Inference workers are saturated | `rsrs model reset-cpu` (terminates the runtime) |
 | `doctor` exits 1 | `inject` or `tidy` is not satisfied | Not an installation fault |
@@ -172,13 +176,14 @@ Test against a separate profile (`~/.rsrs/accounts/<name>`), never the main prof
 ```powershell
 rsrs --runtime-internal --stop
 rsrs --direct account test-profile
-rsrs keygen --json
-rsrs register --user test-profile --pass "<password>" --super "<A3-code>" --json
+rsrs register --user test-profile   # password entered at a hidden prompt; a super code is issued
 rsrs status
 rsrs --runtime-internal --stop
 rsrs --direct account main
 rsrs --direct account remove test-profile --yes
 ```
+
+`rsrs register` prompts for the login password at a hidden prompt and issues the super code. Do not pass passwords or recovery codes as command arguments, which expose them to process listings and shell history.
 
 A fresh profile first reports `User local / local store (offline)`; after `register` it becomes `cloud sync (auto)`.
 

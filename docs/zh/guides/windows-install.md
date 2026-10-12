@@ -79,11 +79,11 @@ rsrs doctor --fix
 
 ```powershell
 rsrs model install
-rsrs model activate
+rsrs model activate m3
 rsrs model probe
 ```
 
-成功的探查返回 `ready:true` 且 `dimensions:1024`。从 `1.0.11` 开始需要激活。
+成功的探查返回 `ready:true` 且 `dimensions:1024`。从 `1.0.11` 开始需要激活，并要带上模型参数 `m3`。
 
 ## 创建账户并登录 {#create-an-account-and-log-in}
 
@@ -102,15 +102,23 @@ rsrs status
 
 传递所有参数以避免命令进入交互式提示。
 
-在新设备上使用现有账户登录：
+在新设备上使用现有账户登录。`rsrs login` 默认打开浏览器授权；添加 `--interactive` 可在隐藏提示下输入密码和 TOTP。普通登录不接受 `--secret-key`：
 
 ```powershell
-rsrs login --user <user-name> --pass "<login-password>" --secret-key "<secret-key>"
-rsrs logout
-rsrs keys-export --json
+# Browser authorization (default).
+rsrs login
+
+# Or password/TOTP login with hidden prompts.
+rsrs login --interactive --user <user-name>
 ```
 
-超级密码仅显示一次且丢失后无法恢复。保持离线以备恢复。不要共享或提交 `session.json` 或账户密钥；导出内容包含明文。参见 [同步和密钥](../sync-and-keys.md) 了解恢复选项。
+超级密码仅显示一次且丢失后无法恢复。保持离线以备恢复。不要共享或提交 `session.json` 或账户密钥。仅在需要时导出解密密钥，因为输出为明文；`--out` 会写入权限为 `600` 的文件而非打印：
+
+```powershell
+rsrs keys-export --out <path>\rsrs-keys.txt
+```
+
+`rsrs logout` 会结束会话但保留本地身份和密钥，因此登录会将其带回；需要结束会话时再单独运行。参见 [同步和密钥](../sync-and-keys.md) 了解恢复选项。
 
 ## 存储和检索第一条记忆 {#store-and-retrieve-a-first-memory}
 
@@ -147,7 +155,7 @@ rsrs diary --date today --json
 
 ## 理解运行时 {#understand-the-runtime}
 
-命令连接到 `127.0.0.1:15169` 的驻留本地运行时，而非每次启动进程。不要对同一配置文件并发运行 `rsrs` 命令；竞争命令会争夺运行时并导致阻塞。脚本时添加超时，并将所有参数传递给 `register` 和 `login` 以避免交互式提示。
+命令连接到 `127.0.0.1:15169` 的驻留本地运行时，而非每次启动进程。不要对同一配置文件并发运行 `rsrs` 命令；竞争命令会争夺运行时并导致阻塞。脚本时添加超时，并将所有参数传递给 `register` 以避免交互式提示；`login` 使用浏览器授权，或用 `--interactive` 进行隐藏的密码提示。
 
 | 选项 | 效果 |
 | --- | --- |
@@ -190,7 +198,7 @@ rsrs inject --all
 | 症状 | 原因 | 操作 |
 | --- | --- | --- |
 | `ERR_PNPM_NO_GLOBAL_BIN_DIR` | 未配置 pnpm 全局 bin 目录 | 安装前设置 `global-bin-dir` |
-| `BGE-M3 files missing` | 嵌入模型缺失 | 运行 `rsrs model install`，然后 `rsrs model activate` |
+| `BGE-M3 files missing` | 嵌入模型缺失 | 运行 `rsrs model install`，然后 `rsrs model activate m3` |
 | 回忆超时出现 `os error 10060` | 本地地址通过代理路由 | 将 `127.0.0.1,localhost` 添加到 `NO_PROXY` |
 | 命令停止响应 | 推理工作线程饱和或存在残留进程 | 运行 `rsrs model reset-cpu`；使用 `Get-Process rsrs` 检查 |
 | `another model operation is running` | 并发模型操作 | 等待当前操作完成；不要并发运行 |
