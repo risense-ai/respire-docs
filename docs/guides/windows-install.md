@@ -87,20 +87,23 @@ A successful probe returns `ready:true` with `dimensions:1024`. Activation is re
 
 ## Create an account and log in
 
-Account setup combines local key material with a cloud account. Generate the key material first, then register.
+Account setup combines local key material with a cloud account. Generate the key material first, then register. Registration runs in the host terminal, where it can collect the login password at a hidden prompt; `--direct` also requires the runtime to be stopped.
 
 ```powershell
 # 1. Create local key material; the echoed super code is shown once.
 rsrs keygen --json
 
-# 2. Register a cloud account using the super code from the previous step.
-rsrs register --user <user-name> --pass "<login-password>" --super "<super-code>" --json
+# 2. Stop the runtime so --direct can run in this terminal.
+rsrs --runtime-internal --stop
 
-# 3. Confirm the account and server.
+# 3. Register in an interactive terminal; enter the login password at the hidden prompt.
+rsrs --direct register --user <user-name>
+
+# 4. Confirm the account and server.
 rsrs status
 ```
 
-Pass every argument so the command does not drop into an interactive prompt.
+Pass only non-secret options as command arguments. Let `register` collect credentials through hidden prompts; do not put passwords, super codes or other secrets on the command line.
 
 On a new device, log in with an existing account. `rsrs login` opens browser authorization by default; add `--interactive` to enter the password and TOTP at hidden prompts. Normal login does not accept `--secret-key`:
 
@@ -112,7 +115,7 @@ rsrs login
 rsrs login --interactive --user <user-name>
 ```
 
-The super password is displayed once and cannot be recovered if lost. Keep it offline for recovery. Do not share or commit `session.json` or the account secret. Export the decrypt keys only when you need them, because the output is plaintext; `--out` writes a `600` file instead of printing it:
+The super password is displayed once and cannot be recovered if lost. Keep it offline for recovery. Do not share or commit `session.json` or the account secret. Export the decrypt keys only when you need them, because the output is plaintext. `--out` creates the file with mode `600` on Unix; on Windows it inherits the destination directory's ACLs, so choose a private, access-restricted directory and verify the resulting file's ACL before relying on it as protected recovery storage:
 
 ```powershell
 rsrs keys-export --out <path>\rsrs-keys.txt
@@ -155,7 +158,7 @@ The `normal` value is deprecated. Prefer a three-section body describing the cau
 
 ## Understand the runtime
 
-Commands connect to a resident local runtime on `127.0.0.1:15169` rather than starting a process each time. Do not run `rsrs` commands concurrently against the same profile; competing commands contend for the runtime and stall. Add a timeout when scripting, and pass every argument to `register` to avoid an interactive prompt; `login` uses browser authorization or `--interactive` for a hidden password prompt.
+Commands connect to a resident local runtime on `127.0.0.1:15169` rather than starting a process each time. Do not run `rsrs` commands concurrently against the same profile; competing commands contend for the runtime and stall. Add a timeout when scripting, pass only non-secret `register` options as command arguments, and let `register` collect credentials through hidden prompts; `login` uses browser authorization or `--interactive` for a hidden password prompt.
 
 | Option | Effect |
 | --- | --- |
@@ -221,9 +224,10 @@ rsrs --version
 rsrs status
 rsrs doctor --fix
 
-# 4) Create an account; keep the super code safe.
+# 4) Create an account; keep the super code safe. Registration needs the host terminal.
 rsrs keygen --json
-rsrs register --user <user-name> --pass "<login-password>" --super "<super-code>" --json
+rsrs --runtime-internal --stop
+rsrs --direct register --user <user-name>
 
 # 5) Store and retrieve a first memory.
 rsrs remember "Hello rsrs" --importance trivial --json

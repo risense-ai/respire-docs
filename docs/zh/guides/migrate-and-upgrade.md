@@ -176,14 +176,14 @@ npm uninstall -g @1memory/cli
 ```powershell
 rsrs --runtime-internal --stop
 rsrs --direct account test-profile
-rsrs register --user test-profile   # password entered at a hidden prompt; a super code is issued
+rsrs --direct register --user test-profile   # host terminal; enter the login password at the hidden prompt
 rsrs status
 rsrs --runtime-internal --stop
 rsrs --direct account main
 rsrs --direct account remove test-profile --yes
 ```
 
-`rsrs register` 会在隐藏提示下请求登录密码，并签发超码。不要将密码或恢复码作为命令参数传递，它们会暴露在进程列表和 shell 历史中。
+`rsrs --direct register` 在本终端运行，因此可以提示输入登录密码；`--direct` 要求运行时已停止。不要将密码或恢复码作为命令参数传递，它们会暴露在进程列表和 shell 历史中。
 
 新配置文件首次报告 `User local / local store (offline)`；`register` 后变为 `cloud sync (auto)`。
 

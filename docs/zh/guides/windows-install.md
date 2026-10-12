@@ -87,20 +87,23 @@ rsrs model probe
 
 ## 创建账户并登录 {#create-an-account-and-log-in}
 
-账户设置将本地密钥材料与云账户结合。先生成密钥材料，再注册。
+账户设置将本地密钥材料与云账户结合。先生成密钥材料，再注册。注册需在主机终端运行，以便在隐藏提示下收集登录密码；`--direct` 还要求运行时已停止。
 
 ```powershell
 # 1. Create local key material; the echoed super code is shown once.
 rsrs keygen --json
 
-# 2. Register a cloud account using the super code from the previous step.
-rsrs register --user <user-name> --pass "<login-password>" --super "<super-code>" --json
+# 2. Stop the runtime so --direct can run in this terminal.
+rsrs --runtime-internal --stop
 
-# 3. Confirm the account and server.
+# 3. Register in an interactive terminal; enter the login password at the hidden prompt.
+rsrs --direct register --user <user-name>
+
+# 4. Confirm the account and server.
 rsrs status
 ```
 
-传递所有参数以避免命令进入交互式提示。
+仅将非机密选项作为命令参数传递。让 `register` 通过隐藏提示收集凭据；不要把密码、超码或其他机密放在命令行上。
 
 在新设备上使用现有账户登录。`rsrs login` 默认打开浏览器授权；添加 `--interactive` 可在隐藏提示下输入密码和 TOTP。普通登录不接受 `--secret-key`：
 
@@ -112,7 +115,7 @@ rsrs login
 rsrs login --interactive --user <user-name>
 ```
 
-超级密码仅显示一次且丢失后无法恢复。保持离线以备恢复。不要共享或提交 `session.json` 或账户密钥。仅在需要时导出解密密钥，因为输出为明文；`--out` 会写入权限为 `600` 的文件而非打印：
+超级密码仅显示一次且丢失后无法恢复。保持离线以备恢复。不要共享或提交 `session.json` 或账户密钥。仅在需要时导出解密密钥，因为输出为明文。`--out` 在 Unix 上以 `600` 模式创建文件；在 Windows 上它会继承目标目录的 ACL，因此请选择私有且访问受限的目录，并在将其作为受保护的恢复存储前核验所生成文件的 ACL：
 
 ```powershell
 rsrs keys-export --out <path>\rsrs-keys.txt
@@ -155,7 +158,7 @@ rsrs diary --date today --json
 
 ## 理解运行时 {#understand-the-runtime}
 
-命令连接到 `127.0.0.1:15169` 的驻留本地运行时，而非每次启动进程。不要对同一配置文件并发运行 `rsrs` 命令；竞争命令会争夺运行时并导致阻塞。脚本时添加超时，并将所有参数传递给 `register` 以避免交互式提示；`login` 使用浏览器授权，或用 `--interactive` 进行隐藏的密码提示。
+命令连接到 `127.0.0.1:15169` 的驻留本地运行时，而非每次启动进程。不要对同一配置文件并发运行 `rsrs` 命令；竞争命令会争夺运行时并导致阻塞。脚本时添加超时，只把非机密的 `register` 选项作为命令参数，并让 `register` 通过隐藏提示收集凭据；`login` 使用浏览器授权，或用 `--interactive` 进行隐藏的密码提示。
 
 | 选项 | 效果 |
 | --- | --- |
@@ -221,9 +224,10 @@ rsrs --version
 rsrs status
 rsrs doctor --fix
 
-# 4) Create an account; keep the super code safe.
+# 4) Create an account; keep the super code safe. Registration needs the host terminal.
 rsrs keygen --json
-rsrs register --user <user-name> --pass "<login-password>" --super "<super-code>" --json
+rsrs --runtime-internal --stop
+rsrs --direct register --user <user-name>
 
 # 5) Store and retrieve a first memory.
 rsrs remember "Hello rsrs" --importance trivial --json

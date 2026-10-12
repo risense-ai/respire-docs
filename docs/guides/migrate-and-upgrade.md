@@ -176,14 +176,14 @@ Test against a separate profile (`~/.rsrs/accounts/<name>`), never the main prof
 ```powershell
 rsrs --runtime-internal --stop
 rsrs --direct account test-profile
-rsrs register --user test-profile   # password entered at a hidden prompt; a super code is issued
+rsrs --direct register --user test-profile   # host terminal; enter the login password at the hidden prompt
 rsrs status
 rsrs --runtime-internal --stop
 rsrs --direct account main
 rsrs --direct account remove test-profile --yes
 ```
 
-`rsrs register` prompts for the login password at a hidden prompt and issues the super code. Do not pass passwords or recovery codes as command arguments, which expose them to process listings and shell history.
+`rsrs --direct register` runs in this terminal so it can prompt for the login password; `--direct` requires the runtime to be stopped. Do not pass passwords or recovery codes as command arguments, which expose them to process listings and shell history.
 
 A fresh profile first reports `User local / local store (offline)`; after `register` it becomes `cloud sync (auto)`.
 
