@@ -50,6 +50,15 @@ export default defineConfig({
             { text: 'AI 工具注入', link: '/zh/injection' },
             { text: '常见问题', link: '/zh/faq' },
           ] },
+          { text: 'AI 工具插件', items: [
+            { text: '总览', link: '/zh/plugins/' },
+            { text: 'ZCode', link: '/zh/plugins/zcode' },
+            { text: 'Kimi Code', link: '/zh/plugins/kimi' },
+            { text: 'Dim', link: '/zh/plugins/dimcode' },
+            { text: 'Qoder', link: '/zh/plugins/qoder' },
+            { text: 'WorkBuddy', link: '/zh/plugins/workbuddy' },
+            { text: 'Hermes', link: '/zh/plugins/hermes' },
+          ] },
           { text: '操作指南', items: [
             { text: 'Windows 安装', link: '/zh/guides/windows-install' },
             { text: '迁移与升级', link: '/zh/guides/migrate-and-upgrade' },
@@ -159,6 +168,15 @@ export default defineConfig({
         { text: 'Local Web', link: '/product/web' },
         { text: 'AI tool injection', link: '/injection' },
         { text: 'FAQ', link: '/faq' },
+      ] },
+      { text: 'AI tool plugins', items: [
+        { text: 'Overview', link: '/plugins/' },
+        { text: 'ZCode', link: '/plugins/zcode' },
+        { text: 'Kimi Code', link: '/plugins/kimi' },
+        { text: 'Dim', link: '/plugins/dimcode' },
+        { text: 'Qoder', link: '/plugins/qoder' },
+        { text: 'WorkBuddy', link: '/plugins/workbuddy' },
+        { text: 'Hermes', link: '/plugins/hermes' },
       ] },
       { text: 'Guides', items: [
         { text: 'Installing on Windows', link: '/guides/windows-install' },
