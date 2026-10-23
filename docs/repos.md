@@ -23,7 +23,7 @@ flowchart TB
 
 ## AI tool plugins
 
-Six host adapters hook the engine into AI agents; install and usage guides live under [plugins](/plugins/).
+Eight host adapters hook the engine into AI agents; install and usage guides live under [plugins](/plugins/).
 
 | Repository | Host |
 |---|---|
@@ -33,6 +33,8 @@ Six host adapters hook the engine into AI agents; install and usage guides live 
 | [respire-qoder](https://github.com/risense-ai/respire-qoder) | Qoder |
 | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | WorkBuddy |
 | [respire-hermes](https://github.com/risense-ai/respire-hermes) | Hermes Agent |
+| [respire-codex](https://github.com/risense-ai/respire-codex) | Codex |
+| [respire-pi](https://github.com/risense-ai/respire-pi) | Pi |
 
 CLI/server do not check out Core source or use a Core submodule. The CLI pins an SDK manifest; the server pins the infrastructure app crate revision and uses the same SDK boundary.
 

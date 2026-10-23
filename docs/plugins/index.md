@@ -24,10 +24,12 @@ The plugins share one runtime design:
 | Qoder | [respire-qoder](https://github.com/risense-ai/respire-qoder) | `qoder plugins install` | `.qoder-plugin/plugin.json` | `{"decision":"deny"}` |
 | WorkBuddy | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | `install.sh` or the `codebuddy` CLI | `.codebuddy-plugin/marketplace.json` | `hookSpecificOutput.permissionDecision` |
 | Hermes | [respire-hermes](https://github.com/risense-ai/respire-hermes) | Directory memory provider | `plugin.yaml` | turn-end check via the provider API |
+| Codex | [respire-codex](https://github.com/risense-ai/respire-codex) | npm marketplace (`codex plugin add`) | `.codex-plugin/plugin.json` | one continuation reminder per reviewed turn |
+| Pi | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` (extension) | one storage review continuation after settlement |
 
-Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md)
+Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md)
 
-The engine is the same everywhere. Installing a plugin never installs the engine: when `rsrs` is missing the plugin hands `npm i -g @rsrsai/cli@latest` to the agent, which installs it inside the session — no manual step required. Registration works once per machine: sign up at [rsrs.rs](https://rsrs.rs), then run `rsrs register`; daily use is `rsrs login` (browser authorization) and `rsrs status` to check state. Auto-sync stays on; `rsrs sync` forces a round.
+The engine is the same everywhere. Installing a plugin never installs the engine: when `rsrs` is missing the plugin hands `npm i -g @rsrsai/cli@latest` to the agent, which installs it inside the session — no manual step required. Registration works once per machine: sign up at [rsrs.rs](https://rsrs.rs), then run `rsrs register`; daily use is `rsrs login` (browser authorization) and `rsrs status` to check state. Auto-sync stays on; `rsrs sync` forces a round. The six hook adapters are Python scripts installed from git marketplaces; the Codex and Pi extensions are npm-packaged Node.js additions that invoke only `rsrs --client-only`.
 
 ## First use
 
