@@ -28,4 +28,4 @@ flowchart TD
 
 This list describes existing interface types, not a promise of a plugin marketplace or arbitrary in-process extensions. Check each command's help for the supported tool set.
 
-See [plugins](plugin-dev.md), [agent integration](injection.md), [CLI](cli.md) and [CLI JSON](cli-api.md).
+See [plugins](plugin-dev.md), [agent integration](injection.md), the ready-made [AI tool plugins](plugins/index.md), [CLI](cli.md) and [CLI JSON](cli-api.md).

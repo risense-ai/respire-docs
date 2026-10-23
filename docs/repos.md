@@ -21,6 +21,19 @@ flowchart TB
 | [respire-releases](https://github.com/risense-ai/respire-releases) | Release information and matching binary assets |
 | [respire-core](https://github.com/risense-ai/respire-core) | Model execution and memory operations; binary SDK |
 
+## AI tool plugins
+
+Six host adapters hook the engine into AI agents; install and usage guides live under [plugins](/plugins/).
+
+| Repository | Host |
+|---|---|
+| [respire-zcode](https://github.com/risense-ai/respire-zcode) | ZCode |
+| [respire-kimi](https://github.com/risense-ai/respire-kimi) | Kimi Code |
+| [respire-dimcode](https://github.com/risense-ai/respire-dimcode) | Dim |
+| [respire-qoder](https://github.com/risense-ai/respire-qoder) | Qoder |
+| [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | WorkBuddy |
+| [respire-hermes](https://github.com/risense-ai/respire-hermes) | Hermes Agent |
+
 CLI/server do not check out Core source or use a Core submodule. The CLI pins an SDK manifest; the server pins the infrastructure app crate revision and uses the same SDK boundary.
 
 | Change | Coordinate |

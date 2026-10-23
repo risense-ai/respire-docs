@@ -28,4 +28,4 @@ flowchart TD
 
 此列表描述已有接口类型，不承诺插件市场或任意进程内扩展。受支持工具集以各命令帮助为准。
 
-参阅[插件](plugin-dev.md)、[代理集成](injection.md)、[CLI](cli.md)和 [CLI JSON](cli-api.md)。
+参阅[插件](plugin-dev.md)、[代理集成](injection.md)、现成的 [AI 工具插件](plugins/index.md)、[CLI](cli.md)和 [CLI JSON](cli-api.md)。

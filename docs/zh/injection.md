@@ -34,4 +34,4 @@ flowchart LR
 
 受管理块使用 `<!-- respire:begin -->` 与 `<!-- respire:end -->`。保留块外无关指令。安装整文件目标前先审阅内容。
 
-参见 [CLI](cli.md)、[CLI JSON](cli-api.md)与[插件](plugin-dev.md)。
+参见 [CLI](cli.md)、[CLI JSON](cli-api.md)、[插件](plugin-dev.md)与现成的 [AI 工具插件](plugins/index.md)。

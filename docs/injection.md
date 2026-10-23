@@ -34,4 +34,4 @@ flowchart LR
 
 Managed blocks use `<!-- respire:begin -->` and `<!-- respire:end -->`. Preserve unrelated instructions outside the block. Review a full-file target before installation.
 
-See [CLI](cli.md), [CLI JSON](cli-api.md) and [plugins](plugin-dev.md).
+See [CLI](cli.md), [CLI JSON](cli-api.md), [plugins](plugin-dev.md) and the ready-made [AI tool plugins](plugins/index.md).
