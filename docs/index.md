@@ -21,7 +21,7 @@ flowchart LR
 | Infrastructure crates | Protocol, cryptography, persistence, sync and safe SDK adapters |
 | Server | Authentication and per-user ciphertext storage |
 | Web / Desktop | The same tree interface, using CLI operations |
-| Plugins | Host adapters for ZCode, Kimi Code, Dim, Qoder, WorkBuddy and Hermes; see [AI tool plugins](plugins/index.md) |
+| Plugins | Host adapters for ZCode, Kimi Code, Dim, Qoder, WorkBuddy, Hermes, Codex and Pi; see [AI tool plugins](plugins/index.md) |
 | Website | Product information; separate from the memory client |
 
 [Get started](getting-started.md) · [Explore the architecture](architecture.md) · [Build prerequisites](development.md)

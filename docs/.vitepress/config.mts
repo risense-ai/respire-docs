@@ -58,6 +58,8 @@ export default defineConfig({
             { text: 'Qoder', link: '/zh/plugins/qoder' },
             { text: 'WorkBuddy', link: '/zh/plugins/workbuddy' },
             { text: 'Hermes', link: '/zh/plugins/hermes' },
+            { text: 'Codex', link: '/zh/plugins/codex' },
+            { text: 'Pi', link: '/zh/plugins/pi' },
           ] },
           { text: '操作指南', items: [
             { text: 'Windows 安装', link: '/zh/guides/windows-install' },
@@ -177,6 +179,8 @@ export default defineConfig({
         { text: 'Qoder', link: '/plugins/qoder' },
         { text: 'WorkBuddy', link: '/plugins/workbuddy' },
         { text: 'Hermes', link: '/plugins/hermes' },
+        { text: 'Codex', link: '/plugins/codex' },
+        { text: 'Pi', link: '/plugins/pi' },
       ] },
       { text: 'Guides', items: [
         { text: 'Installing on Windows', link: '/guides/windows-install' },

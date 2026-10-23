@@ -24,10 +24,12 @@ Respire 为每个宿主提供一个薄适配插件：把 [respire 引擎](../get
 | Qoder | [respire-qoder](https://github.com/risense-ai/respire-qoder) | `qoder plugins install` | `.qoder-plugin/plugin.json` | `{"decision":"deny"}` |
 | WorkBuddy | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | `install.sh` 或 `codebuddy` CLI | `.codebuddy-plugin/marketplace.json` | `hookSpecificOutput.permissionDecision` |
 | Hermes | [respire-hermes](https://github.com/risense-ai/respire-hermes) | 目录式 memory provider | `plugin.yaml` | provider API 的轮末检查 |
+| Codex | [respire-codex](https://github.com/risense-ai/respire-codex) | npm 市场（`codex plugin add`） | `.codex-plugin/plugin.json` | 每审阅轮至多一次续跑提醒 |
+| Pi | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json`（extension） | settlement 后至多一次存料审查续跑 |
 
-各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md)
+各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md)
 
-引擎处处同一套。装插件不装引擎：`rsrs` 缺失时插件把 `npm i -g @rsrsai/cli@latest` 交给 agent 会话内代装，无需手动操作。注册每台机器一次：在 [rsrs.rs](https://rsrs.rs) 注册后本机 `rsrs register`；日常 `rsrs login` 浏览器授权、`rsrs status` 查态；autosync 常开，`rsrs sync` 手动同步。
+引擎处处同一套。装插件不装引擎：`rsrs` 缺失时插件把 `npm i -g @rsrsai/cli@latest` 交给 agent 会话内代装，无需手动操作。注册每台机器一次：在 [rsrs.rs](https://rsrs.rs) 注册后本机 `rsrs register`；日常 `rsrs login` 浏览器授权、`rsrs status` 查态；autosync 常开，`rsrs sync` 手动同步。六个钩子适配是装自 git 市场源的 Python 脚本；Codex 与 Pi 扩展是 npm 打包的 Node.js 附加件，只调 `rsrs --client-only`。
 
 ## 首次使用 {#first-use}
 
