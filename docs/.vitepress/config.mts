@@ -56,6 +56,7 @@ export default defineConfig({
             { text: '批量整理提取记忆', link: '/zh/guides/batch-tidy-extracted' },
             { text: '示例：注入豆包', link: '/zh/guides/agent-example-doubao' },
             { text: '技能仓库安装与使用', link: '/zh/guides/skills-repo' },
+            { text: 'memTools 桌面收录', link: '/zh/guides/memtools' },
           ] },
           { text: '架构', items: [
             { text: '数据流', link: '/zh/architecture' },
@@ -165,6 +166,7 @@ export default defineConfig({
         { text: 'Batch-tidying extracted memories', link: '/guides/batch-tidy-extracted' },
         { text: 'Worked example: Doubao', link: '/guides/agent-example-doubao' },
         { text: 'Skills repository', link: '/guides/skills-repo' },
+        { text: 'memTools desktop capture', link: '/guides/memtools' },
       ] },
       { text: 'Architecture', items: [
         { text: 'Data flow', link: '/architecture' },
