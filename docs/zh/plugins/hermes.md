@@ -38,6 +38,46 @@ hermes memory setup                     # pick respire in the wizard (asks only 
 
 向导极简（官方建议）：只提示 `rsrs_path`。其余可选项手改 **`$HERMES_HOME/respire.json`**（参考 `respire.config.example.json`）。公共字段见[总览](./index.md#tuning)；Hermes 另有 `auto_recall`（默认 `true`——`false` 时只留工具）。环境变量：`RESPIRE_BIN` / `RESPITE_RSRS`（引擎路径）、`RESPITE_CONFIG`（配置文件路径）、`RESPITE_LOG`（日志路径）。日志写 `$HERMES_HOME/respire/plugin.log`。
 
+## 导入已有记忆 {#import-existing-memory}
+
+Hermes 的内置记忆与外部 provider **并存**：切到 respire 后，`MEMORY.md` / `USER.md` 仍照常注入系统提示，但 respire 的 `prefetch` 不会读取它们。按旧记忆所在位置分三种情况处理。
+
+### Hermes 内置记忆 {#built-in-memory}
+
+`MEMORY.md`（agent 笔记）与 `USER.md`（用户画像）位于 `$HERMES_HOME/memories/`，命名 profile 在 `$HERMES_HOME/profiles/<name>/memories/`；条目以 `§` 分隔，两个文件分别有 2,200 / 1,375 字符上限。
+
+推荐在新会话里让 Hermes 自己搬，这样能走 `respire_remember` 的判重与因果挂靠：
+
+> 读取 `$HERMES_HOME/memories/MEMORY.md` 和 `USER.md`，以 `§` 为分隔拆成独立条目，逐条调用 `respire_remember` 存入 rsrs：
+> - 每条用「主语+动作+结果」的事实句作标题，`importance=important`；
+> - 保留原意，不要把不同事实合并成一条；
+> - 返回 `pending`（相似候选）时先判断：同一事实用 `parent` 挂靠，不同事实用 `force` 新建；
+> - 完成后用 `respire_recall` 抽查 2-3 条确认可召回。
+
+命令行也可以逐条写入（`rsrs remember` 默认 `trivial`，须显式给 `important`）：
+
+```bash
+rsrs remember "<entry>" --title "<fact-sentence title>" --importance important
+```
+
+条目多时可用 `rsrs import <file.json>` 批量导入（JSON 数组，以 `rsrs export` 的输出为格式样例；导入后跑 `rsrs audit` 检查重复）。导入后建议先保留内置条目，确认 rsrs 召回稳定后再精简，避免两边各留一份长期漂移。
+
+### Hermes 历史会话 {#hermes-session-history}
+
+`rsrs extract` 原生支持 Hermes，但它抽取的是**会话记录**，不是 `MEMORY.md`：
+
+```bash
+rsrs extract --targets                       # confirm the hermes source is detected
+rsrs extract --id hermes --dry-run           # preview
+rsrs extract --id hermes --since 90d --limit 50
+```
+
+每个会话生成一条记忆（标题 `Hermes session <first request>`，正文为【前因】【行为】【后果】），默认落为根节点；之后用 `rsrs audit`、`rsrs candidates`、`rsrs tree-cure` 做整理。`--since` / `--limit` 控制抽取范围，重复运行会按源指纹跳过未变化的会话。
+
+### 其他 memory provider {#other-memory-providers}
+
+Hermes 没有 provider 之间的迁移 API：切换只会停用旧 provider，旧数据仍留在原服务。先从旧 provider 导出（例如 Honcho 的 conclusions / profile），整理成 `rsrs import` 的 JSON 数组，或在会话里让 agent 读取后逐条 `respire_remember`。`rsrs share-import` 只用于 rsrs 子树分享，不是通用导入。
+
 ## 工具 {#tools}
 
 | 工具 | 参数 | 说明 |
@@ -52,5 +92,6 @@ hermes memory setup                     # pick respire in the wizard (asks only 
 
 - **未做真机 E2E**：契约逐条取自官方 memory-provider-plugin 文档（2026-10-23 版）；本地验证为脱离 Hermes 的结构等价桩＋真 `rsrs` 引擎的工具/prefetch/配置回环（`tests/test_provider.py`）。若真机行为不符，最可能要调的是 `get_tool_schemas()`（OpenAI function 格式，推断）与 `get_status_config()`（平面 dict，推断）。
 - 桌面端配置面板文件（`config_schema.py`）格式官方未公开，暂未随包；面板配置可先手改 `respire.json`。
+- 未实现可选 hook `on_memory_write`：切换后通过 Hermes 内置 `memory` 工具新增/修改的条目不会自动镜像进 rsrs，需按[导入已有记忆](#import-existing-memory)手动迁移；要长期自动同步需给插件补该 hook。
 
 开发与打包见[仓库 README](https://github.com/risense-ai/respire-hermes#readme)。
