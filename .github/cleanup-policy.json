@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "repository": "risense-ai/respire-docs",
+  "workflows": {
+    ".github/workflows/ci.yml": {
+      "mode": "release-or-ci",
+      "artifacts": [
+        "docs-[0-9a-f]{40}"
+      ],
+      "consumer_workflows": []
+    }
+  }
+}
