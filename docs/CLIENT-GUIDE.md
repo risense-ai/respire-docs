@@ -1,5 +1,7 @@
 # Client integration
 
+For a new third-party client or agent, start with [Runtime RPC](runtime-rpc.md). It calls the existing runtime over HTTP and does not require a Tauri sidecar integration.
+
 | Responsibility | Owner |
 |---|---|
 | UI and Tauri shell | Client repository |

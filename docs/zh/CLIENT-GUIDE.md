@@ -1,5 +1,7 @@
 # 客户端集成 {#client-integration}
 
+开发新的第三方客户端或 agent 时，先读 [Runtime RPC](runtime-rpc.md)。它通过 HTTP 调用已有运行时，不要求集成 Tauri sidecar。
+
 | 职责 | 归属 |
 |---|---|
 | UI 和 Tauri 外壳 | 客户端仓库 |

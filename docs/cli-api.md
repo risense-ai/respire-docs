@@ -34,6 +34,8 @@ Use `--json` when integrating Respire with scripts, agents or applications. Pars
 
 Read the result envelope for nonzero exits too: a pending candidate decision differs from a failed write. Keep standard error separate from standard output.
 
+For direct HTTP access to the running service, see [Runtime RPC](runtime-rpc.md). RPC wraps this command envelope in an outer response with its own request ID, version and outcome.
+
 ## Result shapes
 
 | Command family | Typical data |

@@ -1,5 +1,7 @@
 # Host runtime and sandbox clients
 
+For third-party clients, see [Runtime RPC](runtime-rpc.md) for request/response fields, methods, runnable examples and uncertain-write handling.
+
 ```mermaid
 flowchart LR
   Host[Host terminal] -->|owns lifecycle| Runtime[Loopback HTTP runtime]
