@@ -1,5 +1,7 @@
 # 宿主运行时与沙箱客户端 {#host-runtime-and-sandbox-clients}
 
+第三方客户端的请求与响应字段、方法、可运行示例及结果未知的写入处理，见 [Runtime RPC](runtime-rpc.md)。
+
 ```mermaid
 flowchart LR
   Host[宿主终端] -->|管理生命周期| Runtime[回环 HTTP 运行时]

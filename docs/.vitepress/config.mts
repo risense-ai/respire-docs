@@ -81,6 +81,7 @@ export default defineConfig({
           ] },
           { text: '接口', items: [
             { text: 'CLI JSON', link: '/zh/cli-api' },
+            { text: 'Runtime RPC', link: '/zh/runtime-rpc' },
             { text: '服务端 API', link: '/zh/server' },
             { text: '请求边界', link: '/zh/server-request-boundaries' },
             { text: '契约', link: '/zh/contracts' },
@@ -202,6 +203,7 @@ export default defineConfig({
       ] },
       { text: 'Interfaces', items: [
         { text: 'CLI JSON', link: '/cli-api' },
+        { text: 'Runtime RPC', link: '/runtime-rpc' },
         { text: 'Server API', link: '/server' },
         { text: 'Request boundaries', link: '/server-request-boundaries' },
         { text: 'Contracts', link: '/contracts' },
