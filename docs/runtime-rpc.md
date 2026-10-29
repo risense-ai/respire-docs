@@ -4,6 +4,8 @@ Use the local runtime's HTTP RPC to integrate a desktop client, service or agent
 
 This is a custom versioned protocol, **not JSON-RPC 2.0**. For an agent host that already supports MCP, use the separate MCP adapter instead. The cloud [Server API](server.md) synchronizes encrypted records and is not a replacement for local memory operations.
 
+For every business command, subcommand, argument and MCP tool, see the [complete function reference](runtime-rpc-commands.md).
+
 ## Versions and compatibility
 
 The reference versions below were checked on **2026-10-29**. They describe the inspected releases, not a promise that every future command has the same fields.
@@ -57,6 +59,7 @@ Replace the example ID with a fresh UUID **before each new operation**. These cu
 | `method` | Required string; usually `cli.exec` |
 | `args` | Array of strings; defaults to an empty array; no shell parsing |
 | `queue_wait_ms` | Optional unsigned integer; shortens the queue admission deadline for `cli.exec`, capped by the host's queue timeout |
+| `lifecycle` | Optional DEV string reserved for the host lifecycle coordinator; omit in memory clients |
 
 For `cli.exec`, omit the executable name and pass `--json` followed by the command and its arguments. Each value is one array element, including text with spaces or newlines. Do not put shell quotes inside values. Host selectors and lifecycle flags are not a way to choose another library through this endpoint.
 
