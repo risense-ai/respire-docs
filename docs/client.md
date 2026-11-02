@@ -88,6 +88,8 @@ The client uses parallel downloads for the baseline model and individual weights
 
 After an interrupted download, partial chunks may remain in the model directory and use disk space. The client attempts to resume them on retry, then checks file size and SHA-256. Parallel downloads require the source to support range requests. If a download fails, inspect the error on the page and check the download source.
 
+In Client 2 0.2.25, a task can still report an error after an earlier source fails and a later source succeeds. If this happens, refresh the models page and check the file status before deciding whether to retry. The page status does not replace independent verification.
+
 ![Model and index controls](/client2/models-en.png)
 
 The panels below show retrieval, indexing and the quality-recall service. The address and model are examples.
