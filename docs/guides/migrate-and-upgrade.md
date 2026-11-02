@@ -134,14 +134,13 @@ A profile cannot be deleted while it is active; select `main` (or another retain
 
 ## Uninstalling the old client
 
-Keep the old `~/.onememory` directory until the new library is verified, then remove the old client:
+Keep the old `~/.onememory` directory until the new library is verified. Once it is, check the old client's path in Task Manager, exit that process, and uninstall the old package:
 
 ```powershell
-Stop-Process -Name 1memory -Force -ErrorAction SilentlyContinue
 npm uninstall -g @1memory/cli
 ```
 
-Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host tools; opencode configuration should drop `1memory.md` and keep `respire.md`. After cleanup, `where 1memory` should print nothing. Keep unrelated global npm packages.
+Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host tools; opencode configuration should drop `1memory.md` and keep `respire.md`. After cleanup, use `where.exe 1memory` to check whether the old command remains on PATH. Keep unrelated global npm packages.
 
 ## Common pitfalls
 

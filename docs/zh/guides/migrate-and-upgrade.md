@@ -134,14 +134,13 @@ rsrs status
 
 ## 卸载旧客户端 {#uninstalling-the-old-client}
 
-在新库验证前保留旧的 `~/.onememory` 目录，然后移除旧客户端：
+在新库验证前保留旧的 `~/.onememory` 目录。确认新库可用后，在任务管理器中核对旧客户端的路径并退出该进程，再卸载旧包：
 
 ```powershell
-Stop-Process -Name 1memory -Force -ErrorAction SilentlyContinue
 npm uninstall -g @1memory/cli
 ```
 
-移除宿主工具中残留的 `1memory:begin` 和 `1memory:end` 注入块；opencode 配置应删除 `1memory.md` 并保留 `respire.md`。清理后，`where 1memory` 应无输出。请保留无关的全局 npm 包。
+移除宿主工具中残留的 `1memory:begin` 和 `1memory:end` 注入块；opencode 配置应删除 `1memory.md` 并保留 `respire.md`。清理后，可以使用 `where.exe 1memory` 检查 PATH 中是否仍有旧命令。请保留无关的全局 npm 包。
 
 ## 常见问题 {#common-pitfalls}
 
