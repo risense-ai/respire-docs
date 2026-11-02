@@ -13,11 +13,11 @@ You do not need Node.js, npm, Go or Rust to use the desktop app. Desktop and CLI
 
 ## Connect the Runtime {#connect-the-runtime}
 
-Open the client and check the connection indicator in the sidebar. The app can connect to a compatible local Runtime or prepare a matching CLI and its native libraries separately. If no Runtime is available, open **Updates**, choose **Install / update CLI**, and follow the displayed status. A missing release asset or incompatible version is reported in the client; see [Diagnostics](client.md#settings-updates-and-diagnostics) if it does not connect.
+On first launch, choose the interface language when prompted; you can change it later at the top right or in **Settings**. Then check the connection indicator in the sidebar. The app can connect to a compatible local Runtime or prepare a matching CLI and its native libraries separately. If no Runtime is available, open **Updates**, choose **Install / update CLI**, and follow the displayed status. A missing release asset or incompatible version is reported in the client; see [Diagnostics](client.md#settings-updates-and-diagnostics) if it does not connect.
 
 ![Desktop overview with Runtime and sync status](/client2/overview-en.png)
 
-The screenshot uses sample data from Client 2 version 0.2.17. Later versions can look different.
+The screenshot shows the Client 2 0.2.22 frontend with simulated data, not a real account. The interface and status can differ on your device.
 
 ## Sign in or create a local library {#sign-in-or-create-a-local-library}
 

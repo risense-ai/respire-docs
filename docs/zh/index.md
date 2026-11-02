@@ -21,7 +21,7 @@ flowchart LR
 | 基础设施 crates | 协议、密码学、持久化、同步与安全 SDK 适配 |
 | 服务端 | 身份认证与各用户的密文存储 |
 | 控制台 / 桌面 | 托管账户控制台，以及使用本机 Runtime RPC 的独立桌面客户端 |
-| 插件 | 面向 ZCode、Kimi Code、Dim、Qoder、WorkBuddy、Hermes、Codex 与 Pi 的宿主适配；见 [AI 工具插件](plugins/index.md) |
+| 插件 | 面向 ZCode、Kimi Code、Dim、Qoder、WorkBuddy、Hermes、Codex、Pi、DSH 和 Magpie 的宿主适配；见 [AI 工具插件](plugins/index.md) |
 | 官网 | 产品介绍，与记忆客户端分离 |
 
 [开始使用](getting-started.md) · [了解架构](architecture.md) · [构建前提](development.md)

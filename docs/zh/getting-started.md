@@ -13,11 +13,11 @@
 
 ## 连接 Runtime {#connect-the-runtime}
 
-打开客户端后，查看侧栏的连接状态。客户端可以连接兼容的本机 Runtime，也可以单独准备匹配的 CLI 和原生库。如果没有可用的 Runtime，请打开“更新”，选择“安装 / 更新 CLI”，并查看页面显示的进度和结果。缺少发布文件或版本不兼容时，客户端会显示错误；无法连接时可查看[诊断说明](client.md#settings-updates-and-diagnostics)。
+首次打开客户端时，按提示选择界面语言；之后可以在右上角或“设置”中切换。接着查看侧栏的连接状态。客户端可以连接兼容的本机 Runtime，也可以单独准备匹配的 CLI 和原生库。如果没有可用的 Runtime，请打开“更新”，选择“安装 / 更新 CLI”，并查看页面显示的进度和结果。缺少发布文件或版本不兼容时，客户端会显示错误；无法连接时可查看[诊断说明](client.md#settings-updates-and-diagnostics)。
 
 ![桌面端概览及 Runtime、同步状态](/client2/overview-zh.png)
 
-截图使用 Client 2 0.2.17 版和示例数据。较新版本的界面可能不同。
+截图展示 Client 2 0.2.22 的前端，使用模拟数据，并非真实账户。实际界面和状态可能不同。
 
 ## 登录或创建本地记忆库 {#sign-in-or-create-a-local-library}
 

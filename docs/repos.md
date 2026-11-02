@@ -23,7 +23,7 @@ flowchart TB
 
 ## AI tool plugins
 
-Eight host adapters hook the engine into AI agents; install and usage guides live under [plugins](/plugins/).
+Ten host plugins connect Respire to AI tools. See the [plugin guides](/plugins/) for installation and usage.
 
 | Repository | Host |
 |---|---|
@@ -35,6 +35,8 @@ Eight host adapters hook the engine into AI agents; install and usage guides liv
 | [respire-hermes](https://github.com/risense-ai/respire-hermes) | Hermes Agent |
 | [respire-codex](https://github.com/risense-ai/respire-codex) | Codex |
 | [respire-pi](https://github.com/risense-ai/respire-pi) | Pi |
+| [respire-dsh](https://github.com/risense-ai/respire-dsh) | DSH |
+| [respire-magpie](https://github.com/risense-ai/respire-magpie) | Magpie |
 
 CLI/server do not check out Core source or use a Core submodule. The CLI pins an SDK manifest; the server pins the infrastructure app crate revision and uses the same SDK boundary.
 
