@@ -60,6 +60,10 @@ Respire Client 2 是使用 Go 和 Wails v3 构建的桌面应用，构建目标�
 
 ![整理建议与移动方案](/client2/organize-zh.png)
 
+下图展示 AI 整理的范围和操作。
+
+![AI 整理的范围和操作](/client2/organize-ai-zh.png)
+
 ### 模型与索引 {#models-and-index}
 
 打开“模型与索引”查看模型和索引任务。页面支持选择下载源、准备权重和选择可用的推理引擎，也提供推理验证、索引准备、召回设置与九轮基准测试。权重需要单独下载；可用的引擎和提供程序取决于 Runtime 与硬件。
@@ -70,11 +74,21 @@ Respire Client 2 是使用 Go 和 Wails v3 构建的桌面应用，构建目标�
 
 ![模型与索引控制区](/client2/models-zh.png)
 
+下方依次展示召回与后台索引，以及高质量召回服务。地址和模型为示例。
+
+![召回方式与后台索引](/client2/models-retrieval-zh.png)
+
+![高质量召回服务配置](/client2/models-service-zh.png)
+
 ### 账户与空间 {#accounts-and-spaces}
 
 打开“账户与空间”可以登录、恢复密钥或初始化新的离线记忆库。该页面也管理已保存账户、同步、空间、邀请和成员。请私密保存恢复材料和邀请；删除空间会移除对应的本机空间及数据。
 
 ![账户与空间页面](/client2/accounts-zh.png)
+
+下图展示同步与服务器设置；地址仅供示例。
+
+![同步与服务器设置](/client2/accounts-sync-zh.png)
 
 ### 连接 Agent 与管理授权 {#connect-agents-and-manage-access}
 
@@ -103,6 +117,10 @@ Respire Client 2 是使用 Go 和 Wails v3 构建的桌面应用，构建目标�
 在“更新”页，可以分别设置客户端自动下载、客户端自动重启和受客户端管理的 Runtime 自动安装，并为客户端和 Runtime 分别选择检查频率。关闭自动重启后，下载完成时需要手动选择“重启并应用”；业务操作进行期间不会应用客户端更新。
 
 ![客户端设置页面](/client2/settings-zh.png)
+
+下图展示数据导入和备份操作；导出的记忆包含明文，请妥善保存。
+
+![数据导入与备份操作](/client2/settings-backup-zh.png)
 
 ![桌面客户端和 CLI 更新页面](/client2/updates-zh.png)
 
