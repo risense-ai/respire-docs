@@ -23,7 +23,7 @@ flowchart TB
 
 ## AI 工具插件 {#ai-tool-plugins}
 
-八个宿主适配插件把引擎挂进 AI agent；安装与使用指南见[插件](/zh/plugins/)。
+十个宿主插件将 Respire 接入 AI 工具。安装和使用步骤见[插件指南](/zh/plugins/)。
 
 | 仓库 | 宿主 |
 |---|---|
@@ -35,6 +35,8 @@ flowchart TB
 | [respire-hermes](https://github.com/risense-ai/respire-hermes) | Hermes Agent |
 | [respire-codex](https://github.com/risense-ai/respire-codex) | Codex |
 | [respire-pi](https://github.com/risense-ai/respire-pi) | Pi |
+| [respire-dsh](https://github.com/risense-ai/respire-dsh) | DSH |
+| [respire-magpie](https://github.com/risense-ai/respire-magpie) | Magpie |
 
 CLI/server 不检出 Core 源码，也不使用 Core submodule。CLI 固定 SDK manifest；服务端固定基础设施 app crate 的 revision，并使用相同的 SDK 边界。
 
