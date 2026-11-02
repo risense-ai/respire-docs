@@ -19,7 +19,7 @@
 
 ![桌面端概览及 Runtime、同步状态](/client2/overview-zh.png)
 
-截图展示 Client 2 0.2.22 的前端，使用模拟数据，并非真实账户。实际界面和状态可能不同。
+截图展示 Client 2 0.2.23 的前端，使用模拟数据，并非真实账户。实际界面和状态可能不同。
 
 ## 登录或创建本地记忆库 {#sign-in-or-create-a-local-library}
 

@@ -19,7 +19,7 @@ On first launch, choose the interface language when prompted; you can change it 
 
 ![Desktop overview with Runtime and sync status](/client2/overview-en.png)
 
-The screenshot shows the Client 2 0.2.22 frontend with simulated data, not a real account. The interface and status can differ on your device.
+The screenshot shows the Client 2 0.2.23 frontend with simulated data, not a real account. The interface and status can differ on your device.
 
 ## Sign in or create a local library {#sign-in-or-create-a-local-library}
 
