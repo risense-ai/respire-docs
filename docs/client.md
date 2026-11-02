@@ -64,9 +64,11 @@ For a merge, the editor combines the selected titles and contents into a draft. 
 
 Undo covers only the latest eligible operation: creation in the main area with a `created` result, edits that remain in the main area, deletion or a move. It does not undo diary creation, edits across storage areas or a merge. Check the current content before using it.
 
-Use **Diary** to navigate by month or day, search dates and open a fragment with its neighbors. Use the **Organize** page to review grouping, similarity and structure suggestions; preview a move plan before applying it. AI organization requires a configured service and sends the selected material to it.
+Use **Diary** to browse entries by month or day, or search fragments by content. Use the **Organize** page to review grouping, similarity and structure suggestions; preview a move plan before applying it. AI organization requires a configured service and sends the selected material to it.
 
-Diary search finds fragments from a query; choose **Expand** beside a result to read neighboring fragments. After editing a plan, preview it again. If the library changes after a preview, generate or validate the plan again. An AI plan preview does not apply changes; **AI organize & apply** submits changes after confirmation.
+Diary search is not limited to the month shown. The client requests at most 20 results and sets a character budget of 8,000. Choose **Expand** beside a result to read neighboring fragments; no results do not prove that the diary contains no relevant content.
+
+After editing an organization plan, preview it again. If the library changes after a preview, generate or validate the plan again. An AI plan preview does not apply changes; **AI organize & apply** submits changes after confirmation.
 
 ![Diary calendar and fragments](/client2/diary-en.png)
 
