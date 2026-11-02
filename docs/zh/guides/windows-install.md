@@ -100,7 +100,7 @@ rsrs model probe
 
 ## 创建账户并登录 {#create-an-account-and-log-in}
 
-对于没有密钥的新配置，先生成密钥材料，再注册。不要为已有记忆库再次运行 `keygen`。注册需在主机终端运行，以便在隐藏提示下收集登录密码；`--direct` 还要求运行时已停止。
+对于没有密钥的新配置，先生成密钥材料，再注册。不要为已有记忆库再次运行 `keygen`。注册需在主机终端运行，以便在隐藏提示下收集登录密码；`--direct` 还要求运行时已停止。请将示例中的 `YOUR_NAME` 换成用户名。
 
 ```powershell
 # 1. Create local key material; the echoed super code is shown once.
@@ -110,7 +110,7 @@ rsrs keygen --json
 rsrs --runtime-internal --stop
 
 # 3. Register in an interactive terminal; enter the login password at the hidden prompt.
-rsrs --direct register --user <user-name>
+rsrs --direct register --user "YOUR_NAME"
 
 # 4. Confirm the account and server.
 rsrs status
@@ -125,7 +125,7 @@ rsrs status
 rsrs login
 
 # Or password/TOTP login with hidden prompts.
-rsrs login --interactive --user <user-name>
+rsrs login --interactive --user "YOUR_NAME"
 ```
 
 请私密保存 `keygen --json` 输出中的 `summary.super` 恢复码。不要共享或提交 `session.json` 或账户密钥。仅在需要时导出解密密钥，因为输出为明文。`--out` 在 Unix 上以 `600` 模式创建文件；在 Windows 上它会继承目标目录的 ACL，因此请选择私有且访问受限的目录，并核验文件的 ACL：
@@ -202,10 +202,19 @@ rsrs account list
 
 ## 连接 AI 应用程序 {#connect-ai-applications}
 
+先查看可用目标：
+
 ```powershell
 rsrs inject --targets
-rsrs inject --all
 ```
+
+检查目标路径和已有内容，并按需备份。下面以 Codex 为例；只有使用该宿主时才运行：
+
+```powershell
+rsrs inject --id codex
+```
+
+`--all` 会修改所有检测到的目标。DSH 目标会覆盖 `~/.dsh/AGENTS.md`，并移除该路径上的符号链接；使用前请检查并备份。
 
 注入会写入指令，但不会安装自动钩子。自动行为取决于宿主的插件和钩子支持。重启目标应用并确认它加载了指令。详见 [代理集成](../injection.md)。
 
@@ -226,6 +235,8 @@ rsrs inject --all
 
 ## 一分钟检查清单 {#one-minute-checklist}
 
+这份清单适用于独立 CLI 安装。在第 5 步保存记忆前，请按上文完成账户登录或新库初始化；已有记忆库不要重新生成密钥。
+
 ```powershell
 # 1) Install.
 pnpm add -g rsrs-cli
@@ -237,17 +248,14 @@ rsrs --version
 rsrs status
 rsrs doctor --fix
 
-# 4) Create an account; keep the super code safe. Registration needs the host terminal.
-rsrs keygen --json
-rsrs --runtime-internal --stop
-rsrs --direct register --user <user-name>
+# 4) Complete account sign-in or new-library setup as described above.
 
 # 5) Store and retrieve a first memory.
 rsrs remember "Hello rsrs" --importance trivial --json
 rsrs recall "Hello" --json
 
-# 6) Connect AI applications.
-rsrs inject --all
+# 6) Inspect AI application targets; review paths before injection.
+rsrs inject --targets
 ```
 
 关于背景和首次使用流程，请参见 [入门指南](../getting-started.md)。
