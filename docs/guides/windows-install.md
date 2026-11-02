@@ -100,7 +100,7 @@ A successful probe returns `ready:true` with `dimensions:1024`. Activation is re
 
 ## Create an account and log in
 
-For a new profile without keys, generate the key material first, then register. Do not run `keygen` again for an existing library. Registration runs in the host terminal, where it can collect the login password at a hidden prompt; `--direct` also requires the runtime to be stopped.
+For a new profile without keys, generate the key material first, then register. Do not run `keygen` again for an existing library. Registration runs in the host terminal, where it can collect the login password at a hidden prompt; `--direct` also requires the runtime to be stopped. Replace `YOUR_NAME` in the examples with your username.
 
 ```powershell
 # 1. Create local key material; the echoed super code is shown once.
@@ -110,7 +110,7 @@ rsrs keygen --json
 rsrs --runtime-internal --stop
 
 # 3. Register in an interactive terminal; enter the login password at the hidden prompt.
-rsrs --direct register --user <user-name>
+rsrs --direct register --user "YOUR_NAME"
 
 # 4. Confirm the account and server.
 rsrs status
@@ -125,7 +125,7 @@ On a new device, log in with an existing account. `rsrs login` opens browser aut
 rsrs login
 
 # Or password/TOTP login with hidden prompts.
-rsrs login --interactive --user <user-name>
+rsrs login --interactive --user "YOUR_NAME"
 ```
 
 Save `summary.super` from the `keygen --json` output privately as recovery material. Do not share or commit `session.json` or the account secret. Export decrypt keys only when needed; the output is plaintext. `--out` creates the file with mode `600` on Unix; on Windows it inherits the destination directory ACLs, so choose a private directory and verify the file ACL:
@@ -202,10 +202,19 @@ An export contains plaintext and overwrites an existing file; choose a new path 
 
 ## Connect AI applications
 
+First inspect the available targets:
+
 ```powershell
 rsrs inject --targets
-rsrs inject --all
 ```
+
+Review the destination paths and existing content, and back up where needed. The following example is for Codex; run it only if you use that host:
+
+```powershell
+rsrs inject --id codex
+```
+
+`--all` changes every detected target. The DSH target overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back it up first.
 
 Injection writes instructions but does not install automatic hooks. Automatic behavior depends on the host plugin and hook support. Restart the target application and verify that it loads the instructions. See [Agent integration](../injection.md).
 
@@ -226,6 +235,8 @@ Exit code `2` depends on the command and can indicate a warning, a pending decis
 
 ## One minute checklist
 
+This checklist is for a standalone CLI installation. Before saving a memory in step 5, sign in or initialize a new library as described above. Do not regenerate keys for an existing library.
+
 ```powershell
 # 1) Install.
 pnpm add -g rsrs-cli
@@ -237,17 +248,14 @@ rsrs --version
 rsrs status
 rsrs doctor --fix
 
-# 4) Create an account; keep the super code safe. Registration needs the host terminal.
-rsrs keygen --json
-rsrs --runtime-internal --stop
-rsrs --direct register --user <user-name>
+# 4) Complete account sign-in or new-library setup as described above.
 
 # 5) Store and retrieve a first memory.
 rsrs remember "Hello rsrs" --importance trivial --json
 rsrs recall "Hello" --json
 
-# 6) Connect AI applications.
-rsrs inject --all
+# 6) Inspect AI application targets; review paths before injection.
+rsrs inject --targets
 ```
 
 For background and first-use flows, see [Getting started](../getting-started.md).
