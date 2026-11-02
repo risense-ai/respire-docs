@@ -121,27 +121,19 @@ Large libraries on CPU rebuild slowly; do not run concurrent model operations wh
 | `--direct` | Bypasses the runtime and opens the library file directly (prints `WARN: --direct bypasses the local runtime`); profile writes such as `account remove` require `--direct` and a stopped runtime |
 | `--client-only` | Connects only to the host HTTP runtime and does not manage its lifecycle (or set `ONEMEMORY_CLIENT_ONLY=1`); in a sandbox use `rsrs --client-only <command>`, and a non-loopback peer needs a token |
 
-```powershell
-rsrs account main                # switch away from <name> while the runtime runs
-rsrs --runtime-internal --stop   # stop before profile writes
-rsrs --direct account remove <name> --yes
-rsrs status
-```
-
-A profile cannot be deleted while it is active; select `main` (or another retained profile) first.
+Deleting an account is not required for migration. It permanently removes the selected account's local store and keys, so verify the name, backups and recovery material first. An active account cannot be deleted; if deletion is necessary, first switch to an account you intend to keep.
 
 `rsrs web` opens the hosted dashboard `https://dash.rsrs.rs` and does not start the local runtime. See [Host runtime and sandbox clients](../runtime.md) for lifecycle and token rules.
 
 ## Uninstalling the old client
 
-Keep the old `~/.onememory` directory until the new library is verified, then remove the old client:
+Keep the old `~/.onememory` directory until the new library is verified. Once it is, check the old client's path in Task Manager, exit that process, and uninstall the old package:
 
 ```powershell
-Stop-Process -Name 1memory -Force -ErrorAction SilentlyContinue
 npm uninstall -g @1memory/cli
 ```
 
-Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host tools; opencode configuration should drop `1memory.md` and keep `respire.md`. After cleanup, `where 1memory` should print nothing. Keep unrelated global npm packages.
+Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host tools; opencode configuration should drop `1memory.md` and keep `respire.md`. After cleanup, use `where.exe 1memory` to check whether the old command remains on PATH. Keep unrelated global npm packages.
 
 ## Common pitfalls
 
@@ -156,35 +148,25 @@ Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host
 | `legacy library has ciphertext but no session` | Original credentials are unavailable | Recover the original keys before migration |
 | defrag reports `no usable vectors` | The library has no records | Not a fault; normal once the library is non-empty |
 | Read commands block for more than 40 seconds | Inference workers may be saturated | Inspect the runtime; `rsrs model reset-cpu` selects CPU and stops the runtime |
-| `doctor` exits 1 | `inject` or `tidy` is not satisfied | Not an installation fault |
+| `doctor` exits 1 | A check failed or the command did not complete | Inspect the error; injection or tidy items alone do not necessarily mean installation failed |
 
 ## Exit codes and error classes
 
 Read the JSON envelope rather than only the exit code. See [CLI JSON](../cli-api.md) for the envelope and code table.
 
-- `exit=2` commonly means success with a warning or a pending decision, such as `keys-export`, `classify --plan`, `split` material, `bench`, a `resort` dry run or `share`.
-- `doctor` exits 1 when `inject` or `tidy` is not satisfied; this is not a failure.
+- `exit=2` depends on the command and can indicate a warning, a pending decision or invalid input. Inspect the output status and error details.
+- When `doctor` exits 1, inspect each failed item. Unsatisfied injection or tidy items do not necessarily mean installation failed; model, store or account errors need further attention.
 - User-input errors, including argument parsing, ID lookup, a bad spec, self-attach or a cycle, return `summary.reason:"invalid_input"`, `error_type:"user"` and exit 2. Do not decide failure from `reason` alone.
 
 For the full command surface, see [CLI commands](../cli.md); for script integration, see [CLI JSON](../cli-api.md).
 
 ## Test isolation
 
-Test against a separate profile (`~/.rsrs/accounts/<name>`), never the main profile, and switch back and remove the temporary profile afterward.
+Before testing, choose a new, separate directory and set `RSRS_DATA_DIR` to its absolute path. Also set `RSRS_RPC_PORT` to an unused port so the test does not connect to or stop your everyday Runtime. Once the test starts, use `rsrs config` and `rsrs status` to check the actual directory and connection.
 
-```powershell
-rsrs --runtime-internal --stop
-rsrs --direct account test-profile
-rsrs --direct register --user test-profile   # host terminal; enter the login password at the hidden prompt
-rsrs status
-rsrs --runtime-internal --stop
-rsrs --direct account main
-rsrs --direct account remove test-profile --yes
-```
+Registration connects to the configured server and creates an account. If you need to test registration, use a dedicated test service and account. Do not pass passwords or recovery codes as command arguments.
 
-`rsrs --direct register` runs in this terminal so it can prompt for the login password; `--direct` requires the runtime to be stopped. Do not pass passwords or recovery codes as command arguments, which expose them to process listings and shell history.
-
-A fresh profile reports a local store in offline mode. After `register`, check `rsrs status`; synchronization depends on configuration.
+When testing ends, confirm which process and directory belong to the test before deciding how to stop the process or handle its data. Do not copy a fixed account name or delete an account unconditionally; deleting an account removes its local store and keys.
 
 ## Data safety
 

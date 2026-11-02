@@ -82,7 +82,7 @@ rsrs status
 
 新配置文件会报告本地存储处于离线模式。注册或登录后，同步取决于账户和同步配置；请检查 `rsrs status`。
 
-运行捆绑检查以安装嵌入模型并检查模型、存储、锁、远程和注入状态。
+运行检查，查看模型、存储、锁、远程连接和注入状态。`--fix` 在需要时可能下载模型，也可能安排后台准备；请查看输出和任务进度，等待当前任务完成。
 
 ```powershell
 rsrs doctor --fix
@@ -220,9 +220,9 @@ rsrs inject --all
 | `another model operation is running` | 并发模型操作 | 等待当前操作完成；不要并发运行 |
 | `backup` 报告 `os error 80` | 目标文件已存在 | 选择新的备份路径 |
 | `keygen would overwrite it` | 密钥材料已存在 | 仅在新配置文件上运行 `keygen` |
-| `doctor` 退出代码 1 | 注入或整理项未满足 | 通常不是安装失败 |
+| `doctor` 退出代码 1 | 检查项目失败或命令未完成 | 查看具体错误；仅有注入或整理项未满足时，不一定是安装故障 |
 
-退出代码 `2` 通常表示成功但有警告或待定决策，而非失败。退出代码 `1` 需要检查具体报告的项目。更多解答请参见 [常见问题](../faq.md)。
+退出代码 `2` 的含义取决于命令，可能表示警告、待定决策或输入错误。请检查输出状态和错误信息；退出代码 `1` 也需要查看具体报告。更多解答请参见 [常见问题](../faq.md)。
 
 ## 一分钟检查清单 {#one-minute-checklist}
 
@@ -233,7 +233,7 @@ pnpm add -g rsrs-cli
 # 2) Verify.
 rsrs --version
 
-# 3) Initialize and repair the model.
+# 3) Check setup and prepare the model if needed.
 rsrs status
 rsrs doctor --fix
 

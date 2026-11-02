@@ -121,27 +121,19 @@ rsrs reembed   # only if activation did not rebuild the index
 | `--direct` | 绕过运行时直接打开库文件（打印 `WARN: --direct bypasses the local runtime`）；如 `account remove` 等配置写入操作需 `--direct` 和已停止的运行时 |
 | `--client-only` | 仅连接到主机 HTTP 运行时且不管理其生命周期（或设置 `ONEMEMORY_CLIENT_ONLY=1`）；在沙箱中使用 `rsrs --client-only <command>`，非回环对等端需使用令牌 |
 
-```powershell
-rsrs account main                # switch away from <name> while the runtime runs
-rsrs --runtime-internal --stop   # stop before profile writes
-rsrs --direct account remove <name> --yes
-rsrs status
-```
-
-配置文件在活动状态下无法删除；请先选择 `main`（或其他保留的配置文件）。
+删除账户不是迁移所必需的步骤。该操作会永久移除所选账户的本机库和密钥；执行前请核对名称，并确认备份和恢复材料可用。活动账户无法删除；如确实需要删除，请先切换到要保留的账户。
 
 `rsrs web` 打开托管仪表盘 `https://dash.rsrs.rs` 且不启动本地运行时。详见 [主机运行时和沙箱客户端](../runtime.md) 的生命周期和令牌规则。
 
 ## 卸载旧客户端 {#uninstalling-the-old-client}
 
-在新库验证前保留旧的 `~/.onememory` 目录，然后移除旧客户端：
+在新库验证前保留旧的 `~/.onememory` 目录。确认新库可用后，在任务管理器中核对旧客户端的路径并退出该进程，再卸载旧包：
 
 ```powershell
-Stop-Process -Name 1memory -Force -ErrorAction SilentlyContinue
 npm uninstall -g @1memory/cli
 ```
 
-移除宿主工具中残留的 `1memory:begin` 和 `1memory:end` 注入块；opencode 配置应删除 `1memory.md` 并保留 `respire.md`。清理后，`where 1memory` 应无输出。请保留无关的全局 npm 包。
+移除宿主工具中残留的 `1memory:begin` 和 `1memory:end` 注入块；opencode 配置应删除 `1memory.md` 并保留 `respire.md`。清理后，可以使用 `where.exe 1memory` 检查 PATH 中是否仍有旧命令。请保留无关的全局 npm 包。
 
 ## 常见问题 {#common-pitfalls}
 
@@ -156,35 +148,25 @@ npm uninstall -g @1memory/cli
 | `legacy library has ciphertext but no session` | 找不到可用的原始凭据 | 恢复原始密钥后再迁移 |
 | defrag 报 `no usable vectors` | 库中无记录 | 不是故障；库非空时正常 |
 | 读取命令阻塞超过40秒 | 推理工作线程可能饱和 | 检查运行时；`rsrs model reset-cpu` 会切换到 CPU 并停止运行时 |
-| `doctor` 退出码1 | `inject` 或 `tidy` 未满足 | 不是安装故障 |
+| `doctor` 退出码 1 | 检查项目失败或命令未完成 | 查看具体错误；仅有注入或整理项未满足时，不一定是安装故障 |
 
 ## 退出码和错误分类 {#exit-codes-and-error-classes}
 
 阅读 JSON 包裹而非仅退出码。详见 [CLI JSON](../cli-api.md) 的包裹和代码表。
 
-- `exit=2` 通常表示成功带警告或待定决策，如 `keys-export`、`classify --plan`、`split` 材料、`bench`、`resort` 干运行或 `share`。
-- `doctor` 退出码1当 `inject` 或 `tidy` 未满足；这不是故障。
+- `exit=2` 的含义取决于命令，可能表示警告、待定决策或输入错误；请检查输出状态和错误信息。
+- `doctor` 退出码 1 时，检查每个失败项。注入或整理项未满足不一定表示安装故障；模型、存储或账户错误则需要进一步处理。
 - 用户输入错误，包括参数解析、ID 查找、不良规范、自连接或循环，返回 `summary.reason:"invalid_input"`、`error_type:"user"` 且退出码2。不要仅凭 `reason` 判断故障。
 
 完整命令面详见 [CLI 命令](../cli.md)；脚本集成详见 [CLI JSON](../cli-api.md)。
 
 ## 测试隔离 {#test-isolation}
 
-测试针对独立配置文件 (`~/.rsrs/accounts/<name>`)，从不使用主配置文件，并在测试后切换回并移除临时配置文件。
+测试前，选择一个全新的独立目录，并将 `RSRS_DATA_DIR` 指向它的绝对路径。同时，将 `RSRS_RPC_PORT` 设置为未被使用的端口，避免连接或停止日常使用的 Runtime。启动测试后，先用 `rsrs config` 和 `rsrs status` 核对实际目录与连接状态。
 
-```powershell
-rsrs --runtime-internal --stop
-rsrs --direct account test-profile
-rsrs --direct register --user test-profile   # host terminal; enter the login password at the hidden prompt
-rsrs status
-rsrs --runtime-internal --stop
-rsrs --direct account main
-rsrs --direct account remove test-profile --yes
-```
+注册会连接配置的服务端并创建账户；如需测试注册，请使用专门的测试服务和测试账户。不要把密码或恢复码放进命令参数。
 
-`rsrs --direct register` 在本终端运行，因此可以提示输入登录密码；`--direct` 要求运行时已停止。不要将密码或恢复码作为命令参数传递，它们会暴露在进程列表和 shell 历史中。
-
-新配置文件会报告本地存储处于离线模式。`register` 后请检查 `rsrs status`；同步取决于配置。
+测试结束时，先确认目标确实是测试 Runtime 和测试目录，再决定如何停止进程和处理数据。不要照搬固定账户名或无条件执行账户删除；删除账户会移除该账户的本地库和密钥。
 
 ## 数据安全 {#data-safety}
 
