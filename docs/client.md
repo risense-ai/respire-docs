@@ -26,7 +26,7 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-The page screenshots show the Client 2 0.2.22 frontend running in a browser with simulated data. Accounts, counts and task states are examples. The tray screenshot is from 0.2.17. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
+The page and tray screenshots show the Client 2 0.2.22 frontend running in a browser with simulated data. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
