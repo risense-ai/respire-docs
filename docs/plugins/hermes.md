@@ -13,15 +13,16 @@
 - Later prefetch calls may add a storage reminder based on turn count and recent storage time
 - fail-open: engine missing, timeout or parse failure degrade to an empty injection — the host turn is never blocked
 
-It is a **wrapper-style provider with zero Python dependency footprint**: the engine is the npm-installed `rsrs` CLI called as a sidecar subprocess. The plugin root carries no `pyproject.toml` / `pip_dependencies`, so it enjoys the `HERMES_HOME` survival contract (`hermes update` leaves the directory alone). Note that the respire library itself is **user-level** — one library per person shared across all agents and Hermes profiles, by design, unlike Hermes' per-profile storage default. Hermes allows only one external memory provider at a time.
+It is a **wrapper-style provider with zero Python dependency footprint**: the engine is the `rsrs` CLI called as a sidecar subprocess. The plugin root carries no `pyproject.toml` / `pip_dependencies`, so it enjoys the `HERMES_HOME` survival contract (`hermes update` leaves the directory alone). Note that the respire library itself is **user-level** — one library per person shared across all agents and Hermes profiles, by design, unlike Hermes' per-profile storage default. Hermes allows only one external memory provider at a time.
 
 ## Install
 
 Prerequisites: Python 3.9+ and Hermes 0.22.5 or later. The README lists Linux and Apple Silicon macOS; other platforms and versions need verification.
 
+Use the CLI installed by Client 2, or install it separately only if needed. If the host cannot find it, see [CLI access for plugins](./index.md#using-the-client-managed-cli).
+
 ```bash
 # 1) Engine (skip if installed; verify with rsrs --version)
-npm i -g rsrs-cli@latest
 rsrs --version
 # semantic recall (optional): rsrs model install && rsrs model activate m3
 

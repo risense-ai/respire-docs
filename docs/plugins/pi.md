@@ -10,8 +10,9 @@ Requires Node.js 22+, Pi 1.3.0, an installed `rsrs` CLI and a running Respire ho
 
 Install the engine separately if needed:
 
+Use the CLI installed by Client 2, or install it separately only if needed. If the host cannot find it, see [CLI access for plugins](./index.md#using-the-client-managed-cli).
+
 ```sh
-npm install -g rsrs-cli@latest
 rsrs --version
 rsrs --client-only status --json
 ```

@@ -31,12 +31,13 @@ qoder plugins install respire-qoder@risense
 
 ### 2. 引擎（缺失时 agent 可代装） {#_2-engine-the-agent-can-install-it-for-you}
 
+可以使用 Client 2 安装的 CLI；只有需要独立安装时才选择其他安装方式。如果宿主找不到 CLI，请参阅[插件如何使用客户端管理的 CLI](./index.md#using-the-client-managed-cli)。
+
 ```bash
-npm i -g rsrs-cli@latest
 rsrs --version
 ```
 
-无全局安装权限时，请参阅引擎安装指南。
+如需独立安装，请参阅[独立安装 CLI](../cli-install.md)。
 
 插件每轮实时探测引擎；装好**同会话内**即恢复召回与「记：」落库。
 

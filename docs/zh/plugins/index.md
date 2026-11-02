@@ -21,7 +21,15 @@ Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾
 
 各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md)
 
-先确认 `rsrs --version` 可用，再按宿主页准备 Runtime、登录及解锁。缺少引擎时，部分旧版插件会提示运行 `rsrs-cli` 安装命令；是否执行由用户决定。
+先按下方说明准备 CLI 和 Runtime，再按宿主页登录及解锁。缺少引擎时，部分旧版插件会提示运行 `rsrs-cli` 安装命令；是否执行由用户决定。
+
+## 使用客户端管理的 CLI {#using-the-client-managed-cli}
+
+Client 2 可在“更新”页安装 CLI 和 Runtime，不需要通过 npm 安装。客户端不一定将可执行文件加入 PATH，因此 Agent 可能无法自动找到它。
+
+默认路径为 `~/.rsrs/client2/runtime/<version>/rsrs`；Windows 的文件名为 `rsrs.exe`。请将 `<version>` 换成已安装版本。如果 Client 2 设置了 `RSRS_DATA_DIR`，请用该目录替代 `~/.rsrs`。根据插件支持的设置指定可执行文件，或将其目录加入宿主的 PATH。必要时重启宿主，再检查它是否连接到运行中的 Runtime。更新可能改变版本目录，更新后请重新核对路径。
+
+Codex 可设置 `RESPIRE_RSRS_PATH`，Pi 可使用 `--respire-rsrs`；Hermes 和 Qoder 支持 `RESPIRE_BIN`。请确保设置传入宿主进程。
 
 ## 调优 {#tuning}
 

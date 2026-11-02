@@ -10,8 +10,9 @@ Requires Node.js 24+, npm, Git, a local Codex client with plugins/hooks support,
 
 Prepare the engine (skip if it already works):
 
+Use the CLI installed by Client 2, or install it separately only if needed. If the host cannot find it, see [CLI access for plugins](./index.md#using-the-client-managed-cli).
+
 ```sh
-npm install -g rsrs-cli@latest
 rsrs --version
 rsrs --client-only status --json
 ```

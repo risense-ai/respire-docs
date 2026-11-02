@@ -1,0 +1,87 @@
+# Standalone CLI installation
+
+This page is for installing the CLI independently. Client 2 users can install the CLI and Runtime in the desktop app; see [Getting started](getting-started.md).
+
+## CLI alternative {#cli-alternative}
+
+The CLI is an alternative for terminal workflows and environments without a usable desktop client. Install a version available in the package registry with one package manager:
+
+```sh
+npm i -g rsrs-cli
+```
+
+Or use pnpm:
+
+```sh
+pnpm add -g rsrs-cli
+```
+
+Both commands install the `rsrs` launcher. Choose one, not both. For source builds, see [Development](development.md).
+
+## CLI platforms
+
+These are artifact targets, not a list of published packages. Confirm that the selected version and platform package are available before installation.
+
+| Platform | npm platform package | Rust target |
+| --- | --- | --- |
+| Linux x64, musl (default) | `@rsrsai/linux-x64` | `x86_64-unknown-linux-musl` |
+| Linux ARM64, musl (default) | `@rsrsai/linux-arm64` | `aarch64-unknown-linux-musl` |
+| Linux x64, glibc | `@rsrsai/linux-x64-gnu` | `x86_64-unknown-linux-gnu` |
+| Linux ARM64, glibc | `@rsrsai/linux-arm64-gnu` | `aarch64-unknown-linux-gnu` |
+| macOS Apple Silicon | `@rsrsai/macos-arm64` | `aarch64-apple-darwin` |
+| Windows x64 | `@rsrsai/win-x64` | `x86_64-pc-windows-msvc` |
+| Windows ARM64 | `@rsrsai/win-arm64` | `aarch64-pc-windows-msvc` |
+
+Linux defaults to the musl package. Select glibc explicitly on a compatible glibc host; the same launcher setting applies to npm and pnpm:
+
+```sh
+RSRS_LIBC=glibc rsrs doctor
+RSRS_LIBC=musl rsrs doctor
+# Keep the selection for subsequent commands in this shell:
+export RSRS_LIBC=glibc
+```
+
+GNU packages require a compatible glibc host and do not run on Alpine. If optional dependencies were omitted, install the selected platform package at the same version as `rsrs-cli`. Intel Mac is not an artifact target.
+
+## First commands
+
+After installing a compatible CLI:
+
+```sh
+rsrs --version
+rsrs help
+rsrs doctor
+rsrs --help
+```
+
+| Identity | Command |
+|---|---|
+| First cloud account | Use the interactive registration steps below |
+| Browser login | `rsrs login` or `rsrs login --oauth`; complete dashboard login/TOTP and approve the CLI |
+| Terminal login | `rsrs login --interactive`; enter password, TOTP when required, then the super password |
+| New device | Use the recovery options described by `rsrs login --help` and [Sync and keys](sync-and-keys.md) |
+| Local only | `rsrs keygen --json` |
+
+Use `keygen` only for a new profile without existing keys; do not regenerate keys for an existing library. Save `summary.super` from the JSON output privately as recovery material. To register a cloud account for this new profile, run the commands in a host terminal and enter the password when prompted. Replace YOUR_NAME with your username:
+
+```sh
+rsrs keygen --json
+rsrs --runtime-internal --stop
+rsrs --direct register --user YOUR_NAME
+```
+
+Keep recovery material outside Git and chat logs. A server cannot recover a lost client decryption secret. Do not replace existing keys merely to fix a login problem.
+
+The configured default API is `https://api.rsrs.rs`. For a local development server use `--addr http://127.0.0.1:8787`.
+
+Respire uses `~/.rsrs` and runtime port `15169`. Startup keeps the selected account and its settings. To import an older account, use `rsrs migrate` or TUI **Migrate old version**, select its source and choose a new account name. Backup-only directories are excluded, existing destinations are refused and original data remains intact. See [Data model](data-model.md) for migration and recovery details.
+
+```sh
+rsrs inject --targets
+rsrs inject --id codex
+rsrs remember "A reusable decision for this project" --type decision --title "Project decision"
+rsrs recall "project decision" --limit 3
+rsrs tree
+```
+
+A duplicate proposal is not a completed write: inspect it and choose the appropriate action. [Injection](injection.md) · [Walkthrough](walkthrough.md) · [FAQ](faq.md)
