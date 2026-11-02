@@ -121,14 +121,7 @@ rsrs reembed   # only if activation did not rebuild the index
 | `--direct` | 绕过运行时直接打开库文件（打印 `WARN: --direct bypasses the local runtime`）；如 `account remove` 等配置写入操作需 `--direct` 和已停止的运行时 |
 | `--client-only` | 仅连接到主机 HTTP 运行时且不管理其生命周期（或设置 `ONEMEMORY_CLIENT_ONLY=1`）；在沙箱中使用 `rsrs --client-only <command>`，非回环对等端需使用令牌 |
 
-```powershell
-rsrs account main                # switch away from <name> while the runtime runs
-rsrs --runtime-internal --stop   # stop before profile writes
-rsrs --direct account remove <name> --yes
-rsrs status
-```
-
-配置文件在活动状态下无法删除；请先选择 `main`（或其他保留的配置文件）。
+删除账户不是迁移所必需的步骤。该操作会永久移除所选账户的本机库和密钥；执行前请核对名称，并确认备份和恢复材料可用。活动账户无法删除；如确实需要删除，请先切换到要保留的账户。
 
 `rsrs web` 打开托管仪表盘 `https://dash.rsrs.rs` 且不启动本地运行时。详见 [主机运行时和沙箱客户端](../runtime.md) 的生命周期和令牌规则。
 

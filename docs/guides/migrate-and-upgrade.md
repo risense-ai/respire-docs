@@ -121,14 +121,7 @@ Large libraries on CPU rebuild slowly; do not run concurrent model operations wh
 | `--direct` | Bypasses the runtime and opens the library file directly (prints `WARN: --direct bypasses the local runtime`); profile writes such as `account remove` require `--direct` and a stopped runtime |
 | `--client-only` | Connects only to the host HTTP runtime and does not manage its lifecycle (or set `ONEMEMORY_CLIENT_ONLY=1`); in a sandbox use `rsrs --client-only <command>`, and a non-loopback peer needs a token |
 
-```powershell
-rsrs account main                # switch away from <name> while the runtime runs
-rsrs --runtime-internal --stop   # stop before profile writes
-rsrs --direct account remove <name> --yes
-rsrs status
-```
-
-A profile cannot be deleted while it is active; select `main` (or another retained profile) first.
+Deleting an account is not required for migration. It permanently removes the selected account's local store and keys, so verify the name, backups and recovery material first. An active account cannot be deleted; if deletion is necessary, first switch to an account you intend to keep.
 
 `rsrs web` opens the hosted dashboard `https://dash.rsrs.rs` and does not start the local runtime. See [Host runtime and sandbox clients](../runtime.md) for lifecycle and token rules.
 
