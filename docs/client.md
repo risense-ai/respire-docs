@@ -98,6 +98,10 @@ The panels below show retrieval, indexing and the quality-recall service. The ad
 
 Open **Accounts & Spaces** to sign in, recover keys or initialize a new offline library. The same page manages saved accounts, sync, spaces, invitations and members. Keep recovery material and invitations private. Removing a space removes its corresponding local space and data.
 
+**Recover decryption material** requires `kdf_salt`, `wrapped_urk` and `urk_nonce`, plus the super password. For legacy material, the original login password and Account Secret can also be used. Before submitting, confirm the material belongs to the library you intend to open.
+
+**Change super password** rewraps existing keys; it cannot recover a lost decryption key. Save the new recovery material securely afterward. The old recovery code no longer applies to the new key wrapping.
+
 ![Accounts and spaces](/client2/accounts-en.png)
 
 The panel below shows sync and server settings. The address is an example.
