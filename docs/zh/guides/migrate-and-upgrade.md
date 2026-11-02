@@ -170,21 +170,11 @@ npm uninstall -g @1memory/cli
 
 ## 测试隔离 {#test-isolation}
 
-测试针对独立配置文件 (`~/.rsrs/accounts/<name>`)，从不使用主配置文件，并在测试后切换回并移除临时配置文件。
+测试前，选择一个全新的独立目录，并将 `RSRS_DATA_DIR` 指向它的绝对路径。同时，将 `RSRS_RPC_PORT` 设置为未被使用的端口，避免连接或停止日常使用的 Runtime。启动测试后，先用 `rsrs config` 和 `rsrs status` 核对实际目录与连接状态。
 
-```powershell
-rsrs --runtime-internal --stop
-rsrs --direct account test-profile
-rsrs --direct register --user test-profile   # host terminal; enter the login password at the hidden prompt
-rsrs status
-rsrs --runtime-internal --stop
-rsrs --direct account main
-rsrs --direct account remove test-profile --yes
-```
+注册会连接配置的服务端并创建账户；如需测试注册，请使用专门的测试服务和测试账户。不要把密码或恢复码放进命令参数。
 
-`rsrs --direct register` 在本终端运行，因此可以提示输入登录密码；`--direct` 要求运行时已停止。不要将密码或恢复码作为命令参数传递，它们会暴露在进程列表和 shell 历史中。
-
-新配置文件会报告本地存储处于离线模式。`register` 后请检查 `rsrs status`；同步取决于配置。
+测试结束时，先确认目标确实是测试 Runtime 和测试目录，再决定如何停止进程和处理数据。不要照搬固定账户名或无条件执行账户删除；删除账户会移除该账户的本地库和密钥。
 
 ## 数据安全 {#data-safety}
 

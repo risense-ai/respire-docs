@@ -170,21 +170,11 @@ For the full command surface, see [CLI commands](../cli.md); for script integrat
 
 ## Test isolation
 
-Test against a separate profile (`~/.rsrs/accounts/<name>`), never the main profile, and switch back and remove the temporary profile afterward.
+Before testing, choose a new, separate directory and set `RSRS_DATA_DIR` to its absolute path. Also set `RSRS_RPC_PORT` to an unused port so the test does not connect to or stop your everyday Runtime. Once the test starts, use `rsrs config` and `rsrs status` to check the actual directory and connection.
 
-```powershell
-rsrs --runtime-internal --stop
-rsrs --direct account test-profile
-rsrs --direct register --user test-profile   # host terminal; enter the login password at the hidden prompt
-rsrs status
-rsrs --runtime-internal --stop
-rsrs --direct account main
-rsrs --direct account remove test-profile --yes
-```
+Registration connects to the configured server and creates an account. If you need to test registration, use a dedicated test service and account. Do not pass passwords or recovery codes as command arguments.
 
-`rsrs --direct register` runs in this terminal so it can prompt for the login password; `--direct` requires the runtime to be stopped. Do not pass passwords or recovery codes as command arguments, which expose them to process listings and shell history.
-
-A fresh profile reports a local store in offline mode. After `register`, check `rsrs status`; synchronization depends on configuration.
+When testing ends, confirm which process and directory belong to the test before deciding how to stop the process or handle its data. Do not copy a fixed account name or delete an account unconditionally; deleting an account removes its local store and keys.
 
 ## Data safety
 
