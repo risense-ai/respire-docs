@@ -148,14 +148,14 @@ Remove any leftover `1memory:begin` and `1memory:end` injection blocks from host
 | `legacy library has ciphertext but no session` | Original credentials are unavailable | Recover the original keys before migration |
 | defrag reports `no usable vectors` | The library has no records | Not a fault; normal once the library is non-empty |
 | Read commands block for more than 40 seconds | Inference workers may be saturated | Inspect the runtime; `rsrs model reset-cpu` selects CPU and stops the runtime |
-| `doctor` exits 1 | `inject` or `tidy` is not satisfied | Not an installation fault |
+| `doctor` exits 1 | A check failed or the command did not complete | Inspect the error; injection or tidy items alone do not necessarily mean installation failed |
 
 ## Exit codes and error classes
 
 Read the JSON envelope rather than only the exit code. See [CLI JSON](../cli-api.md) for the envelope and code table.
 
-- `exit=2` commonly means success with a warning or a pending decision, such as `keys-export`, `classify --plan`, `split` material, `bench`, a `resort` dry run or `share`.
-- `doctor` exits 1 when `inject` or `tidy` is not satisfied; this is not a failure.
+- `exit=2` depends on the command and can indicate a warning, a pending decision or invalid input. Inspect the output status and error details.
+- When `doctor` exits 1, inspect each failed item. Unsatisfied injection or tidy items do not necessarily mean installation failed; model, store or account errors need further attention.
 - User-input errors, including argument parsing, ID lookup, a bad spec, self-attach or a cycle, return `summary.reason:"invalid_input"`, `error_type:"user"` and exit 2. Do not decide failure from `reason` alone.
 
 For the full command surface, see [CLI commands](../cli.md); for script integration, see [CLI JSON](../cli-api.md).

@@ -148,14 +148,14 @@ npm uninstall -g @1memory/cli
 | `legacy library has ciphertext but no session` | 找不到可用的原始凭据 | 恢复原始密钥后再迁移 |
 | defrag 报 `no usable vectors` | 库中无记录 | 不是故障；库非空时正常 |
 | 读取命令阻塞超过40秒 | 推理工作线程可能饱和 | 检查运行时；`rsrs model reset-cpu` 会切换到 CPU 并停止运行时 |
-| `doctor` 退出码1 | `inject` 或 `tidy` 未满足 | 不是安装故障 |
+| `doctor` 退出码 1 | 检查项目失败或命令未完成 | 查看具体错误；仅有注入或整理项未满足时，不一定是安装故障 |
 
 ## 退出码和错误分类 {#exit-codes-and-error-classes}
 
 阅读 JSON 包裹而非仅退出码。详见 [CLI JSON](../cli-api.md) 的包裹和代码表。
 
-- `exit=2` 通常表示成功带警告或待定决策，如 `keys-export`、`classify --plan`、`split` 材料、`bench`、`resort` 干运行或 `share`。
-- `doctor` 退出码1当 `inject` 或 `tidy` 未满足；这不是故障。
+- `exit=2` 的含义取决于命令，可能表示警告、待定决策或输入错误；请检查输出状态和错误信息。
+- `doctor` 退出码 1 时，检查每个失败项。注入或整理项未满足不一定表示安装故障；模型、存储或账户错误则需要进一步处理。
 - 用户输入错误，包括参数解析、ID 查找、不良规范、自连接或循环，返回 `summary.reason:"invalid_input"`、`error_type:"user"` 且退出码2。不要仅凭 `reason` 判断故障。
 
 完整命令面详见 [CLI 命令](../cli.md)；脚本集成详见 [CLI JSON](../cli-api.md)。

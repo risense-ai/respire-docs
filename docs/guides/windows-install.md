@@ -220,9 +220,9 @@ Injection writes instructions but does not install automatic hooks. Automatic be
 | `another model operation is running` | Concurrent model operations | Wait for the current operation; do not run concurrently |
 | `backup` reports `os error 80` | The target file already exists | Choose a new backup path |
 | `keygen would overwrite it` | Key material already exists | Only run `keygen` on a new profile |
-| `doctor` exits with code 1 | Injection or tidy items are not met | Usually not an installation failure |
+| `doctor` exits with code 1 | A check failed or the command did not complete | Inspect the error; injection or tidy items alone do not necessarily mean installation failed |
 
-Exit code `2` commonly means success with a warning or a pending decision, not a failure. Exit code `1` requires inspecting the specific reported item. More answers are in the [FAQ](../faq.md).
+Exit code `2` depends on the command and can indicate a warning, a pending decision or invalid input. Inspect the output status and error details; code `1` also requires checking the report. More answers are in the [FAQ](../faq.md).
 
 ## One minute checklist
 
