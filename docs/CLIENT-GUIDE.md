@@ -1,38 +1,16 @@
-# Client integration
+# Client integration {#client-integration}
 
-For a new third-party client or agent, start with [Runtime RPC](runtime-rpc.md). It calls the existing runtime over HTTP and does not require a Tauri sidecar integration.
+Respire Client 2 uses a Go and Wails v3 shell with an embedded frontend. It calls named desktop actions, local Runtime RPC and restricted CLI host operations; it does not open the database or implement Core. For a third-party client, start with [Runtime RPC](runtime-rpc.md) and check the running CLI's supported capabilities.
 
 | Responsibility | Owner |
 |---|---|
-| UI and Tauri shell | Client repository |
-| Memory operations and local identity | CLI |
-| Protocol/output contract | Canonical contracts and CLI adapters |
-| Retrieval/model execution | Core through SDK |
+| Desktop, frontend, tray and client updater | `respire-client2` |
+| Memory, local identity, sync and Runtime | CLI and its application layer |
+| Model execution and retrieval | Core through the CLI SDK |
 | Encrypted remote records | Server |
 
-```mermaid
-flowchart LR
-  Matrix["Compatibility matrix"] --> Stage["Stage CLI + runtimes"]
-  Stage --> Frontend["Build tree UI"]
-  Frontend --> Desktop["Build desktop package"]
-  Desktop --> Verify["Clean-machine startup"]
-```
+The old `contracts/client-compatibility-matrix.json` describes the Tauri client and its sidecar staging; it is not the Client 2 release matrix. Client 2 selects a CLI release for its own platform, validates its metadata and hashes, then stages the executable and native runtime. An existing compatible Runtime can also be used. A target mapping does not guarantee published assets or compatible optional features.
 
-Before building:
+For development, follow the client repository's [build instructions](https://github.com/risense-ai/respire-client2#build), check the platform dependencies and run the existing checks. The Windows script runs Go vet and frontend syntax checks and produces an executable, checksums and notices. Verify a packaged build in an isolated environment before distribution.
 
-1. Check `contracts/client-compatibility-matrix.json` and CLI artifact targets.
-2. Obtain an compatible sidecar and stage its runtime manifest/resources.
-3. Run the existing frontend checks.
-4. Build the native desktop package with its platform dependencies.
-5. Verify the packaged application on a clean environment.
-
-| Local record | Writer |
-|---|---|
-| `session.json` | CLI registration/login |
-| `client.json` | Client preferences shared with CLI |
-| Local SQLite | CLI/application layer |
-| Injection blocks | CLI managed-target implementation |
-
-Do not duplicate key management or inference in the UI. Changes to CLI JSON or sync/auth behavior must be checked against both CLI and client consumers.
-
-[Client](client.md) · [Contracts](contracts.md) · [Development](development.md)
+Credentials for supported account operations and model services are passed to the CLI through standard input, not command-line arguments. Do not duplicate key management or inference in the UI. See [Client](client.md), [Contracts](contracts.md) and [Development](development.md).

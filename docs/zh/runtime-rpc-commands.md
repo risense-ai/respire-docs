@@ -1,4 +1,4 @@
-# Runtime RPC 完整功能参考 {#runtime-rpc-command-reference}
+# Runtime RPC 功能参考 {#runtime-rpc-command-reference}
 
 本页覆盖已发布 **1.0.17-dev.14** 的全部 **82 个顶层命令、32 个子命令**及 **18 个 MCP 工具**。传输协议和可运行客户端见 [Runtime RPC](runtime-rpc.md)。
 
@@ -171,7 +171,7 @@ Options:
 
 ### `capabilities` {#cmd-capabilities}
 
-读取静态 CLI 能力，不需要账户或模型；结果不能代替运行时权限与就绪检查。
+读取静态 CLI 能力，不需要账户档案、运行时或下载模型；结果不能代替运行时权限与就绪检查。
 
 调用边界：`RPC`.
 
@@ -530,7 +530,7 @@ Options:
 
 ### `diary` {#cmd-diary}
 
-按日期、范围、关键词或数量读取时间线；不等于只读取 trivial 条目。
+按日期、范围、关键词或数量读取整个记忆库的时间线，不按重要性过滤，也包含 trivial 条目。日期范围包含两端。
 
 调用边界：`RPC`.
 
@@ -674,7 +674,7 @@ Options:
 
 ### `remember` {#cmd-remember}
 
-存储可复用记忆或日记，也支持合并、替代和关联。pending 或 hook 拒绝不等于已写入。
+存储可复用记忆或日记，并自动加密和计算嵌入。下方原始帮助简化了判重条件：此版本仅在未指定 --force、--merge-ids、--supersedes 和 --parent，--see-also 为空，且重要性不是 trivial 时先召回。出现合并或挂靠候选时返回 pending，不写入；否则继续写入流程。显式指定合并、父条目或关联会跳过这次候选检查。hook 返回 pending 或拒绝也不等于已写入。
 
 调用边界：`RPC`.
 
@@ -1100,7 +1100,7 @@ Options:
 
 ### `extract` {#cmd-extract}
 
-扫描本机编码 agent 会话并导入；targets 列来源，dry-run 预览，游标避免重复导入。
+扫描本机编程助手会话并导入；targets 列来源，dry-run 预览，游标避免重复导入。
 
 调用边界：`RPC`.
 
@@ -2158,7 +2158,7 @@ Options:
 
 ### `register` {#cmd-register}
 
-创建云账户及本地密钥包装；无完整参数时可能需要交互输入。
+创建云账户及本地密钥包装：登录密码用于认证，超级密码用于包装密钥。默认地址为 https://api.rsrs.rs，可用 --addr 覆盖。缺少用户名或密码时需要交互输入，且必须使用 TTY。
 
 调用边界：`HOST`.
 
@@ -2449,7 +2449,7 @@ Options:
 
 调用边界：`ADMIN`.
 
-可以通过 RPC 读取配置。data-dir 和账户或服务身份变更交由宿主协调。rpc-parallelism 在宿主重启后生效；客户端环境变量不会改变已运行的 worker 数量。
+可以通过 RPC 读取配置。data-dir 和账户或服务身份变更交由宿主协调。rpc-parallelism 在宿主重启后生效；客户端环境变量不会改变已运行的 worker 容量。
 
 RPC `args` 模板：`["--json","config"]`
 
@@ -3252,7 +3252,7 @@ Options:
 }
 ```
 
-默认目录有 18 个工具，其中 `memory_forget` 和 `memory_restore` 默认关闭。宿主通过 `RSRS_MCP_ALLOW` 与 `RSRS_MCP_DENY` 指定逗号分隔的名称；DENY 优先。ALLOW 中的 `all` 或 `*` 仍不开放这两个敏感工具，需要显式列名。非法名称或空项会报错。旧变量 `RSRS_MCP_ALLOW_TOOLS` 与 `RSRS_MCP_DENY_TOOLS` 仅在对应新变量未设置时兼容。
+工具目录共有 18 个工具，其中 `memory_forget` 和 `memory_restore` 默认关闭。宿主通过 `RSRS_MCP_ALLOW` 与 `RSRS_MCP_DENY` 指定逗号分隔的名称；DENY 优先。ALLOW 中的 `all` 或 `*` 仍不开放这两个敏感工具，需要显式列名。非法名称或空项会报错。旧变量 `RSRS_MCP_ALLOW_TOOLS` 与 `RSRS_MCP_DENY_TOOLS` 仅在对应新变量未设置时兼容。
 
 只读模式只保留读取工具；暂停模式只保留 memory_status，ALLOW 不能绕过服务模式。merge_ids 合并还要求 memory_forget 权限。以实际 tools/list 为准，不要硬编码显示工具数量。直接 RPC 不受这些 MCP allow/deny 过滤限制，集成方仍需执行自己的权限控制。
 
@@ -3275,7 +3275,7 @@ Options:
 
 ### `memory_extract` {#tool-memory-extract}
 
-扫描或导入本机编码 agent 会话。写入需要 confirm=true；dry_run=true 仅预览。
+扫描或导入本机编程助手会话。每个来源最多导入 limit 个最新会话，写入后自动同步。写入需要 confirm=true；dry_run=true 仅预览。
 
 <details>
 <summary>inputSchema</summary>
@@ -3323,7 +3323,7 @@ Options:
 
 ### `memory_remember` {#tool-memory-remember}
 
-保存记忆、合并、替代或关联；合并还需要删除权限。
+保存记忆、合并、替代或关联；合并会删除 merge_ids 所列源条目，还需要删除权限。
 
 <details>
 <summary>inputSchema</summary>
@@ -3382,7 +3382,7 @@ Options:
 
 ### `memory_recall` {#tool-memory-recall}
 
-语义召回，可选择是否包含关联。
+使用本地 BGE 与关键词融合进行语义召回，不联网；可选择是否包含关联。
 
 <details>
 <summary>inputSchema</summary>
@@ -3569,7 +3569,7 @@ Options:
 
 ### `memory_diary_search` {#tool-memory-diary-search}
 
-在预算内检索跨日期日记片段。
+在预算内检索跨日期日记片段；分数表示相关性，不表示可信度。
 
 <details>
 <summary>inputSchema</summary>
@@ -3648,7 +3648,7 @@ Options:
 
 ### `memory_diary` {#tool-memory-diary}
 
-读取时间线，包含日记区域。
+读取时间线，包含 trivial 区域。
 
 <details>
 <summary>inputSchema</summary>
@@ -3705,7 +3705,7 @@ Options:
 
 ### `memory_query_log_mark` {#tool-memory-query-log-mark}
 
-对召回候选给出明确采用或拒绝反馈；当前适配器有参数限制，见下文。
+对召回候选给出明确采用或拒绝反馈；当前适配器有参数限制，见上文。
 
 <details>
 <summary>inputSchema</summary>

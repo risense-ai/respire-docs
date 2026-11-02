@@ -1,5 +1,7 @@
 # Hermes Agent 版 respire {#respire-for-hermes-agent}
 
+<img src="/agents/hermes.png" alt="Hermes logo" width="56" height="56">
+
 [respire-hermes](https://github.com/risense-ai/respire-hermes) 按官方 [Memory Provider Plugins](https://hermes-agent.nousresearch.com/docs/developer-guide/memory-provider-plugin) 契约实现，让 Hermes 与本机其他 agent（ZCode、Kimi Code 等）共享同一座本地加密记忆库。与钩子适配不同，它是**目录式 memory provider**：Hermes 经 provider API 调用，不走 shell 钩子。调优参考见[插件总览](./index.md)。
 
 ## 形态与行为 {#what-it-does}
@@ -8,22 +10,24 @@
 - **`system_prompt_block`**：注入用法简则＋引擎状态引导（未装引擎/未登录/空库/缺语义模型时才出对应段，否则零打扰）
 - **三个工具**：`respire_recall` / `respire_show` / `respire_remember`（判后即存：相似会给候选，挂靠或直写由模型决断）
 - 消息以「记：」「存：」或 `remember:` 开头 → provider 直接落库保底并回执；`/nomem` 前缀关闭当轮自动召回
-- 轮末检查：干完活没存才催，闲聊零打扰
+- 后续请求按轮数和最近存储时间决定是否加入存储提醒
 - fail-open：引擎缺失/超时/解析失败一律降级为空注入，绝不阻断宿主回合
 
 形态是 **wrapper 式目录 provider、零 Python 依赖面**：引擎是 npm 装的 `rsrs` CLI sidecar（subprocess 调用）。插件根无 `pyproject.toml` / `pip_dependencies`，享受 `HERMES_HOME` 生存契约（`hermes update` 不动本目录）。注意 respire 库本身是**用户级**——一人一库、跨 agent 与 Hermes profile 共享，这是 respire 的产品设计，与 Hermes 默认的按 profile 隔离不同。Hermes 同一时间只允许一个外部 memory provider 激活。
 
 ## 安装 {#install}
 
-前置：Python 3.9+（Hermes 自带）、Node.js（引擎 sidecar 用）。
+前置：Python 3.9+，Hermes 0.22.5 及以上；README 列出 Linux 与 Apple Silicon macOS。其他平台和版本需自行验证。
 
 ```bash
 # 1) Engine (skip if installed; verify with rsrs --version)
-npm i -g @rsrsai/cli@latest
-rsrs register --user <your name>   # first-device registration, sign up at https://rsrs.rs
+npm i -g rsrs-cli@latest
+rsrs --version
 # semantic recall (optional): rsrs model install && rsrs model activate m3
 
 # 2) Plugin (either way)
+git clone https://github.com/risense-ai/respire-hermes.git
+cd respire-hermes
 bash scripts/install.sh                 # copies into $HERMES_HOME/plugins/respire/
 # or manually: cp -R this directory (minus .git/dist) to ~/.hermes/plugins/respire/
 
@@ -90,7 +94,7 @@ Hermes 没有 provider 之间的迁移 API：切换只会停用旧 provider，�
 
 ## 已知边界 {#known-limits}
 
-- **未做真机 E2E**：契约逐条取自官方 memory-provider-plugin 文档（2026-10-23 版）；本地验证为脱离 Hermes 的结构等价桩＋真 `rsrs` 引擎的工具/prefetch/配置回环（`tests/test_provider.py`）。若真机行为不符，最可能要调的是 `get_tool_schemas()`（OpenAI function 格式，推断）与 `get_status_config()`（平面 dict，推断）。
+- **真机验证范围有限**：README 记录了 Hermes 0.22.5 基线的 provider 链路验证；桩测试不能证明其他版本、平台或并发场景。
 - 桌面端配置面板文件（`config_schema.py`）格式官方未公开，暂未随包；面板配置可先手改 `respire.json`。
 - 未实现可选 hook `on_memory_write`：切换后通过 Hermes 内置 `memory` 工具新增/修改的条目不会自动镜像进 rsrs，需按[导入已有记忆](#import-existing-memory)手动迁移；要长期自动同步需给插件补该 hook。
 

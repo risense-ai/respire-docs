@@ -1,6 +1,6 @@
 # CLI JSON API
 
-Use `--json` when integrating Respire with scripts, agents or applications. Parse the JSON envelope rather tha matching human-readable messages.
+Use `--json` when integrating Respire with scripts, agents or applications. Parse the JSON envelope rather than matching human-readable messages.
 
 ```json
 {

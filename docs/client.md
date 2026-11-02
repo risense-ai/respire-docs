@@ -1,38 +1,37 @@
-# Client
+# Client {#client}
 
-The desktop client uses Tauri and the same tree UI as local Web. Memory operations go through the CLI; the client does not contain the memory engine.
+Respire Client 2 is a Go desktop application built with Wails v3, targeting Windows, macOS and Linux. Windows amd64 has local interactive verification; non-Windows UI, tray, login integration and self-update still require native acceptance. Its embedded interface is separate from the hosted [Dashboard](product/web.md). It connects to the local CLI Runtime over loopback RPC and uses restricted host actions for account changes, injection and credential configuration. It does not contain Core or model weights.
 
-```mermaid
-flowchart LR
-  Desktop["Tauri shell"] --> UI["Tree UI"]
-  Browser["Local browser"] --> UI
-  UI --> Commands["CLI commands / JSON"]
-  Commands --> Core["Core through SDK"]
-  Commands --> DB[("Local library")]
-```
+Download a matching application from [client releases](https://github.com/risense-ai/respire-client2/releases). The application downloads a matching CLI and native runtime separately, or connects to a compatible existing local Runtime. Desktop and CLI updates have independent Stable and Dev channels. A desktop build does not guarantee a matching CLI release; see [platform support](https://github.com/risense-ai/respire-client2/blob/main/docs/platforms.md).
 
-| View | Behavior |
+## Pages and tray {#pages-and-tray}
+
+| Page | Actions and conditions |
 |---|---|
-| Search | Local retrieval and category filters |
-| Tree | Expand roots/subtrees and inspect relationships |
-| Detail | Entry content, parent/children and authorized edits |
-| Create | Inspect duplicate/parent proposals before deciding |
-| Maintenance | Analyze structure, rebuild indexes and export/import |
-| Account | Login, recovery, autosync and manual sync |
-| Injection | Detect target tools and update managed blocks |
+| Overview | View local and cloud counts, pending sync, conflicts, index, model tasks and Runtime status; sync and start or stop Runtime. |
+| Memories | Browse tree, list, cards or graph; filter loaded entries or search the library; read, create, edit, move, merge, copy, delete, restore, share and inspect causal chains. The editor offers a three-part template and similar-memory search; candidates can be read and selected as parents, or deduplication can be explicitly bypassed. Tools include promotion, grant inspection, book, portrait and subtree materials, and permanent ciphertext purge. |
+| Diary | Browse by month or day, search across dates and open fragments and neighbors. |
+| Organize | Inspect grouping suggestions, similar entries and structural audit; generate, edit, copy, preview and apply a validated local move plan; preview suggestions individually or together. Configure a service to preview or execute AI organization by item limit, subtree or entire library. |
+| Models & Index | Select download source, prepare or download weights, cancel work or uninstall models; select an installed weight and engine, install NPU providers, probe inference, prepare or rebuild the index, configure recall, and run recall checks and a nine-round benchmark. Weights can be downloaded again; applying an engine reloads the model and verifies inference, falling back to CPU on failure. |
+| Accounts & Spaces | Browser or password login, registration, recovery, super-password reset, offline initialization, key export and logout; switch accounts, inspect or migrate old accounts, configure server and sync, inspect conflicts, and create, join, switch or remove spaces and manage invitations and members. Password operations require a compatible CLI with account RPC; login accepts a two-step verification code. Revoke one member or all members. |
+| Install | Select and distribute an instruction mode, detect targets, inject or remove instructions, and prepare or install host plugins. The current UI offers file preview for Codex; applying it requires the preview revision. Changing instruction mode rewrites instructions for all enabled agents without changing plugins; disabling an agent removes its injected instructions but keeps its plugin. Some plugins require the host UI to finish installation. DSH instruction injection overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back up the target first. |
+| Access Grants | Create, inspect and revoke read-only subtree grants, including inherited access. |
+| Settings | Change theme, layout, language, login startup, automatic Runtime connection and updates, channels, work and diary modes, and data directory; import/export memories, back up the database, import shared material, and import/export client settings. |
+| Updates | Check, download, cancel and apply client updates; check and install or update the CLI, or open release and mirror pages. With automatic updates enabled, the client can restart after downloading when no business operation is running. |
+| Operations | Inspect write status, request IDs and session receipts; query the original request when its result is unknown. Host-operation outcomes must be checked on their own page. |
+| Diagnostics | Inspect connection and health, run the CLI doctor and export diagnostics. |
+| Tray | The quick panel shows status and can sync or open the main window. The panel can be refreshed manually and refreshes when focused or shown again. Its menu can start or stop Runtime, check updates and quit the client while leaving Runtime running. |
 
-The local library and key handling are shared with the CLI. Server logout does not erase local records. Recovery-key export is sensitive, and JSON entry export is plaintext.
+The graph displays up to 300 nodes per page, with cross-page relationships, zoom, pan, node selection and dragging. Center the selected node with the control, or focus a node and press Enter or Space to open it. Directory filters apply only to loaded memories. Memory shortcuts include Ctrl/Command+K for search, Ctrl/Command+N for a new entry, Ctrl/Command+Z for eligible undo, Ctrl/Command+Shift+N to create a follow-up under the selected node, and Ctrl/Command+Shift+C for a node link. F2 edits, Delete or Backspace deletes, and arrow keys select, expand or collapse nodes. These shortcuts do not fire while a dialog is open or an input control is being edited. Undo retains one eligible operation, refuses a changed library and is not an atomic cross-client transaction.
 
-## Packaging boundary
+## Data and failure boundaries {#data-and-failure-boundaries}
 
-| Item | Required |
-|---|---|
-| CLI sidecar | Compatible version from the artifact contract |
-| Runtime files | `core-runtime.json` and its validated runtime resources |
-| Models | Matching model resources and their licenses |
-| Desktop resources | UI, platform runtime and installer configuration |
-| Compatibility | Canonical client/CLI target mapping |
+JSON memory exports and shared materials contain plaintext. Key exports and recovery materials can unlock data; space invitations contain access and decryption capability. Protect these files and share them only with trusted recipients. Removing a space deletes its corresponding local space and data. Forgetting local identity removes the session and decryption material but retains encrypted memories; unlocking again requires recovery material. Changing the data directory keeps the old directory and does not copy memories or keys; the new directory needs its own session and keys. Normal memory deletion can propagate through sync; permanent ciphertext purge cannot be undone. Merging replaces source entries, while unselected children are promoted according to Runtime rules.
 
-A fresh client source clone does not supply a compatible CLI binary. Obtain a compatible release before staging a sidecar. Windows packages must include required runtime libraries next to the sidecar; see [Windows packaging](windows-packaging.md).
+AI organization sends selected memory material to the configured service. Quality recall sends the query and candidate titles. Service keys are passed to the CLI through standard input for storage in the system credential store. Diagnostic exports can contain local paths, operation errors and full session receipts; inspect them before sharing.
 
-[Client integration](CLIENT-GUIDE.md) · [Local Web](product/web.md)
+A lost write receipt does not prove that the write failed. The client keeps its request ID and queries the original request rather than replaying it. Full receipts are kept during the session; after restart only request metadata remains. An older Runtime or CLI may lack features, and missing release assets are reported rather than replaced with another architecture.
+
+## Packaging boundary {#packaging-boundary}
+
+Windows uses an executable and requires WebView2. macOS uses an app bundle; Linux requires GTK 3, WebKitGTK 4.1 and platform libraries. Desktop and CLI/native runtime are distributed separately. Verify platform prerequisites and release assets; the client does not bundle model weights. See [Windows packaging](windows-packaging.md) and [client integration](CLIENT-GUIDE.md).

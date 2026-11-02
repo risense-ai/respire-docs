@@ -4,11 +4,11 @@
 |---|---|
 | Product | [Overview](index.md), [Repositories](repos.md) |
 | First use | [Getting started](getting-started.md), [Walkthrough](walkthrough.md), [FAQ](faq.md) |
-| Operation guides | [Installing on Windows](guides/windows-install.md), [Migrating and upgrading](guides/migrate-and-upgrade.md), [Batch-tidying extracted memories](guides/batch-tidy-extracted.md), [Worked example: Doubao](guides/agent-example-doubao.md), [Skills repository](guides/skills-repo.md), [memTools desktop capture](guides/memtools.md) |
+| Operation guides | [Installing on Windows](guides/windows-install.md), [Migrating and upgrading](guides/migrate-and-upgrade.md), [Batch-tidying extracted memories](guides/batch-tidy-extracted.md), [Worked example: Doubao](guides/agent-example-doubao.md), [Skills repository](guides/skills-repo.md) |
 | Data and trust | [Architecture](architecture.md), [Data model](data-model.md), [Sync and keys](sync-and-keys.md) |
-| Interfaces | [CLI](cli.md), [CLI JSON](cli-api.md), [Runtime RPC](runtime-rpc.md), [All RPC functions](runtime-rpc-commands.md), [Server](server.md), [Contracts](contracts.md) |
-| Applications | [Client](client.md), [Local Web](product/web.md), [Website](product/site.md) |
-| Contributors | [Development](development.md),  |
+| Interfaces | [CLI](cli.md), [CLI JSON](cli-api.md), [Runtime RPC](runtime-rpc.md), [RPC reference for 1.0.17-dev.14](runtime-rpc-commands.md), [Server](server.md), [Contracts](contracts.md) |
+| Applications | [Client](client.md), [Dashboard](product/web.md), [Website](product/site.md) |
+| Contributors | [Development](development.md) |
 
 ```sh
 npm ci

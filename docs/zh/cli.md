@@ -55,7 +55,7 @@ flowchart LR
 | --- | --- |
 | 标准输出 | 最终结果；使用 `--json` 时为单个 JSON 对象 |
 | 标准错误 | 进度、诊断与警告 |
-| `--client-only` | 连接已有且已认证的本地 runtime |
+| `--client-only` | 连接已有的本地 runtime；参见[运行时兼容性](runtime.md#upgrading-an-older-runtime) |
 | `--direct` | 直接在本地执行；须遵循已安装命令的锁要求 |
 
 ## 配置兼容性 {#configuration-compatibility}
@@ -70,7 +70,6 @@ flowchart LR
 | `RSRS_NO_AUTOSYNC=1` | 禁用自动同步 |
 | `RSRS_ADDR`、`RSRS_TOKEN` | 远程连接配置 |
 | `RSRS_JSON=1` | 请求 JSON 输出 |
-| `RSRS_MODEL_DIR`、`RSRS_M3_DIR` | 显式模型目录 |
-| `RSRS_RERANKER_DIR` | 显式 reranker 目录 |
+| `RSRS_M3_DIR` | 显式模型目录 |
 
 参见[同步与密钥](sync-and-keys.md)、[agent 集成](injection.md)与[基准测试](benchmark.md)。

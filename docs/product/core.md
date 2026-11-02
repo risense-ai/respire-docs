@@ -15,7 +15,7 @@ flowchart LR
 | Semantic retrieval and ranking | Account keys and encryption |
 | Reranking and deduplication | SQLite and synchronization |
 | Tree/context proposals | HTTP and authorized mutations |
-| BGE / reranker / ONNX execution | Files, directories, database persistence, commands and UI |
+| BGE-M3 / ONNX execution and retrieval reranking | Files, directories, database persistence, commands and UI |
 
 Inputs are authorized business material and opaque features; outputs are final results or proposals. There is no public vector, cosine or intermediate-rank API.
 

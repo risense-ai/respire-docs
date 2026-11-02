@@ -34,7 +34,7 @@ flowchart LR
 | `/v2/*` | 基于操作的同步与冲突决策 |
 | `/admin/*` | 已授权管理 |
 
-精确方法和载荷应以仓库的 `contracts/openapi.yaml` 及路由实现为准。OpenAPI 文件覆盖的路由可能少于服务端；不要从此概览推断未记载的管理操作。
+仓库的 `contracts/openapi.yaml` 是服务端提交 `22096e8e237a` 的快照。精确方法和载荷应参考待部署服务端修订版中的 `service/openapi.yaml` 及路由实现；不要从此概览推断未记载的管理操作。
 
 | 管理员角色 | 范围 |
 | --- | --- |
@@ -50,7 +50,7 @@ flowchart LR
 | `service/src/http/` | 路由、认证和请求边界 |
 | `service/src/store/` | Postgres 存储、迁移和同步账本 |
 | `service/src/totp.rs` | 双因素认证 |
-| `admin-ui/` | 管理前端 |
+| `respire-site/console/` | 独立站点仓库中的用户控制台和管理前端 |
 
 服务端使用固定 CLI 修订版中的基础设施应用包。因此，即使普通云请求不执行本地模型推理，构建仍可能需要匹配的二进制 Core SDK。
 

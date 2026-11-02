@@ -29,9 +29,14 @@
         "taxonomy_classify",
         "classify_business",
         "query_business",
+        "memory_metadata_validate",
+        "memory_evidence_evaluate",
         "related_business",
         "index_generation",
         "index_status",
+        "resident_publish",
+        "resident_release",
+        "index_reusable",
         "model_status",
         "model_probe",
         "engine_control"
@@ -40,405 +45,106 @@
     "payload": {}
   },
   "$defs": {
-    "modelProvider": {
+    "recallIntent": {"enum": ["auto", "howto", "fact"]},
+    "skillRuns": {
       "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "name",
-        "model"
-      ],
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "model": {
-          "type": "string",
-          "minLength": 1
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["ok", "fail"],
+        "properties": {
+          "ok": {"type": "integer", "minimum": -9223372036854775808, "maximum": 9223372036854775807},
+          "fail": {"type": "integer", "minimum": -9223372036854775808, "maximum": 9223372036854775807}
         }
       }
+    },
+    "renderMinScore": {
+      "type": "number",
+      "description": "Optional query_business filter on the final public score before rendering. Must deserialize to a finite f32; negative values are allowed. Invalid values fail before retrieval or a model callback."
+    },
+    "renderItem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "representation", "rendered_text"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "representation": {"const": "title"},
+        "rendered_text": {"type": "string"}
+      }
+    },
+    "renderBudget": {
+      "oneOf": [{"$ref": "#/$defs/titleRenderBudget"}, {"$ref": "#/$defs/briefRenderBudget"}]
+    },
+    "briefRenderItem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "record_revision", "representation", "rendered_text", "complete"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "record_revision": {"$ref": "#/$defs/metadataRevision"},
+        "representation": {"enum": ["full", "summary", "title"]},
+        "rendered_text": {"type": "string"},
+        "complete": {"type": "boolean"}
+      }
+    },
+    "briefRenderBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "budget_chars", "prefix_by_count", "separator", "suffix", "items"],
+      "properties": {
+        "mode": {"const": "brief"},
+        "budget_chars": {"type": "integer", "minimum": 0},
+        "prefix_by_count": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "separator": {"type": "string"},
+        "suffix": {"type": "string"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/briefRenderItem"}}
+      },
+      "description": "Requires evidence_context on the same request. All variants bind to the authorized current record revision before retrieval."
+    },
+    "titleRenderBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["budget_chars", "prefix_by_count", "separator", "suffix", "items"],
+      "properties": {
+        "budget_chars": {"type": "integer", "minimum": 0},
+        "prefix_by_count": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "separator": {"type": "string"},
+        "suffix": {"type": "string"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/renderItem"}}
+      }
+    },
+    "modelProvider": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "model"],
+      "properties": {"name": {"type": "string"}, "model": {"type": "string", "minLength": 1}}
     },
     "opaqueBytes": {
       "type": "string",
       "contentEncoding": "base64",
       "description": "Opaque bytes; SDK callers must not interpret feature contents."
     },
-    "prepared": {
-      "type": "object",
-      "required": [
-        "artifact"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "artifact": {
-          "$ref": "#/$defs/opaqueBytes"
-        }
-      }
-    },
-    "memoryEntry": {
-      "type": "object",
-      "required": [
-        "id",
-        "kind",
-        "tags",
-        "title",
-        "content",
-        "user",
-        "computer",
-        "project",
-        "created_at",
-        "updated_at",
-        "emotion",
-        "parent_id"
-      ],
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "kind": {
-          "enum": [
-            "Context",
-            "Decision",
-            "Preference",
-            "Task",
-            "Emotion",
-            "Time",
-            "Skill",
-            "Knowledge"
-          ]
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "title": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "user": {
-          "type": "string"
-        },
-        "computer": {
-          "type": "string"
-        },
-        "project": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        },
-        "supersedes": {
-          "type": "string",
-          "default": ""
-        },
-        "superseded_by": {
-          "type": "string",
-          "default": ""
-        },
-        "see_also": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
-        "emotion": {
-          "type": "number"
-        },
-        "parent_id": {
-          "type": "string"
-        },
-        "importance": {
-          "type": "string",
-          "default": "normal"
-        },
-        "device": {
-          "type": "string",
-          "default": ""
-        },
-        "modified_by": {
-          "type": "string",
-          "default": ""
-        }
-      }
-    },
-    "snapshot": {
+    "feedbackSettings": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "deleted",
-        "updated_at",
-        "kind",
-        "tags",
-        "title",
-        "project",
-        "computer",
-        "parent_id",
-        "created_at",
-        "content_head",
-        "recall_count",
-        "importance"
-      ],
       "properties": {
-        "id": {
-          "type": "string"
+        "enabled": {
+          "type": "boolean",
+          "default": false
         },
-        "deleted": {
-          "type": "boolean"
-        },
-        "updated_at": {
-          "type": "string"
-        },
-        "kind": {
-          "type": "string"
-        },
-        "tags": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "project": {
-          "type": "string"
-        },
-        "computer": {
-          "type": "string"
-        },
-        "parent_id": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "content_head": {
-          "type": "string"
-        },
-        "recall_count": {
-          "type": "integer"
-        },
-        "importance": {
-          "type": "string"
-        },
-        "entry": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/memoryEntry"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "features": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/prepared"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        }
-      }
-    },
-    "memoryQuery": {
-      "type": "object",
-      "required": [
-        "text",
-        "limit"
-      ],
-      "properties": {
-        "text": {
-          "type": "string"
-        },
-        "limit": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "kind": {
-          "anyOf": [
-            {
-              "enum": [
-                "Context",
-                "Decision",
-                "Preference",
-                "Task",
-                "Emotion",
-                "Time",
-                "Skill",
-                "Knowledge"
-              ]
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "project": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "computer": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      }
-    },
-    "preparePayload": {
-      "type": "object",
-      "required": [
-        "model"
-      ],
-      "properties": {
-        "model": {
-          "type": "string"
-        },
-        "entry": {
-          "$ref": "#/$defs/memoryEntry"
-        },
-        "content": {
-          "type": "string"
-        }
-      },
-      "anyOf": [
-        {
-          "required": [
-            "entry"
-          ]
-        },
-        {
-          "required": [
-            "content"
-          ]
-        }
-      ]
-    },
-    "rememberCandidatesPayload": {
-      "type": "object",
-      "description": "Authorized write-candidate material; Core returns final merge and parent proposal lists without exposing grouping policy.",
-      "required": [
-        "model",
-        "snapshots",
-        "query"
-      ],
-      "properties": {
-        "model": {
-          "type": "string"
-        },
-        "snapshots": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/snapshot"
+        "good": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615
           }
         },
-        "query": {
-          "$ref": "#/$defs/memoryQuery"
-        },
-        "query_settings": {
-          "$ref": "#/$defs/querySettings"
-        }
-      }
-    },
-    "relatedPayload": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "model",
-        "snapshots",
-        "query",
-        "ids",
-        "pairs"
-      ],
-      "properties": {
-        "model": {
-          "type": "string"
-        },
-        "snapshots": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/snapshot"
+        "bad": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615
           }
         },
-        "query": {
-          "$ref": "#/$defs/memoryQuery"
-        },
-        "ids": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "type": "string"
-          }
-        },
-        "pairs": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "a",
-              "b",
-              "n"
-            ],
-            "properties": {
-              "a": {
-                "type": "string"
-              },
-              "b": {
-                "type": "string"
-              },
-              "n": {
-                "type": "integer",
-                "minimum": 0
-              }
-            }
-          }
-        },
-        "related_settings": {
-          "$ref": "#/$defs/relatedSettings"
-        }
-      }
-    },
-    "queryPayload": {
-      "type": "object",
-      "required": [
-        "model",
-        "snapshots",
-        "query",
-        "mode"
-      ],
-      "properties": {
-        "model": {
-          "type": "string"
-        },
-        "snapshots": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/snapshot"
-          }
-        },
-        "query": {
-          "$ref": "#/$defs/memoryQuery"
-        },
-        "mode": {
-          "enum": [
-            "plain",
-            "scored",
-            "contextual"
-          ]
-        },
-        "query_settings": {
-          "$ref": "#/$defs/querySettings"
+        "bad_penalty": {
+          "type": "boolean",
+          "default": true
         }
       }
     },
@@ -446,6 +152,24 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "feedback": {"anyOf":[{"$ref":"#/$defs/feedbackSettings"},{"type":"null"}]},
+        "route_on": {"type": "boolean", "default": true},
+        "read_heat": {"type": "boolean", "default": true},
+        "now": {"$ref": "#/$defs/metadataTime", "description": "Optional explicit scoring time under read_heat_contract 1; null is invalid. With evidence_context, the same now is injected when omitted and a mismatch is rejected."},
+        "ablate": {"type": "string", "default": ""},
+        "cos_min": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "sim_min": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.10},
+        "cos_relative_ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "cos_margin": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "lexical_weight": {"type": "number", "minimum": 0, "maximum": 1, "default": 0.30},
+        "semantic_power": {"type": "number", "exclusiveMinimum": 0, "maximum": 4, "default": 1.3},
+        "bm25": {"type": "boolean", "default": true},
+        "max_fusion": {"type": "boolean", "default": false},
+        "normalize_ablation": {"type": "boolean", "default": true},
+        "aux_cap_ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1, "default": 0.85},
+        "rrf_cap": {"type": "number", "minimum": 0, "maximum": 1, "default": 0},
+        "heat_cap": {"type": "integer", "minimum": 1, "maximum": 15, "default": 8},
+        "debug_score": {"type": "boolean", "default": false},
         "recall_min_score": {
           "type": "number"
         },
@@ -491,164 +215,275 @@
           "minimum": 0
         }
       }
+    },
+    "prepared": {
+      "type": "object",
+      "required": [
+        "artifact"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/opaqueBytes"
+        }
+      }
+    },
+    "memoryEntry": {
+      "type": "object",
+      "required": ["id", "kind", "tags", "title", "content", "user", "computer", "project", "created_at", "updated_at", "emotion", "parent_id"],
+      "properties": {
+        "id": {"type": "string"},
+        "kind": {"enum": ["Context", "Decision", "Preference", "Task", "Emotion", "Time", "Skill", "Knowledge", "Hypothesis", "Reflection", "Self"]},
+        "memory_contract": {"type": "integer", "minimum": 0, "maximum": 255, "default": 0},
+        "summary": {"type": ["string", "null"], "maxLength": 120, "default": null},
+        "source_refs": {"type": "array", "items": {"$ref": "#/$defs/sourceRef"}, "default": []},
+        "valid_until": {"anyOf": [{"$ref": "#/$defs/metadataTime"}, {"type": "null"}], "default": null},
+        "review_at": {"anyOf": [{"$ref": "#/$defs/metadataTime"}, {"type": "null"}], "default": null},
+        "artifact": {"anyOf": [{"$ref": "#/$defs/memoryArtifact"}, {"type": "null"}], "default": null},
+        "verification": {"anyOf": [{"$ref": "#/$defs/verification"}, {"type": "null"}], "default": null},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "title": {"type": "string"},
+        "content": {"type": "string"},
+        "user": {"type": "string"},
+        "computer": {"type": "string"},
+        "project": {"type": "string"},
+        "created_at": {"type": "string"},
+        "updated_at": {"type": "string"},
+        "supersedes": {"type": "string", "default": ""},
+        "superseded_by": {"type": "string", "default": ""},
+        "see_also": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}], "default": [], "description": "Historical strings are accepted; serialization emits arrays only."},
+        "emotion": {"type": "number"},
+        "parent_id": {"type": "string"},
+        "importance": {"type": "string", "default": "normal"},
+        "device": {"type": "string", "default": ""},
+        "modified_by": {"type": "string", "default": ""}
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "deleted", "updated_at", "kind", "tags", "title", "project", "computer", "parent_id", "created_at", "content_head", "recall_count", "importance"],
+      "properties": {
+        "id": {"type": "string"},
+        "deleted": {"type": "boolean"},
+        "updated_at": {"type": "string"},
+        "kind": {"type": "string"},
+        "tags": {"type": "string"},
+        "title": {"type": "string"},
+        "project": {"type": "string"},
+        "computer": {"type": "string"},
+        "parent_id": {"type": "string"},
+        "created_at": {"type": "string"},
+        "content_head": {"type": "string"},
+        "recall_count": {"type": "integer"},
+        "importance": {"type": "string"},
+        "entry": {"anyOf": [{"$ref": "#/$defs/memoryEntry"}, {"type": "null"}]},
+        "features": {"anyOf": [{"$ref": "#/$defs/prepared"}, {"type": "null"}]}
+      }
+    },
+    "memoryQuery": {
+      "type": "object",
+      "required": ["text", "limit"],
+      "properties": {
+        "text": {"type": "string"},
+        "limit": {"type": "integer", "minimum": 0},
+        "kind": {"anyOf": [{"enum": ["Context", "Decision", "Preference", "Task", "Emotion", "Time", "Skill", "Knowledge"]}, {"type": "null"}]},
+        "project": {"type": ["string", "null"]},
+        "computer": {"type": ["string", "null"]}
+      }
+    },
+    "residentPublishPayload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "model", "snapshots", "removed"],
+      "properties": {
+        "key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "base_key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "model": {"type": "string", "minLength": 1},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "removed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "residentReleasePayload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key"],
+      "properties": {"key": {"type": "string", "minLength": 1, "maxLength": 128}}
+    },
+    "indexReusablePayload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["before", "after"],
+      "properties": {
+        "before": {"$ref": "#/$defs/memoryEntry"},
+        "after": {"$ref": "#/$defs/memoryEntry"}
+      }
+    },
+    "preparePayload": {
+      "type": "object",
+      "required": ["model"],
+      "properties": {
+        "model": {"type": "string"},
+        "entry": {"$ref": "#/$defs/memoryEntry"},
+        "content": {"type": "string"}
+      },
+      "anyOf": [{"required": ["entry"]}, {"required": ["content"]}]
+    },
+    "rememberCandidatesPayload": {
+      "type": "object",
+      "description": "Authorized write-candidate material; Core returns final merge and parent proposal lists without exposing grouping policy.",
+      "required": ["model", "query"],
+      "oneOf": [{"required": ["snapshots"]}, {"required": ["resident_key"]}],
+      "properties": {
+        "model": {"type": "string"},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "resident_key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "lexical_only": {"type": "boolean", "default": false},
+        "query": {"$ref": "#/$defs/memoryQuery"},
+        "query_settings": {"$ref": "#/$defs/querySettings"}
+      }
+    },
+    "relatedPayload": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model", "query", "ids", "pairs"],
+      "oneOf": [{"required": ["snapshots"]}, {"required": ["resident_key"]}],
+      "allOf": [{
+        "if": {"properties": {"all_superseded": {"const": true}}, "required": ["all_superseded"]},
+        "then": {"required": ["related_settings"], "properties": {
+          "ids": {"maxItems": 0}, "pairs": {"maxItems": 0},
+          "related_settings": {"required": ["enabled"], "properties": {"enabled": {"const": false}}}
+        }}
+      }],
+      "properties": {
+        "model": {"type": "string"},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "resident_key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "lexical_only": {"type": "boolean", "default": false},
+        "query": {"$ref": "#/$defs/memoryQuery"},
+        "related_settings": {"$ref": "#/$defs/relatedSettings"},
+        "all_superseded": {"type": "boolean", "default": false},
+        "ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "pairs": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["a", "b", "n"],
+          "properties": {"a": {"type": "string"}, "b": {"type": "string"}, "n": {"type": "integer", "minimum": 0}}
+        }}
+      }
+    },
+    "metadataTime": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$", "description": "Core additionally validates the UTC calendar date and time."},
+    "metadataRevision": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "fullMemoryId": {"type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"},
+    "sourceRef": {
+      "type": "object", "required": ["id", "revision", "required"],
+      "properties": {"id": {"$ref": "#/$defs/fullMemoryId"}, "revision": {"$ref": "#/$defs/metadataRevision"}, "required": {"type": "boolean"}}
+    },
+    "memoryArtifact": {
+      "type": "object",
+      "properties": {"path": {"type": ["string", "null"]}, "repo": {"type": ["string", "null"]}, "commit": {"type": ["string", "null"]}, "purpose": {"type": ["string", "null"]}}
+    },
+    "verificationScope": {
+      "type": "object",
+      "properties": {
+        "project": {"type": ["string", "null"]}, "device": {"type": ["string", "null"]}, "version": {"type": ["string", "null"]},
+        "from": {"anyOf": [{"$ref": "#/$defs/metadataTime"}, {"const": "*"}, {"type": "null"}]},
+        "until": {"anyOf": [{"$ref": "#/$defs/metadataTime"}, {"const": "*"}, {"type": "null"}]}
+      },
+      "description": "Null means unknown; only explicit * is unrestricted. Finite bounds are [from, until)."
+    },
+    "memoryEvidence": {
+      "type": "object", "required": ["kind", "revision"],
+      "properties": {"kind": {"enum": ["memory", "user", "primary", "run"]}, "id": {"$ref": "#/$defs/fullMemoryId"}, "locator": {"type": "string", "minLength": 1}, "revision": {"$ref": "#/$defs/metadataRevision"}},
+      "allOf": [{"if": {"properties": {"kind": {"const": "memory"}}}, "then": {"required": ["id"]}, "else": {"required": ["locator"]}}]
+    },
+    "confirmedBy": {
+      "type": "object", "required": ["kind", "id", "event_id"],
+      "properties": {"kind": {"enum": ["human", "trusted_host"]}, "id": {"type": "string", "minLength": 1}, "event_id": {"type": "string", "minLength": 1}}
+    },
+    "verification": {
+      "type": "object", "required": ["record_revision", "claim", "scope", "evidence", "method", "confirmed_by", "confirmed_at"],
+      "properties": {
+        "record_revision": {"$ref": "#/$defs/metadataRevision"}, "claim": {"type": "string", "minLength": 1}, "scope": {"$ref": "#/$defs/verificationScope"},
+        "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/memoryEvidence"}}, "method": {"type": "string", "minLength": 1},
+        "confirmed_by": {"$ref": "#/$defs/confirmedBy"}, "confirmed_at": {"$ref": "#/$defs/metadataTime"}
+      }
+    },
+    "reviewClaim": {
+      "type": "object", "additionalProperties": false, "required": ["claim", "scope", "evidence", "method"],
+      "properties": {"claim": {"type": "string", "minLength": 1}, "scope": {"$ref": "#/$defs/verificationScope"}, "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/memoryEvidence"}}, "method": {"type": "string", "minLength": 1}}
+    },
+    "reviewIntent": {
+      "type": "object", "additionalProperties": false, "required": ["owner", "local_library_id", "expected_memory_revision"],
+      "properties": {"owner": {"type": "string", "minLength": 1}, "local_library_id": {"type": "string", "minLength": 1}, "expected_memory_revision": {"type": "string", "pattern": "^[0-9a-f]{32}$"}, "next_review_at": {"anyOf": [{"$ref": "#/$defs/metadataTime"}, {"type": "null"}]}}
+    },
+    "requestScope": {
+      "type": "object", "additionalProperties": false, "required": ["at"],
+      "properties": {"project": {"type": ["string", "null"], "not": {"const": "*"}}, "device": {"type": ["string", "null"], "not": {"const": "*"}}, "version": {"type": ["string", "null"], "not": {"const": "*"}}, "at": {"$ref": "#/$defs/metadataTime"}}
+    },
+    "rootCheck": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "locator", "revision", "outcome"],
+      "properties": {"kind": {"enum": ["user", "primary", "run"]}, "locator": {"type": "string", "minLength": 1}, "revision": {"$ref": "#/$defs/metadataRevision"}, "outcome": {"enum": ["available", "unavailable", "changed"]}}
+    },
+    "authorityCheck": {
+      "type": "object", "additionalProperties": false, "required": ["id", "record_revision", "event_id", "claim_digest", "confirmed_by", "confirmed_at", "outcome", "roots"],
+      "properties": {
+        "id": {"$ref": "#/$defs/fullMemoryId"}, "record_revision": {"$ref": "#/$defs/metadataRevision"}, "event_id": {"type": "string", "minLength": 1}, "claim_digest": {"$ref": "#/$defs/metadataRevision"},
+        "confirmed_by": {"$ref": "#/$defs/confirmedBy"}, "confirmed_at": {"$ref": "#/$defs/metadataTime"}, "outcome": {"enum": ["trusted", "unavailable", "rejected"]}, "roots": {"type": "array", "items": {"$ref": "#/$defs/rootCheck"}}
+      },
+      "description": "Host-only input obtained from the configured trusted adapter; never copy agent-supplied assertions into this field. Subject/time must equal the verified event and stored verification."
+    },
+    "evidenceContext": {
+      "type": "object", "additionalProperties": false, "required": ["request_scope", "now"],
+      "properties": {"request_scope": {"$ref": "#/$defs/requestScope"}, "now": {"$ref": "#/$defs/metadataTime"}, "authority_checks": {"type": "array", "items": {"$ref": "#/$defs/authorityCheck"}, "default": []}, "unavailable_ids": {"type": "array", "items": {"type": "string"}, "default": []}}
+    },
+    "metadataValidatePayload": {
+      "type": "object", "additionalProperties": false, "required": ["entry"],
+      "properties": {"entry": {"$ref": "#/$defs/memoryEntry"}, "review": {"anyOf": [{"$ref": "#/$defs/reviewClaim"}, {"type": "null"}]}, "intent": {"anyOf": [{"$ref": "#/$defs/reviewIntent"}, {"type": "null"}]}}
+    },
+    "evidenceEvaluatePayload": {
+      "type": "object", "additionalProperties": false, "required": ["model", "evidence_context"],
+      "oneOf": [{"required": ["snapshots"]}, {"required": ["resident_key"]}],
+      "properties": {"model": {"type": "string"}, "evidence_context": {"$ref": "#/$defs/evidenceContext"}, "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}}, "resident_key": {"type": "string", "minLength": 1, "maxLength": 128}}
+    },
+    "queryPayload": {
+      "type": "object",
+      "required": ["model", "query", "mode"],
+      "oneOf": [{"required": ["snapshots"]}, {"required": ["resident_key"]}],
+      "properties": {
+        "model": {"type": "string"},
+        "snapshots": {"type": "array", "items": {"$ref": "#/$defs/snapshot"}},
+        "resident_key": {"type": "string", "minLength": 1, "maxLength": 128},
+        "lexical_only": {"type": "boolean", "default": false},
+        "query": {"$ref": "#/$defs/memoryQuery"},
+        "mode": {"enum": ["plain", "scored", "contextual"]},
+        "evidence_context": {"$ref": "#/$defs/evidenceContext"},
+        "render_budget": {"$ref": "#/$defs/renderBudget"},
+        "query_settings": {"$ref": "#/$defs/querySettings"}
+      }
     }
   },
   "allOf": [
+    {"if": {"required": ["operation", "payload"], "properties": {"operation": {"enum": ["query", "query_business"]}, "payload": {"type": "object", "required": ["render_budget"], "properties": {"render_budget": {"type": "object", "required": ["mode"], "properties": {"mode": {"const": "brief"}}}}}}},
+     "then": {"properties": {"payload": {"required": ["evidence_context"]}}}},
+    {"if": {"properties": {"operation": {"const": "memory_metadata_validate"}}, "required": ["operation"]}, "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/metadataValidatePayload"}}}},
+    {"if": {"properties": {"operation": {"const": "memory_evidence_evaluate"}}, "required": ["operation"]}, "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/evidenceEvaluatePayload"}}}},
+    {"if": {"properties": {"operation": {"const": "resident_publish"}}, "required": ["operation"]},
+     "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/residentPublishPayload"}}}},
+    {"if": {"properties": {"operation": {"const": "resident_release"}}, "required": ["operation"]},
+     "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/residentReleasePayload"}}}},
+    {"if": {"properties": {"operation": {"const": "index_reusable"}}, "required": ["operation"]},
+     "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/indexReusablePayload"}}}},
+    {"if": {"properties": {"operation": {"const": "classify_business"}}, "required": ["operation"]},
+     "then": {"required": ["payload"], "properties": {"payload": {"type": "object", "properties": {"backend": {"anyOf": [{"$ref": "#/$defs/modelProvider"}, {"type": "null"}]}}}}}},
+    {"if": {"properties": {"operation": {"const": "query_business"}}, "required": ["operation"]},
+     "then": {"required": ["payload"], "properties": {"payload": {"type": "object", "properties": {"provider": {"anyOf": [{"$ref": "#/$defs/modelProvider"}, {"type": "null"}]}, "query_settings": {"$ref": "#/$defs/querySettings"}, "render_budget": {"$ref": "#/$defs/renderBudget"}, "render_min_score": {"$ref": "#/$defs/renderMinScore"}, "intent": {"$ref": "#/$defs/recallIntent"}, "skill_runs": {"$ref": "#/$defs/skillRuns"}, "evidence_context": {"$ref": "#/$defs/evidenceContext"}}}}}},
+    {"if": {"properties": {"operation": {"const": "related_business"}}, "required": ["operation"]}, "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/relatedPayload"}}}},
     {
-      "if": {
-        "properties": {
-          "operation": {
-            "const": "classify_business"
-          }
-        },
-        "required": [
-          "operation"
-        ]
-      },
-      "then": {
-        "required": [
-          "payload"
-        ],
-        "properties": {
-          "payload": {
-            "type": "object",
-            "properties": {
-              "backend": {
-                "anyOf": [
-                  {
-                    "$ref": "#/$defs/modelProvider"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+      "if": {"properties": {"operation": {"const": "remember_candidates"}}, "required": ["operation"]},
+      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/rememberCandidatesPayload"}}}
     },
     {
-      "if": {
-        "properties": {
-          "operation": {
-            "const": "query_business"
-          }
-        },
-        "required": [
-          "operation"
-        ]
-      },
-      "then": {
-        "required": [
-          "payload"
-        ],
-        "properties": {
-          "payload": {
-            "type": "object",
-            "properties": {
-              "provider": {
-                "anyOf": [
-                  {
-                    "$ref": "#/$defs/modelProvider"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+      "if": {"properties": {"operation": {"const": "prepare"}}, "required": ["operation"]},
+      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/preparePayload"}}}
     },
     {
-      "if": {
-        "properties": {
-          "operation": {
-            "const": "related_business"
-          }
-        },
-        "required": [
-          "operation"
-        ]
-      },
-      "then": {
-        "required": [
-          "payload"
-        ],
-        "properties": {
-          "payload": {
-            "$ref": "#/$defs/relatedPayload"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "operation": {
-            "const": "remember_candidates"
-          }
-        },
-        "required": [
-          "operation"
-        ]
-      },
-      "then": {
-        "required": [
-          "payload"
-        ],
-        "properties": {
-          "payload": {
-            "$ref": "#/$defs/rememberCandidatesPayload"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "operation": {
-            "const": "prepare"
-          }
-        },
-        "required": [
-          "operation"
-        ]
-      },
-      "then": {
-        "required": [
-          "payload"
-        ],
-        "properties": {
-          "payload": {
-            "$ref": "#/$defs/preparePayload"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "operation": {
-            "const": "query"
-          }
-        },
-        "required": [
-          "operation"
-        ]
-      },
-      "then": {
-        "required": [
-          "payload"
-        ],
-        "properties": {
-          "payload": {
-            "$ref": "#/$defs/queryPayload"
-          }
-        }
-      }
+      "if": {"properties": {"operation": {"const": "query"}}, "required": ["operation"]},
+      "then": {"required": ["payload"], "properties": {"payload": {"$ref": "#/$defs/queryPayload"}}}
     }
   ]
 }

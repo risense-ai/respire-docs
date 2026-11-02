@@ -4,11 +4,11 @@
 
 ```mermaid
 flowchart TD
-  Source["克隆基础设施源码"] --> Need{"构建是否链接 Core？"}
-  Need -->|否| Docs["文档 / 前端检查"]
-  Need -->|是| SDK["需要匹配 SDK"]
-  SDK --> Verify["清单、编译器与目标验证"]
-  Verify --> Build["构建和现有测试"]
+  Source["Infrastructure source clone"] --> Need{"Core-linked build?"}
+  Need -->|No| Docs["Docs / frontend checks"]
+  Need -->|Yes| SDK["Matching SDK required"]
+  SDK --> Verify["Manifest + compiler + target validation"]
+  Verify --> Build["Build and existing tests"]
 ```
 
 | 仓库 | 现有检查 |
@@ -17,8 +17,8 @@ flowchart TD
 | CLI | SDK 配置后运行 `cargo test --locked -p respire` |
 | 基础设施 crate | SDK 配置后运行各自现有 Cargo 测试 |
 | 服务端 | `cargo test --locked -p respire_service`；数据库集成检查需要 PostgreSQL |
-| 客户端 UI | `client/tree-ui` 中现有测试/构建 |
-| 桌面端 | 已准备的兼容 CLI sidecar、运行时资源和平台依赖 |
+| 客户端 UI | `respire-client2` 中的内嵌前端；运行现有语法检查 |
+| 桌面端 | Go/Wails 构建和平台依赖；单独获取兼容 CLI 与运行时 |
 
 ## SDK 配置 {#sdk-setup}
 

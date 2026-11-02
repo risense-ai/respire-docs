@@ -1,14 +1,14 @@
 # 实例：为Doubao添加跨会话记忆 {#worked-example-adding-cross-session-memory-to-doubao}
 
-聊天客户端如Doubao会将每个对话隔离。新会话开始时没有任何先前决策、偏好或文件路径的知识，因此每次都需要重新陈述相同的上下文。本页面将Doubao客户端连接到`rsrs` CLI，使客户端在不同会话间保留记忆。
+本页介绍如何为 Doubao 注入 `rsrs` 指令。跨会话召回取决于客户端是否加载指令文件，以及代理是否遵循指令。
 
 ## 问题 {#the-problem}
 
-Doubao默认没有跨会话记忆。每个新对话都从空白上下文开始，因此项目名称、约定和先前决策会在不同会话间丢失。
+新对话可能缺少之前的项目上下文。
 
 ## 注入提供了什么 {#what-injection-provides}
 
-客户端连接到rsrs后，代理会在行动前查询存储的记忆，并在任务结束时将可重用的结论写回。记忆存储在本地，而云服务仅存储加密数据。记录随账户同步，因此可在不同机器和客户端间保持可用。
+注入的指令要求代理召回并保存可复用的结论。记忆保存在本地；配置同步后，同一账户可在其他设备使用加密记录。
 
 | 行为 | 描述 |
 | --- | --- |
@@ -22,11 +22,11 @@ Doubao默认没有跨会话记忆。每个新对话都从空白上下文开始�
 安装CLI并确认本地运行时健康。设置详情请参见[Windows安装](windows-install.md)和[入门指南](../getting-started.md)。
 
 ```powershell
-npm i -g @rsrsai/cli
+npm i -g rsrs-cli
 rsrs status
 ```
 
-`rsrs status`报告模式、用户、服务器和记忆状态。当所有项目均报告为PASS时继续。
+检查 `rsrs status` 的模式是否符合预期，并查看错误。只有配置服务端时才会显示服务器项。
 
 ## 三步操作 {#three-steps}
 
@@ -44,7 +44,7 @@ rsrs status
 rsrs --client-only inject --id doubao
 ```
 
-使用`rsrs --client-only inject --targets`查看`doubao`解析出的路径和检测状态；预设路径只是约定，自定义配置可能不同。该文件包含客户端遵循的记忆规则：
+使用 `rsrs --client-only inject --targets` 查看 `doubao` 解析出的路径和检测状态；预设路径只是约定，自定义配置可能不同。指令文件要求代理遵循以下规则：
 
 - 每个回合首次行动前回忆记忆；
 - 使用`--json`读取记忆；
@@ -62,7 +62,7 @@ rsrs mcp
 
 ### 重启Doubao客户端 {#restart-the-doubao-client}
 
-客户端启动时读取`AGENTS.md`。注入后重启客户端使规则生效，然后打开新对话。
+重启客户端，并确认它加载了解析出的 `AGENTS.md` 路径。注入本身不能保证客户端读取或遵循指令。
 
 ## 确认功能正常 {#confirming-it-works}
 
@@ -89,6 +89,4 @@ rsrs recall "project keyword" --titles --json
 | 代理阻止本地运行时 | 将`127.0.0.1,localhost`添加到`NO_PROXY`；代理会产生`os error 10060`超时 |
 | 无自动钩子 | `inject`仅写入文本；回忆和保存依赖代理遵循规则 |
 | 可选的MCP注册 | 注册`rsrs mcp`是可选的，命令行使用无需注册 |
-| 重复保存 | 新保存首先运行重复检测，可能建议合并或链接 |
-
-不要从其他机器复制记录的路径；记录的路径仅在生成它的机器上有效。拦截本地主机流量的代理会阻止本地运行时，因此如果`rsrs recall`因`os error 10060`失败，请将`127.0.0.1,localhost`添加到`NO_PROXY`。`inject`命令仅写入指令文本并安装无钩子，因此记忆回忆和保存依赖于代理遵循注入的规则；MCP注册是可选的。新保存在记录创建前运行重复检测。
+| 重复保存 | 符合条件的保存会进行重复检测，可能建议合并或链接；显式选项和 trivial 条目可能跳过检测 |

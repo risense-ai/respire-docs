@@ -97,7 +97,7 @@ Naming the skill explicitly is also possible and is more reliable:
 ## Upgrade
 
 - Method A: run `git pull` inside the cloned directory, then restart the host.
-- Methods B and C: re-run the installation command; it overwrites the existing copy.
+- Method B: inspect and back up local changes, then replace the existing skill directory. For method C, check the `skills` CLI update behavior.
 
 ## Uninstall
 

@@ -1,14 +1,19 @@
 # Core C ABI / JSON business contract
 
 ABI version `0x00010002`, JSON schema `1`, opaque artifact format `1`.
-The canonical header is `respire_core.h`; Core keeps an identical copy.
+The accompanying Core contracts match source revision `3bce730191d087c56684ee30743319f4a64918a4`, associated with SDK `1.0.2-dev.16`. The Windows x64 SDK manifest SHA-256 was verified against the CLI lock; other target manifests were not verified. The server still pins SDK `1.0.2-dev.4`, so do not infer these newer capabilities for the server from this snapshot.
 
-Core exports only `rs_core_abi_version`, `rs_core_create`, `rs_core_call`,
+This snapshot lists `rs_core_abi_version`, `rs_core_create`, `rs_core_call`,
 `rs_core_call_with_transport`, `rs_core_model_load`, `rs_core_model_load_with_host`,
 `rs_core_register_providers`, `rs_core_buffer_free`, and `rs_core_destroy`. A caller owns its input; Core owns
 each returned buffer until that exact buffer slot is freed once by Core. Handles
 are thread confined. The safe Rust SDK supplies RAII and cannot be sent or shared.
 A panic poisons the handle; destroy and recreate it. Do not share allocators.
+
+The optional streaming input extension adds `rs_core_model_input_begin`,
+`rs_core_model_input_append`, `rs_core_model_input_commit`, and
+`rs_core_model_input_abort`. Enable these functions only when the pinned SDK
+advertises `model_input_stream_contract` version `1` and the matching build feature is enabled.
 
 `config` may be empty or UTF-8 `{}`; its only optional field is `test_mode` (false
 by default), explicitly enabled by a fixture host. Other fields are rejected.
@@ -44,6 +49,7 @@ for operation-specific report DTOs and classify argument ordering.
 
 | Business operation | Input / output boundary |
 |---|---|
+| capabilities | Supported operations and optional contract versions |
 | prepare | Authorized MemoryEntry or content + model → opaque compressed index bytes |
 | query | Authorized snapshots + MemoryQuery + plain/scored/contextual mode → final entries, final relevance and selected context |
 | remember_candidates | Model + authorized snapshots + MemoryQuery → final merge/parent proposal lists |
@@ -51,7 +57,10 @@ for operation-specific report DTOs and classify argument ordering.
 | tree_cure / deepen_plan / tree_float | Metadata/features + settings → final tree maintenance proposals |
 | taxonomy_classify / classify_business | Authorized content/tree material and explicit provider configuration → final classification decisions or action preview |
 | query_business | Authorized snapshots and explicit local/quality mode → final selected entries and warnings |
+| memory_metadata_validate / memory_evidence_evaluate | Validate metadata or evaluate evidence against explicit context |
+| related_business | Authorized association evidence → related and superseded results |
 | index_generation / index_status | Index generation and local index readiness |
+| resident_publish / resident_release / index_reusable | Manage resident snapshots and check index reuse |
 | model_status / model_probe / engine_control | Injected-model diagnostics and in-memory reset/status controls |
 
 `capabilities.inference_execution` is `in_process`. The resident runtime loads
@@ -64,11 +73,11 @@ and accelerator installation/discovery report explicit host-managed errors.
 Native errors retain
 their underlying cause in `error.message`; no engine fallback is applied.
 CPU probes reuse the shared session. Accelerator probes compare with a CPU session.
-Reset invalidates existing session handles. Shared inference uses a FIFO queue
-with up to 32 waiting requests and a 120-second queue wait limit. Each native run
-has a separate 120-second execution limit using ONNX cooperative cancellation.
-Session loading uses the same queue and a separate 120-second ONNX load cancellation
-deadline; changing engines waits for the active inference to release its permit.
+Reset invalidates existing session handles. Current Core revisions use separate foreground and background FIFO queues,
+each with up to 32 waiting requests and a 120-second queue wait limit. Each native run
+uses the host-provided `execution_timeout_secs` with ONNX cooperative cancellation; the current CLI supplies 120 seconds.
+Session loading has a separate ONNX load cancellation deadline; changing engines waits
+for active inference to release its permits. Check the pinned SDK for exact limits.
 Expired queue entries are removed before inference. An expired native run produces
 no embedding. `inference_status` reports queued/active work, phase, capacity, limits and
 `host_recovery_required` without waiting for the native session mutex. Providers

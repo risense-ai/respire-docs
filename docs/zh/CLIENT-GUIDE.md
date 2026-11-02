@@ -1,38 +1,16 @@
 # 客户端集成 {#client-integration}
 
-开发新的第三方客户端或 agent 时，先读 [Runtime RPC](runtime-rpc.md)。它通过 HTTP 调用已有运行时，不要求集成 Tauri sidecar。
+Respire Client 2 使用 Go 和 Wails v3 外壳及内嵌前端。它调用命名桌面操作、本机 Runtime RPC 和受限 CLI 宿主操作，不直接打开数据库或实现 Core。开发第三方客户端时，先读 [Runtime RPC](runtime-rpc.md)，并检查正在运行的 CLI 支持哪些功能。
 
 | 职责 | 归属 |
 |---|---|
-| UI 和 Tauri 外壳 | 客户端仓库 |
-| 记忆操作和本地身份 | CLI |
-| 协议/输出契约 | 规范契约和 CLI 适配器 |
-| 检索/模型执行 | 通过 SDK 调用 Core |
+| 桌面、前端、托盘和客户端更新 | `respire-client2` |
+| 记忆、本机身份、同步和 Runtime | CLI 及其应用层 |
+| 模型执行和检索 | CLI SDK 调用 Core |
 | 加密远程记录 | 服务端 |
 
-```mermaid
-flowchart LR
-  Matrix["兼容性矩阵"] --> Stage["准备 CLI 与运行时"]
-  Stage --> Frontend["构建树形 UI"]
-  Frontend --> Desktop["构建桌面包"]
-  Desktop --> Verify["干净环境启动验证"]
-```
+旧的 `contracts/client-compatibility-matrix.json` 描述 Tauri 客户端及其 sidecar 准备流程，不是 Client 2 的发布矩阵。Client 2 按自身平台选择 CLI 发布，校验元数据和哈希，然后准备可执行文件及原生运行时。也可使用已有的兼容 Runtime。目标映射不保证发布资产存在，也不保证可选功能兼容。
 
-构建前：
+开发时请遵循客户端仓库的[构建说明](https://github.com/risense-ai/respire-client2#build)，检查平台依赖并运行现有检查。Windows 脚本运行 Go vet 和前端语法检查，生成可执行文件、校验和及声明。分发前请在隔离环境中验证打包产物。
 
-1. 检查 `contracts/client-compatibility-matrix.json` 和 CLI 产物目标。
-2. 获取兼容 sidecar，准备运行时清单和资源。
-3. 运行现有前端检查。
-4. 使用平台依赖构建原生桌面包。
-5. 在干净环境中验证打包后的应用。
-
-| 本地记录 | 写入方 |
-|---|---|
-| `session.json` | CLI 注册/登录 |
-| `client.json` | 与 CLI 共享的客户端偏好 |
-| 本地 SQLite | CLI/应用层 |
-| 注入块 | CLI 托管目标实现 |
-
-不要在 UI 中重复实现密钥管理或推理。CLI JSON 或同步/认证行为发生变化时，必须同时检查 CLI 和客户端使用方。
-
-[客户端](client.md) · [契约](contracts.md) · [开发](development.md)
+受支持的账户操作和模型服务凭据通过标准输入传给 CLI，不放在命令行参数中。不要在 UI 中重复实现密钥管理或推理。见[客户端](client.md)、[契约](contracts.md)和[开发](development.md)。

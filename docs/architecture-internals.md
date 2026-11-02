@@ -15,7 +15,7 @@ flowchart LR
 | Write | Validate input → obtain Core proposals/features → authorize changes → encrypt and persist |
 | Read | Load authorized local snapshots → Core selects final results/context → final output |
 | Tree changes | Update encrypted parent metadata and local index together |
-| Sync | Pull revisions/tombstones → apply conflict rules → push dirty records → save cursor |
+| Sync | Pull pages and commit each with its cursor → push pending operations → pull again if needed → process conflict decisions |
 | Injection | CLI template → managed block in the target AI tool |
 
 The runtime owns the data-directory lock. Normal commands use the runtime when available. Direct maintenance requires stopping the runtime first; use the installed CLI's help for supported flags.

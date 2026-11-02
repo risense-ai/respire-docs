@@ -1,5 +1,7 @@
 # Respire for Dim
 
+<img src="/agents/dimcode.svg" alt="Dim letter placeholder" width="56" height="56">
+
 [respire-dimcode](https://github.com/risense-ai/respire-dimcode) installs the respire memory engine into Dim agent through the standard plugin marketplace: title-tier recall on every round, one-prefix store, Stop storage check. See the [plugin overview](./index.md) for the shared runtime behavior, first-use steps and tuning reference.
 
 ## Install
@@ -30,7 +32,7 @@ echo '{"prompt":"respire 测试"}' | python3 ~/.dimcode/v2/plugins/respire/hooks
 
 Two Dim quirks worth knowing (verified against source): `dim` has **no** `plugin list` subcommand, and `dim hooks list` shows only project/user config, **not plugin hooks** — an empty list does not mean the hook is off. Check the plugin body in the TUI / Desktop plugin page; effectiveness is confirmed by a new session.
 
-When the engine (`rsrs`) is missing, the plugin injects `npm i -g @rsrsai/cli@latest` into the session; effective from the next session.
+When the engine (`rsrs`) is missing, the plugin injects `npm i -g rsrs-cli@latest` into the session; effective from the next session.
 
 ## What happens in a session
 
@@ -71,6 +73,7 @@ Config file: `~/.dimcode/v2/plugins/respire/hooks/respire.config.json` (missing 
 `dim` has no `plugin uninstall` subcommand (verified against source) — uninstall by moving, and the target **must be outside the plugins root** (a leftover directory with a manifest inside the root keeps loading as a plugin, double-running the hooks):
 
 ```bash
+mkdir -p ~/.dimcode/v2/plugins-backup
 mv ~/.dimcode/v2/plugins/respire ~/.dimcode/v2/plugins-backup/respire.removed-$(date +%s)
 ```
 

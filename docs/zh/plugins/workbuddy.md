@@ -1,13 +1,18 @@
 # WorkBuddy 版 respire {#respire-for-workbuddy}
 
+<img src="/agents/workbuddy.png" alt="WorkBuddy logo" width="56" height="56">
+
 [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) 以 WorkBuddy 标准插件市场把 respire 记忆引擎装进 WorkBuddy agent：每轮标题档自动召回、「记：」一前缀即落库、Stop 存储检查。共用运行时行为、首次使用步骤与调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
 
-一行装（无需克隆，GitHub 远端市场直达）：
+克隆仓库，审阅安装脚本后运行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/risense-ai/respire-workbuddy/main/install.sh | bash
+git clone https://github.com/risense-ai/respire-workbuddy.git
+cd respire-workbuddy
+# Review install.sh before running it
+bash install.sh
 ```
 
 或克隆后跑安装脚本——自动定位 WorkBuddy 桌面端自带的 `codebuddy` CLI（非常规安装位可设 `CODEBUDDY_BIN=/path/to/codebuddy`），注册市场、安装插件并验证注册表与缓存落地：
@@ -19,7 +24,7 @@ bash install.sh --github       # force the GitHub remote marketplace (ignore the
 bash install.sh --uninstall    # uninstall (keeps the marketplace registration for easy reinstall)
 ```
 
-升级：重跑任一安装命令即可——git 型市场先 `marketplace update` 拉 origin 再 `plugin update`。
+升级时重跑安装脚本。脚本会尝试先执行 `marketplace update`，再执行 `plugin update`；请检查错误和安装版本。
 
 **装完须完全退出并重启 WorkBuddy，新会话起生效。** WorkBuddy 正在运行时写入可能被其内存态覆盖——若重启后没生效，退出 WorkBuddy 再跑一次脚本即可。
 
@@ -39,7 +44,9 @@ ls ~/.workbuddy/plugins/cache/risense-workbuddy/respire/*/    # .codebuddy-plugi
 echo '{"prompt":"respire 测试"}' | python3 ~/.workbuddy/plugins/cache/risense-workbuddy/respire/*/hooks/respire.py UserPromptSubmit
 ```
 
-引擎（`rsrs`）缺失时插件把 `npm i -g @rsrsai/cli@latest` 注入会话代装。**新会话起生效。**
+引擎（`rsrs`）缺失时插件把 `npm i -g rsrs-cli@latest` 注入会话代装。**新会话起生效。**
+
+插件仓库报告，其测试的 WorkBuddy 桌面端不加载插件自带的 hooks，只有 `settings.json` 中的用户级钩子会运行。仓库未注明所测宿主版本，其他版本需要验证。仅安装市场插件不能证明桌面端的自动召回已生效。如需在连接器页面使用按需技能，请按仓库的[连接器安装说明](https://github.com/risense-ai/respire-workbuddy/tree/main/connector)操作；安装后须完全退出并重开 WorkBuddy。连接器与自动钩子是两种独立方式。
 
 ## 会话内发生什么 {#what-happens-in-a-session}
 
@@ -79,6 +86,7 @@ echo '{"prompt":"respire 测试"}' | python3 ~/.workbuddy/plugins/cache/risense-
 首选 `bash install.sh --uninstall`（走官方 CLI，注册表干净）。CLI 失效时搬移式兜底，**目标必须在 plugins 根之外**（根内带 manifest 的残留目录会被当插件继续加载、钩子双跑）：
 
 ```bash
+mkdir -p ~/.workbuddy/plugins-backup
 mv ~/.workbuddy/plugins/cache/risense-workbuddy/respire ~/.workbuddy/plugins-backup/respire.removed-$(date +%s)
 codebuddy plugin uninstall respire@risense-workbuddy
 ```

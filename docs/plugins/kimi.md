@@ -1,5 +1,7 @@
 # Respire for Kimi Code
 
+<img src="/agents/kimi.png" alt="Kimi Code logo" width="56" height="56">
+
 [respire-kimi](https://github.com/risense-ai/respire-kimi) installs the respire memory engine into Kimi Code through the standard `/plugins` flow: title-tier recall on every round, one-prefix store, Stop storage check. See the [plugin overview](./index.md) for the shared runtime behavior, first-use steps and tuning reference.
 
 ## Install
@@ -14,7 +16,7 @@ Run `/reload` or open a new session (`/new`) to activate. The plugin is **user-l
 
 Upgrade from the `/plugins` panel (update respire, or reinstall over it), then `/reload`.
 
-When the engine (`rsrs`) is missing, the plugin hands `npm i -g @rsrsai/cli@latest` to the agent, which installs it; recall and store recover within the same session.
+When the engine (`rsrs`) is missing, the plugin hands `npm i -g rsrs-cli@latest` to the agent, which installs it; recall and store recover within the same session.
 
 ## What happens in a session
 

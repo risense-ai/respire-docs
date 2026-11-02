@@ -55,7 +55,7 @@ flowchart LR
 | --- | --- |
 | Standard output | Final result; one JSON object with `--json` |
 | Standard error | Progress, diagnostics and warnings |
-| `--client-only` | Connects to the existing authenticated local runtime |
+| `--client-only` | Connects to an existing local runtime; see [runtime compatibility](runtime.md#upgrading-an-older-runtime) |
 | `--direct` | Direct local execution; follow the installed command's lock requirements |
 
 ## Configuration compatibility
@@ -70,7 +70,6 @@ The configured default API is `https://api.rsrs.rs`; `--addr` can select a local
 | `RSRS_NO_AUTOSYNC=1` | Disable automatic synchronization |
 | `RSRS_ADDR`, `RSRS_TOKEN` | Remote connection configuration |
 | `RSRS_JSON=1` | Request JSON output |
-| `RSRS_MODEL_DIR`, `RSRS_M3_DIR` | Explicit model directories |
-| `RSRS_RERANKER_DIR` | Explicit reranker directory |
+| `RSRS_M3_DIR` | Explicit model directory |
 
 See [synchronization and keys](sync-and-keys.md), [agent integration](injection.md) and [benchmarks](benchmark.md).

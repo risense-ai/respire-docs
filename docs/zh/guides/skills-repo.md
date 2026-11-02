@@ -97,7 +97,7 @@ opencode debug skill
 ## 升级 {#upgrade}
 
 - 方法 A：在克隆目录中运行 `git pull`，然后重启主机。
-- 方法 B 和 C：重新运行安装命令；它会覆盖现有副本。
+- 方法 B：先检查并备份本地修改，再替换原技能目录。方法 C：检查 `skills` CLI 的更新行为。
 
 ## 卸载 {#uninstall}
 

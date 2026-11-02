@@ -5,7 +5,7 @@ Local-first memory for AI tools: keep a working library on your device, retrieve
 ```mermaid
 flowchart LR
   AI["AI tools"] --> CLI["CLI"]
-  Browser["Local Web"] --> CLI
+  Browser["Hosted Dashboard"] --> Server
   Desktop["Desktop client"] --> CLI
   CLI --> App["Infrastructure app / crypto / storage"]
   App --> SDK["Safe SDK"]
@@ -20,7 +20,7 @@ flowchart LR
 | Core | Model execution, retrieval, ranking, deduplication and context selection |
 | Infrastructure crates | Protocol, cryptography, persistence, sync and safe SDK adapters |
 | Server | Authentication and per-user ciphertext storage |
-| Web / Desktop | The same tree interface, using CLI operations |
+| Dashboard / Desktop | Hosted account dashboard and separate desktop client using local Runtime RPC |
 | Plugins | Host adapters for ZCode, Kimi Code, Dim, Qoder, WorkBuddy, Hermes, Codex and Pi; see [AI tool plugins](plugins/index.md) |
 | Website | Product information; separate from the memory client |
 

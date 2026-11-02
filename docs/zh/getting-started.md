@@ -10,15 +10,15 @@ flowchart LR
 
 | 安装方式 | 前提 |
 |---|---|
-| npm | `@rsrsai/cli` 启动器及匹配的平台包 |
-| 桌面安装器 | [Respire Releases](https://github.com/risense-ai/respire-releases/releases) 仓库中的兼容产物 |
+| npm | `rsrs-cli` 启动器及匹配的平台包 |
+| 桌面安装器 | [Client 2 发布页](https://github.com/risense-ai/respire-client2/releases)中的兼容产物 |
 | 源码 | 基础设施源码与匹配的 Core SDK |
 
 对于包注册表中已提供的版本，选择一种包管理器：
 
 ```sh
-npm i -g @rsrsai/cli
-pnpm add -g @rsrsai/cli
+npm i -g rsrs-cli
+pnpm add -g rsrs-cli
 ```
 
 两种包管理器都会安装 `rsrs` 命令。源码构建见[开发](development.md)。
@@ -46,7 +46,7 @@ RSRS_LIBC=musl rsrs doctor
 export RSRS_LIBC=glibc
 ```
 
-GNU 包要求兼容的 glibc 主机，不能在 Alpine 上运行。如果安装时省略了可选依赖，请安装与 `@rsrsai/cli` 版本相同的目标平台包。Intel Mac 不在产物目标范围内。
+GNU 包要求兼容的 glibc 主机，不能在 Alpine 上运行。如果安装时省略了可选依赖，请安装与 `rsrs-cli` 版本相同的目标平台包。Intel Mac 不在产物目标范围内。
 
 ## 初次运行 {#first-commands}
 
@@ -61,11 +61,19 @@ rsrs --help
 
 | 身份场景 | 命令 |
 |---|---|
-| 首个云端账户 | `rsrs register --user <name> --pass <login-password> --super <recovery-password>` |
+| 首个云端账户 | 按下方步骤交互注册 |
 | 浏览器登录 | `rsrs login` 或 `rsrs login --oauth`；完成 dashboard 登录/TOTP 并批准 CLI |
 | 终端登录 | `rsrs login --interactive`；输入密码、按要求输入 TOTP，再输入 super 密码 |
 | 新设备 | 使用 `rsrs login --help` 与[同步与密钥](sync-and-keys.md)中说明的恢复选项 |
-| 仅本地使用 | `rsrs keygen --pass <password>` |
+| 仅本地使用 | `rsrs keygen --json` |
+
+仅在没有现有密钥的新配置中使用 `keygen`；不要为已有记忆库重新生成密钥。请私密保存 JSON 输出中的 `summary.super` 作为恢复材料。为这个新配置注册云账户时，请在宿主终端执行以下命令，并在提示时输入登录密码：
+
+```sh
+rsrs keygen --json
+rsrs --runtime-internal --stop
+rsrs --direct register --user <name>
+```
 
 恢复材料应保存在 Git 和聊天日志之外。服务端无法恢复遗失的客户端解密秘密。不要只为修复登录问题而替换已有密钥。
 

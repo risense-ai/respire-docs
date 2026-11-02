@@ -34,7 +34,7 @@ Keep credentials in the deployment's secret configuration. Do not commit a live 
 | `/v2/*` | Operation-based synchronization and conflict decisions |
 | `/admin/*` | Authorized administration |
 
-Use the repository's `contracts/openapi.yaml` and route implementation for exact methods and payloads. The OpenAPI file may cover fewer routes than the server; do not infer an undocumented management operation from this overview.
+The repository's `contracts/openapi.yaml` is a snapshot of server commit `22096e8e237a`. For exact methods and payloads, use `service/openapi.yaml` and the route implementation from the server revision being deployed; do not infer an undocumented management operation from this overview.
 
 | Administrator role | Scope |
 | --- | --- |
@@ -50,7 +50,7 @@ Use the repository's `contracts/openapi.yaml` and route implementation for exact
 | `service/src/http/` | Routes, authentication and request boundaries |
 | `service/src/store/` | Postgres storage, migrations and synchronization ledger |
 | `service/src/totp.rs` | Two-factor authentication |
-| `admin-ui/` | Administration frontend |
+| `respire-site/console/` | Dashboard and administration frontend in the separate site repository |
 
 The server consumes the infrastructure application package from a pinned CLI revision. Its build may therefore need a matching binary Core SDK even though ordinary cloud requests do not perform local model inference.
 

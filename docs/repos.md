@@ -4,10 +4,10 @@
 flowchart TB
   Docs["respire-docs: canonical contracts"] -.-> CLI["respire-cli"]
   Docs -.-> Server["respire-server"]
-  Docs -.-> Client["respire-client"]
+  Docs -.-> Client["respire-client2"]
   Core["respire-core"] -->|staticlib + C ABI| CLI
   CLI -->|Pinned infrastructure app crate| Server
-  Client -->|CLI sidecar + runtime libraries| CLI
+  Client -->|Local Runtime RPC and host actions| CLI
   Site["respire-site"] --> Website["Website"]
 ```
 
@@ -15,7 +15,7 @@ flowchart TB
 |---|---|
 | [respire-cli](https://github.com/risense-ai/respire-cli) | CLI plus protocol, crypto, storage, app and safe SDK crates |
 | [respire-server](https://github.com/risense-ai/respire-server) | Authentication, encrypted storage, HTTP API and deployment |
-| [respire-client](https://github.com/risense-ai/respire-client) | Tree UI and Tauri desktop shell; CLI sidecars |
+| [respire-client2](https://github.com/risense-ai/respire-client2) | Go/Wails desktop client, embedded UI and local Runtime management |
 | [respire-docs](https://github.com/risense-ai/respire-docs) | Documentation and canonical contracts |
 | [respire-site](https://github.com/risense-ai/respire-site) | Marketing website source |
 | [respire-releases](https://github.com/risense-ai/respire-releases) | Release information and matching binary assets |
@@ -42,5 +42,5 @@ CLI/server do not check out Core source or use a Core submodule. The CLI pins an
 |---|---|
 | Core ABI / SDK | Canonical contract, validated SDK manifest and consumer lock |
 | Infrastructure app | CLI source revision and server dependency |
-| CLI output | CLI contract and Web/desktop consumers |
-| Sidecar | CLI artifact manifest, client compatibility and runtime resources |
+| CLI output | CLI contract and desktop consumers |
+| Desktop Runtime | CLI release metadata, platform target and runtime resources |

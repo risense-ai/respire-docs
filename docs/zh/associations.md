@@ -1,6 +1,6 @@
 # 记忆关联 {#memory-associations}
 
-Recall 保留原有排序后的 `details` 数组，并在独立的 `related` 数组中追加数量受限、仅含标题的关联。每个关联包含 `id`、`title`、`source_id` 及 `relation`：`new_version`、`old_version`、`see_also`、`co_recall` 或 `neighbor`。正文须用 `show` 读取；标题属于不可信数据。Summary 分别统计原始命中与关联。Recall detail 行的 `superseded_by` 及文本标记 `[superseded]` 表示存在有效替代记录。替代链解析到最新的存活端点。
+支持关联扩展时，recall 保留原有排序后的 `details` 数组，并在独立的 `related` 数组中追加数量受限、仅含标题的关联。当前元数据感知召回和使用渲染预算的召回不返回扩展关联。每个关联包含 `id`、`title`、`source_id` 及 `relation`：`new_version`、`old_version`、`see_also`、`co_recall` 或 `neighbor`。正文须用 `show` 读取；标题属于不可信数据。Summary 分别统计原始命中与关联。Recall detail 行的 `superseded_by` 及文本标记 `[superseded]` 表示存在有效替代记录。替代链解析到最新的存活端点。
 
 ```sh
 rsrs remember "Revised conclusion" --title "Current decision" --importance important --supersedes OLD_ID
@@ -13,7 +13,7 @@ rsrs recall "query" --no-related --titles --json
 
 Fast 和 quality 模式只扩展最终选中的命中。模型选择仍只接收已有的查询/标题材料。关系优先级、邻居推断、排除规则、范围过滤与预算归 Core 所有。不返回向量、中间 cosine 值、策略阈值或 selector 计划。关联不改变主要命中的 ID 与分数。
 
-`--no-related` 禁用当前请求的扩展与替代提示。宿主兼容环境开关 `RSRS_RELATED=0` 禁用扩展，但保留替代警告；进程环境变更需要宿主所有者重启 runtime。宿主向 Core 传递显式关联设置；关联策略由 Core 负责，Core 不读取环境变量。
+`--no-related` 禁用扩展，通常也会隐藏替代提示。源码显示，非元数据感知召回使用渲染预算时，预算分支可能在检查此选项前保留替代提示（`respire-cli/cli/src/main.rs`、`respire-cli/cli/src/recall_select.rs`）；这一组合尚未经端到端测试验证。宿主兼容环境开关 `RSRS_RELATED=0` 禁用扩展，但保留替代警告；进程环境变更需要宿主所有者重启 runtime。宿主向 Core 传递显式关联设置；关联策略由 Core 负责，Core 不读取环境变量。
 
 共同召回证据存于本地 SQLite 表 `recall_pairs`，不是同步内容。前五个最终命中 ID 形成不同的无序对；每对在一次 recall 中只递增一次。关联 ID 不进入统计。CLI 复用已有、容量受限的异步统计队列及其失败诊断。立即重复查询时，排队中的统计可能尚未保存。
 

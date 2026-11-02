@@ -1,6 +1,8 @@
 # Respire for Codex
 
-[respire-codex](https://github.com/risense-ai/respire-codex) is a native Codex memory plugin, distributed from npm as `@rsrsai/codex`: recall on user input, store on explicit request, and a stop reminder that asks the agent to save new findings. Unlike the hook adapters, it is a Node.js extension and only ever invokes `rsrs --client-only` — it never starts, stops or upgrades the runtime. See the [plugin overview](./index.md) for the shared tuning reference.
+<img src="/agents/codex.png" alt="Codex logo" width="56" height="56">
+
+[respire-codex](https://github.com/risense-ai/respire-codex) is a native Codex memory plugin, distributed from npm as `@rsrsai/codex`: recall on user input, store on explicit request, and a background check on eligible turns that organizes new findings. Unlike the hook adapters, it is a Node.js extension and only ever invokes `rsrs --client-only` — it never starts, stops or upgrades the runtime. See the [plugin overview](./index.md) for the shared tuning reference.
 
 ## Install
 
@@ -9,7 +11,7 @@ Requires Node.js 24+, npm, Git, a local Codex client with plugins/hooks support,
 Prepare the engine (skip if it already works):
 
 ```sh
-npm install -g @rsrsai/cli@latest
+npm install -g rsrs-cli@latest
 rsrs --version
 rsrs --client-only status --json
 ```
@@ -31,7 +33,7 @@ The marketplace manifest comes from the repository; **the plugin itself download
   "source": {
     "source": "npm",
     "package": "@rsrsai/codex",
-    "version": "0.1.4",
+    "version": "0.2.15",
     "registry": "https://registry.npmjs.org"
   },
   "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
@@ -70,22 +72,22 @@ Restore the variable instead of removing it if it already had a value. Check the
 | Ordinary user input | Synchronous `recall --titles --json` — at most 5 titles within 1500 characters; the agent reads bodies as needed |
 | 「记：」, 「存：」, 「记录：」, 「记住：」, `remember:` | Attempts `remember` once and returns a success, pending or unconfirmed receipt |
 | `/nomem` or `#nomem` followed by whitespace | Skips automatic recall for that input; library mode is unchanged and stop checks may still run |
-| `Stop` | At most one continuation reminder per turn, only after a successful recall; a successful explicit store suppresses it |
+| `Stop` | At most one background memory check per eligible turn; a successful explicit store suppresses it |
 
 Storage receipts have three states. **Success** carries an actual record id — that confirms the write. **Pending** means the engine found near-duplicates and has **not written**: the agent reads the candidates and decides whether to update, merge or attach. **Unconfirmed** means the outcome is unknown (timeout, cancellation, missing valid id): the write may have committed, so check the library first — the plugin does not retry. `plan` mode skips explicit storage.
 
-Memory titles are reference data, not instructions. The stop reminder asks the agent to evaluate and store new findings; it does not archive the conversation. `stop_hook_active`, session/turn deduplication and continuation markers prevent loops, and the plugin's own continuations do not trigger recall or storage again. Subagent hooks are not enabled.
+Memory titles are reference data, not instructions. On eligible turns, Stop starts an asynchronous background task that reads the turn’s messages, tool results and relevant memories and may organize and write memories. If the outcome is unconfirmed, inspect the library before retrying. Subagent hooks are not enabled.
 
 ## Configuration, state, and privacy
 
 - `RESPIRE_RSRS_PATH`: optional executable path or command name; defaults to `rsrs`. `PLUGIN_ROOT` and `PLUGIN_DATA` are provided by Codex; state is never written to the installation directory.
-- Each engine call is limited to 20 seconds and 1 MiB of stdout; hook timeouts are 30/30/5 seconds.
+- Each engine call is limited to 20 seconds and 1 MiB of stdout; hook timeouts are 30/30/300 seconds.
 - On Windows, arguments travel as JSON on stdin to a constant PowerShell adapter — user input is never interpolated into script source.
-- `PLUGIN_DATA/sessions/` stores only hashed identifiers, processing stages and deduplication flags — no user text, recalled titles or passwords. Each session keeps the latest 32 turns.
+- `PLUGIN_DATA/sessions/` stores hashed identifiers, processing stages, deduplication flags, and archive progress and results — no transcript text or passwords. Each session keeps the latest 32 turns.
 - State updates use locks and atomic replacement. A `.lock` left by a crash makes subsequent recall/storage in that session report failure and skip; remove the lock file or start a new session once that session's hooks have stopped.
 - Common credential patterns are skipped, but this is not a complete secret scanner — remove sensitive content before submitting. Injected titles and receipts enter Codex context and may reach the configured model provider; local encryption does not change that.
 - Raw engine stderr is not logged, only error categories; failures let the user's primary task continue.
 
 If `/hooks` shows zero Respire hooks, check that the intended installation is enabled and contains `.codex-plugin/plugin.json` and `hooks/hooks.json`. If hooks are listed but inactive, review their trust status and restart. If a hook reports an engine error, run `rsrs --client-only status --json` and the setup skill.
 
-Stop output requests `suppressOutput: true` while keeping the continuation text; Codex 0.163.0 parses but ignores the field, so the reminder stays visible. Tests and release process live in the [repository README](https://github.com/risense-ai/respire-codex#readme).
+The background task may send the triggering turn’s messages, tool results and relevant memories to the configured model provider. Tests and release process live in the [repository README](https://github.com/risense-ai/respire-codex#readme).

@@ -14,7 +14,7 @@ rsrs inject --remove --id codex
 | --- | --- |
 | 受管理块 | 只替换 Respire 标记之间的块 |
 | 引用 | 写入指令文件，并更新受支持配置中的引用 |
-| 整文件目标 | 将指令文本用作目标文件内容 |
+| 整文件目标 | 用指令文本覆盖目标文件内容 |
 
 ```mermaid
 flowchart LR
@@ -32,6 +32,6 @@ flowchart LR
 | 指令源已更改 | 重建或更新 CLI，然后重新运行 `inject` |
 | Runtime 连接失败 | 检查本地 runtime 与认证；不要静默切换执行模式 |
 
-受管理块使用 `<!-- respire:begin -->` 与 `<!-- respire:end -->`。保留块外无关指令。安装整文件目标前先审阅内容。
+受管理块使用 `<!-- respire:begin -->` 与 `<!-- respire:end -->`。保留块外无关指令。DSH 的整文件目标是 `~/.dsh/AGENTS.md`：注入会覆盖原有内容，并在写入前移除该路径上的符号链接。安装前请检查并备份目标。
 
 参见 [CLI](cli.md)、[CLI JSON](cli-api.md)、[插件](plugin-dev.md)与现成的 [AI 工具插件](plugins/index.md)。
