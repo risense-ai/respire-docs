@@ -1,5 +1,34 @@
 # 文档审查报告
 
+## Client 2 0.2.22 补充审查
+
+本轮以 Client 2 发布标签 `v0.2.22` 的提交 `866e34c9daa89b9a86b6b9da1a5d8d021f62dd71` 为依据。客户端工作树另有未提交修改；这些修改没有作为发布功能写入文档。以下状态只覆盖本轮检查，不能替代各平台的原生验收。
+
+| 发现 | 处理与依据 | 仍需核验 |
+| --- | --- | --- |
+| 客户端指南声称 Codex 注入有界面预览。0.2.22 的安装页没有这一入口。 | 已修正中英文 `docs/client.md`；依据为发布版 `internal/desktop/frontend/pages/injection.js`。CLI 历史参考保留其版本范围。 | 没有执行真实宿主的注入。 |
+| 原有五组客户端截图来自 0.2.17，且缺少多个页面。 | 已补充 0.2.22 的 12 个页面，使用发布版前端和模拟数据；托盘图片仍来自 0.2.17。 | 模拟数据不验证 Runtime、真实账户或原生窗口。 |
+| Windows 安装页仍以 CLI 为主要路径。 | 中英文页面已将桌面客户端放在前面，并说明 Node.js 只用于下方的 CLI 路径。 | 未在新安装的 Windows 系统上执行完整安装。 |
+| 0.2.22 英文界面的部分文字仍为中文。 | 截图保留真实界面文字，并在客户端指南中注明。 | 客户端翻译需要在客户端仓库修复；本轮不修改该仓库。 |
+
+本轮逐页对照了发布版前端的页面入口、显示内容和操作代码。截图检查使用隔离的模拟接口，没有执行写入、登录或安装；下表不能证明这些操作在真实 Runtime 中全部成功。
+
+| 页面 | 主要源码 | 文档覆盖 |
+| --- | --- | --- |
+| 概览 | `pages/overview.js` | 状态、同步、Runtime 启停和跳转。 |
+| 记忆 | `memory/workspace.js`、`editor.js`、`tools.js`、`interactions.js` | 四种视图、筛选、检索、选择、编辑、合并和工具。 |
+| 日记 | `memory/diary.js` | 日历、日期浏览、片段搜索和相邻片段。 |
+| 整理 | `pages/organize.js` | 检查、方案预览和应用，以及 AI 服务的数据发送边界。 |
+| 模型与索引 | `pages/models.js`、`pages/recall.js` | 权重、引擎、索引、召回配置和基准测试。 |
+| 账户与空间 | `pages/accounts.js`、`authentication.js`、`space-members.js` | 登录、恢复、账户迁移、同步、空间和成员。 |
+| 安装 | `pages/injection.js`、`internal/desktop/inject.go` | 提示词模式、目标开关、插件和文件覆盖。 |
+| 访问授权 | `pages/grants.js` | 子树授权的创建、查看和撤销。 |
+| 设置 | `pages/settings.js`、`storage.js`、`ui/typography.js` | 外观、语言、启动、备份、目录和排版。 |
+| 更新 | `pages/settings.js` | 客户端和 CLI 的通道、检查和更新。 |
+| 操作记录 | `pages/settings.js` | 请求状态、回执和查询原请求。 |
+| 诊断 | `pages/settings.js` | 连接状态、检查和诊断导出。 |
+| 托盘 | `quickpanel.js`、`internal/desktop/app.go` | 快捷面板、同步、窗口和 Runtime 操作；沿用 0.2.17 的图片。 |
+
 状态：文档修改和指定检查已完成；未实测或仍需后续核验的事项见各条状态。以下发现记录审查时的问题，不表示修改后仍然存在。
 
 ## 补充：npm 包名与机器契约

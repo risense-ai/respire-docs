@@ -14,7 +14,7 @@ Download a matching application from [client releases](https://github.com/risens
 | Organize | Inspect grouping suggestions, similar entries and structural audit; generate, edit, copy, preview and apply a validated local move plan; preview suggestions individually or together. Configure a service to preview or execute AI organization by item limit, subtree or entire library. |
 | Models & Index | Select download source, prepare or download weights, cancel work or uninstall models; select an installed weight and engine, install NPU providers, probe inference, prepare or rebuild the index, configure recall, and run recall checks and a nine-round benchmark. Weights can be downloaded again; applying an engine reloads the model and verifies inference, falling back to CPU on failure. |
 | Accounts & Spaces | Browser or password login, registration, recovery, super-password reset, offline initialization, key export and logout; switch accounts, inspect or migrate old accounts, configure server and sync, inspect conflicts, and create, join, switch or remove spaces and manage invitations and members. Password operations require a compatible CLI with account RPC; login accepts a two-step verification code. Revoke one member or all members. |
-| Install | Select and distribute an instruction mode, detect targets, inject or remove instructions, and prepare or install host plugins. The current UI offers file preview for Codex; applying it requires the preview revision. Changing instruction mode rewrites instructions for all enabled agents without changing plugins; disabling an agent removes its injected instructions but keeps its plugin. Some plugins require the host UI to finish installation. DSH instruction injection overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back up the target first. |
+| Install | Select an instruction mode, detect targets, inject or remove instructions, and prepare or install host plugins. Changing instruction mode rewrites instructions for all enabled agents without changing plugins; disabling an agent removes its injected instructions but keeps its plugin. Some plugins require the host UI to finish installation. DSH instruction injection overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back up the target first. |
 | Access Grants | Create, inspect and revoke read-only subtree grants, including inherited access. |
 | Settings | Change theme, layout, language, login startup, automatic Runtime connection and updates, channels, work and diary modes, and data directory; import/export memories, back up the database, import shared material, and import/export client settings. |
 | Updates | Check, download, cancel and apply client updates; check and install or update the CLI, or open release and mirror pages. With automatic updates enabled, the client can restart after downloading when no business operation is running. |
@@ -26,7 +26,7 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-These screenshots show Client 2 version 0.2.17 with sample data. They illustrate the layout, not a live account or the exact appearance of later releases.
+The page screenshots show the Client 2 0.2.22 frontend running in a browser with simulated data. Accounts, counts and task states are examples. The tray screenshot is from 0.2.17. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
@@ -42,13 +42,29 @@ The tray quick panel provides the same status at a glance, plus **Sync now** and
 
 In **Memories**, choose tree, list, cards or graph. Select an entry to read it, or choose **New memory** to write one. Directory filters work on loaded entries; use the library search to search beyond them. Inspect similar entries before choosing a parent, merging or proceeding without deduplication.
 
+In tree and list views, click a title to open the entry, or click elsewhere on the row to select it. Hold Ctrl (Command on macOS) to select multiple entries, or Shift to select a visible range. Once multiple entries are selected, use **Merge selected**. Library search returns at most 50 results.
+
+Directory filters include type, storage area, project and tags, with a sort control. Project and tag filters use exact matches. Use **Load more** when more entries are available; these filters apply only to loaded entries.
+
+After a deletion, the current page offers **Restore deleted memory**. If that control is no longer available, use a compatible CLI with the original ID to restore the entry. Permanently purging ciphertext cannot be undone.
+
 ![Memory tree and search](/client2/memories-en.png)
 
 Use **Diary** to navigate by month or day, search dates and open a fragment with its neighbors. Use the **Organize** page to review grouping, similarity and structure suggestions; preview a move plan before applying it. AI organization requires a configured service and sends the selected material to it.
 
+Diary search finds fragments from a query; choose **Expand** beside a result to read neighboring fragments. After editing a plan, preview it again. If the library changes after a preview, generate or validate the plan again. An AI plan preview does not apply changes; **AI organize & apply** submits changes after confirmation.
+
+![Diary calendar and fragments](/client2/diary-en.png)
+
+![Organization suggestions and move plan](/client2/organize-en.png)
+
 ### Models and index {#models-and-index}
 
 Open **Models & Index** to see model and index tasks. Choose a download source, prepare weights and select an available inference engine. The page also offers inference checks, index preparation, recall configuration and a nine-round benchmark. Weights are separate downloads; engine and provider availability depend on the installed Runtime and hardware.
+
+Download the required weights before selecting and applying an engine. Applying it reloads the model and checks inference; on failure, the client falls back to CPU. The Linux interface offers only the CPU engine, and the NPU installation button is available only on Windows. The page shows status and progress while downloads or index tasks run.
+
+The page also configures the quality-recall service, switches recall mode, schedules background indexing and recalculates vectors. A benchmark can stop after its current request returns. Uninstalling models removes the model files; download them again when needed.
 
 ![Model and index controls](/client2/models-en.png)
 
@@ -62,12 +78,33 @@ Open **Accounts & Spaces** to sign in, recover keys or initialize a new offline 
 
 On **Install**, inspect the target, select an instruction mode and enable an agent. Review the result, then finish any host-specific installation or hook approval in the agent. Disabling an agent removes injected instructions but keeps the plugin. Changing the mode rewrites instructions for enabled agents. Review the DSH path and back it up before injection. The [plugin pages](plugins/) explain each host.
 
+Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Install page in client 0.2.22 does not offer a Codex file preview.
+
+Some targets are initially collapsed; choose **Show … more** to see them. Instruction modes are normal, read-only and off. After selecting one, choose **Apply and rewrite enabled prompts**.
+
+![Instruction mode and agent list on the Install page](/client2/injection-en.png)
+
 Use **Access Grants** to inspect, create or revoke read-only access to a memory subtree, including inherited grants. An invitation or grant can convey access to data; share it only with trusted recipients.
+
+To create a grant, enter the subtree root ID and its tool or purpose. The grant includes descendants; after revocation, tools using that token can no longer read the granted scope.
+
+![Access Grants page](/client2/grants-en.png)
 
 ### Settings, updates and diagnostics {#settings-updates-and-diagnostics}
 
 Use **Settings** for appearance, language, startup, Runtime connection and data import or export. **Updates** manages the desktop and CLI separately; inspect their channels and download status before applying changes. **Operations** lists request IDs and session receipts, while **Diagnostics** shows connection health and can export diagnostics. Check diagnostic output before sharing it.
 
+If a write shows an unconfirmed result, choose **Query original request** in **Operations**, then check the corresponding page. Full receipts are not retained after the client restarts. In **Diagnostics**, you can run a check or choose a destination for an exported report.
+
+Settings also controls workspace mode, diary recording, fonts and reading typography. The interface language and CLI display language are configured separately. A client-settings backup does not contain memory keys; save memory exports and database backups separately.
+
+![Client settings page](/client2/settings-en.png)
+
+![Desktop client and CLI updates page](/client2/updates-en.png)
+
+![Operations page](/client2/operations-en.png)
+
+![Diagnostics page](/client2/diagnostics-en.png)
 
 ## Data and failure boundaries {#data-and-failure-boundaries}
 

@@ -1,5 +1,16 @@
 # 在 Windows 上安装 rsrs {#installing-rsrs-on-windows}
 
+## 推荐：安装桌面客户端 {#install-the-desktop-client}
+
+桌面客户端提供图形界面，适合首次使用。Windows 需要 Windows 10 或更高版本，以及 Microsoft Edge WebView2 Runtime。
+
+1. 打开 [Client 2 发布页](https://github.com/risense-ai/respire-client2/releases/latest)，下载与处理器匹配的文件：x64 选择 `respire-windows-amd64.exe`，ARM64 选择 `respire-windows-arm64.exe`。
+2. 将文件放在可写入的固定目录中，然后运行。桌面客户端不需要 Node.js、npm、Go 或 Rust。
+3. 如果尚未连接 Runtime，打开客户端的“更新”页，选择“安装 / 更新 CLI”，并检查结果。桌面端与 CLI 分别发布，因此客户端安装包存在不代表匹配的 Runtime 一定可用。
+4. 按[快速开始](../getting-started.md#sign-in-or-create-a-local-library)登录或创建本地记忆库，再连接 Agent 并创建第一条记忆。
+
+下方是 CLI 备选方案，适合需要在终端操作的用户。
+
 ## rsrs 是什么 {#what-rsrs-is}
 
 Respire（通过 `rsrs` 命令调用）是一个本地优先、端到端加密的跨设备和 AI 应用程序的内存系统。在一台机器上书写的记忆可以通过加密同步在另一台设备或工具中复用。CLI 是一个轻量级客户端，连接到本地运行时。
@@ -14,6 +25,8 @@ Respire（通过 `rsrs` 命令调用）是一个本地优先、端到端加密�
 安装的可执行文件帮助信息是权威来源。通过 `rsrs --version`、`rsrs --help` 和 `rsrs prompt --json` 确认可用命令和选项。
 
 ## 先决条件 {#prerequisites}
+
+以下条件只适用于本页的 CLI 安装步骤，不是使用桌面客户端的要求。
 
 - Node.js LTS（包含 npm）
 - 一个包管理器：pnpm（推荐）或 npm
