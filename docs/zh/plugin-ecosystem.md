@@ -8,7 +8,10 @@
 | 钩子 | `plugins.json` 事件命令 | 写入前检查和操作后通知 |
 | 代理指令 | `rsrs inject` | 工作前召回、工作后保存 |
 | MCP | 标准 I/O 上的 `rsrs mcp` | 为兼容客户端提供受支持的记忆工具 |
+| Agent Plugins 包 | `plugin.json` + `mcp.json` | 给没有专用适配的宿主提供 skill 与 MCP 工具 |
 | 桌面端 | Client 2 使用本机 Runtime RPC 和受限宿主操作 | 提供受支持的 Runtime 与 CLI 操作界面 |
+
+[respire-general](plugins/general.md) 是可移植的 Agent Plugins 1.0 包：一个 Agent Skill 加一个 `rsrs mcp` 的 `mcp.json` 入口，不带任何宿主 hooks。首次启动 MCP 时会查 `rsrs inject --targets`，只在检测到的目标是 `absent` 或 `stale` 时写入宿主指令文件；`current` 直接跳过。Agent Plugins 没有安装后脚本，所以不存在安装时注入。mcode 没有 `rsrs inject` target，通用包不会在那里自动注入。已有专用适配的宿主应优先用专用插件，让召回与落库由 hooks 执行。
 
 ```mermaid
 flowchart TD

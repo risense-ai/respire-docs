@@ -64,6 +64,8 @@ export default defineConfig({
             { text: 'Pi', link: '/zh/plugins/pi' },
             { text: 'DSH', link: '/zh/plugins/dsh' },
             { text: 'Magpie', link: '/zh/plugins/magpie' },
+            { text: 'MiniMax Code', link: '/zh/plugins/minimax-code' },
+            { text: '通用包（Agent Plugins）', link: '/zh/plugins/general' },
           ] },
           { text: '操作指南', items: [
             { text: 'Windows 安装', link: '/zh/guides/windows-install' },
@@ -190,6 +192,8 @@ export default defineConfig({
         { text: 'Pi', link: '/plugins/pi' },
         { text: 'DSH', link: '/plugins/dsh' },
         { text: 'Magpie', link: '/plugins/magpie' },
+        { text: 'MiniMax Code', link: '/plugins/minimax-code' },
+        { text: 'General (Agent Plugins)', link: '/plugins/general' },
       ] },
       { text: 'Guides', items: [
         { text: 'Installing on Windows', link: '/guides/windows-install' },

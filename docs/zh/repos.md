@@ -23,9 +23,9 @@ flowchart TB
 
 ## AI 工具插件 {#ai-tool-plugins}
 
-十个宿主插件将 Respire 接入 AI 工具。安装和使用步骤见[插件指南](/zh/plugins/)。
+十一个宿主插件将 Respire 接入 AI 工具。通用的 [respire-general](https://github.com/risense-ai/respire-general) 包覆盖没有专用适配的 Agent Plugins 1.0 客户端。安装和使用步骤见[插件指南](/zh/plugins/)。
 
-| 仓库 | 宿主 |
+| 仓库 | 宿主 / 用途 |
 |---|---|
 | [respire-zcode](https://github.com/risense-ai/respire-zcode) | ZCode |
 | [respire-kimi](https://github.com/risense-ai/respire-kimi) | Kimi Code |
@@ -37,6 +37,8 @@ flowchart TB
 | [respire-pi](https://github.com/risense-ai/respire-pi) | Pi |
 | [respire-dsh](https://github.com/risense-ai/respire-dsh) | DSH |
 | [respire-magpie](https://github.com/risense-ai/respire-magpie) | Magpie |
+| [respire-minimax-code](https://github.com/risense-ai/respire-minimax-code) | MiniMax Code 0.4+（`SessionStart` / `UserPromptSubmit` / `Stop` hooks） |
+| [respire-general](https://github.com/risense-ai/respire-general) | 任意 Agent Plugins 1.0 客户端（skill + MCP，无 hooks） |
 
 CLI/server 不检出 Core 源码，也不使用 Core submodule。CLI 固定 SDK manifest；服务端固定基础设施 app crate 的 revision，并使用相同的 SDK 边界。
 

@@ -34,4 +34,15 @@ flowchart LR
 
 受管理块使用 `<!-- respire:begin -->` 与 `<!-- respire:end -->`。保留块外无关指令。DSH 的整文件目标是 `~/.dsh/AGENTS.md`：注入会覆盖原有内容，并在写入前移除该路径上的符号链接。安装前请检查并备份目标。
 
+## 通用包的首次注入 {#first-run-inject}
+
+[respire-general](plugins/general.md) 没有安装脚本，也没有宿主 hooks。它在宿主启动 MCP server 时做首次注入检查：
+
+```sh
+node scripts/setup-inject.mjs --target auto
+node scripts/setup-inject.mjs --target auto --check
+```
+
+脚本读取 `rsrs inject --targets --json`，只对 `absent` 或 `stale` 的目标执行注入；`current` 直接跳过，重复启动不会反复改写文件。注入成功后，结果记录到插件数据目录下的 `inject-state.json`。设 `auto_inject: false` 可关闭 MCP 启动时的检查，或用 `inject_target` 固定目标。mcode 没有 `rsrs inject` target，通用包会跳过；那里用 [MiniMax Code hooks 包](plugins/minimax-code.md)。
+
 参见 [CLI](cli.md)、[CLI JSON](cli-api.md)、[插件](plugin-dev.md)与现成的 [AI 工具插件](plugins/index.md)。

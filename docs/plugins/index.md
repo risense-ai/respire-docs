@@ -1,6 +1,6 @@
 # Respire plugins
 
-Respire provides a separate plugin for each host. Recall, storage, wrap-up and configuration differ by host; consult the host page. Plugins do not bundle the `rsrs` engine; install and prepare it using the [getting-started guide](../getting-started.md).
+Respire provides a separate plugin for each host. Recall, storage, wrap-up and configuration differ by host; consult the host page. Plugins do not bundle the `rsrs` engine; install and prepare it using the [getting-started guide](../getting-started.md). For hosts without a dedicated adapter, the portable [respire-general](./general.md) package provides an Agent Plugins 1.0 skill and MCP server without host hooks.
 
 Select a host name for installation, usage, configuration and troubleshooting. Dim uses a letter placeholder; the other icons identify the host or its brand.
 
@@ -18,8 +18,9 @@ Select a host name for installation, usage, configuration and troubleshooting. D
 | <img src="/agents/pi.png" alt="" width="24" height="24"> [Pi](./pi.md) | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` | background check after settlement |
 | <img src="/agents/dsh.png" alt="" width="24" height="24"> [DSH](./dsh.md) | [respire-dsh](https://github.com/risense-ai/respire-dsh) | `plugin_manager` | `package.json` | at most one reminder per turn |
 | <img src="/agents/magpie.svg" alt="" width="24" height="24"> [Magpie](./magpie.md) | [respire-magpie](https://github.com/risense-ai/respire-magpie) | `magpie plugin add` | `package.json` | background archive after response |
+| MiniMax Code | [respire-minimax-code](https://github.com/risense-ai/respire-minimax-code) | Local plugin directory or official Marketplace V1 package | `.minimax-plugin/plugin.json` | `{"decision":"block","reason":…}` |
 
-Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md)
+Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md) · [MiniMax Code](./minimax-code.md)
 
 Prepare the CLI and Runtime as described below, then sign in and unlock the library according to the host page. Some older adapters suggest installing `rsrs-cli` when the engine is missing; the user decides whether to run it.
 
@@ -57,3 +58,7 @@ Check `rsrs --version` and `rsrs --client-only status --json`, then confirm the 
 ## Data safety
 
 Recalled content and receipts may enter host context and reach the model provider. Local encryption does not change this; see each host page for background processing and data flows.
+
+## Portable package {#portable-package}
+
+[respire-general](./general.md) targets clients that support [Agent Plugins 1.0](https://agent-plugins.org/) but have no dedicated adapter. It ships one Agent Skill and a `mcp.json` that starts `rsrs mcp`; the agent uses the memory tools on demand. It has no host hooks, so recall is agent-driven rather than every-round. For hosts with a supported `rsrs inject` target, the MCP bridge checks `rsrs inject --targets` on first start and injects only when the target is `absent` or `stale`; a `current` target is skipped. mcode has no `rsrs inject` target, so the general package does not auto-inject there.
