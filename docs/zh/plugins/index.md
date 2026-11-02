@@ -1,6 +1,6 @@
 # Respire 插件 {#respire-plugins}
 
-Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾和配置不同，请以宿主页为准。插件不附带 `rsrs` 引擎；先按[入门指南](../getting-started.md)安装并准备引擎。
+Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾和配置不同，请以宿主页为准。插件不附带 `rsrs` 引擎；先按[入门指南](../getting-started.md)安装并准备引擎。没有专用适配的宿主可用便携包 [respire-general](./general.md)：Agent Plugins 1.0 的 skill + MCP，不依赖宿主 hooks。
 
 点击宿主名称，可查看安装、使用、配置和排障说明。Dim 暂用字母图标；其余图标对应各宿主或其品牌。
 
@@ -18,8 +18,9 @@ Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾
 | <img src="/agents/pi.png" alt="" width="24" height="24"> [Pi](./pi.md) | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` | 结算后后台检查 |
 | <img src="/agents/dsh.png" alt="" width="24" height="24"> [DSH](./dsh.md) | [respire-dsh](https://github.com/risense-ai/respire-dsh) | `plugin_manager` | `package.json` | 每轮至多一次提醒 |
 | <img src="/agents/magpie.svg" alt="" width="24" height="24"> [Magpie](./magpie.md) | [respire-magpie](https://github.com/risense-ai/respire-magpie) | `magpie plugin add` | `package.json` | 回复后后台归档 |
+| MiniMax Code | [respire-minimax-code](https://github.com/risense-ai/respire-minimax-code) | 本地插件目录或官方 Marketplace V1 包 | `.minimax-plugin/plugin.json` | `{"decision":"block","reason":…}` |
 
-各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md)
+各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md) · [MiniMax Code](./minimax-code.md)
 
 先按下方说明准备 CLI 和 Runtime，再按宿主页登录及解锁。缺少引擎时，部分旧版插件会提示运行 `rsrs-cli` 安装命令；是否执行由用户决定。
 
@@ -57,3 +58,7 @@ Codex 可设置 `RESPIRE_RSRS_PATH`，Pi 可使用 `--respire-rsrs`，DSH 可配
 ## 数据安全 {#data-safety}
 
 召回内容和回执可能进入宿主上下文并发送给模型提供商。本地加密不改变这一点；各插件的后台处理和数据流见对应页面。
+
+## 通用包 {#portable-package}
+
+[respire-general](./general.md) 面向支持 [Agent Plugins 1.0](https://agent-plugins.org/) 但没有专用适配的客户端。它提供一个 Agent Skill 和 `mcp.json`（启动 `rsrs mcp`），agent 按需调用记忆工具。没有宿主 hooks，召回由 agent 主动触发，而不是每轮自动执行。对支持 `rsrs inject` 的宿主，MCP 桥首次启动会查 `rsrs inject --targets`，只在目标 `absent` 或 `stale` 时注入；`current` 直接跳过。mcode 没有 `rsrs inject` target，因此通用包不会在 mcode 自动注入。

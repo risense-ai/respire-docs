@@ -23,9 +23,9 @@ flowchart TB
 
 ## AI tool plugins
 
-Ten host plugins connect Respire to AI tools. See the [plugin guides](/plugins/) for installation and usage.
+Eleven host plugins connect Respire to AI tools. The portable [respire-general](https://github.com/risense-ai/respire-general) package covers Agent Plugins 1.0 clients that have no dedicated adapter. See the [plugin guides](/plugins/) for installation and usage.
 
-| Repository | Host |
+| Repository | Host / use |
 |---|---|
 | [respire-zcode](https://github.com/risense-ai/respire-zcode) | ZCode |
 | [respire-kimi](https://github.com/risense-ai/respire-kimi) | Kimi Code |
@@ -37,6 +37,8 @@ Ten host plugins connect Respire to AI tools. See the [plugin guides](/plugins/)
 | [respire-pi](https://github.com/risense-ai/respire-pi) | Pi |
 | [respire-dsh](https://github.com/risense-ai/respire-dsh) | DSH |
 | [respire-magpie](https://github.com/risense-ai/respire-magpie) | Magpie |
+| [respire-minimax-code](https://github.com/risense-ai/respire-minimax-code) | MiniMax Code 0.4+ (`SessionStart` / `UserPromptSubmit` / `Stop` hooks) |
+| [respire-general](https://github.com/risense-ai/respire-general) | Any Agent Plugins 1.0 client (skill + MCP; no hooks) |
 
 CLI/server do not check out Core source or use a Core submodule. The CLI pins an SDK manifest; the server pins the infrastructure app crate revision and uses the same SDK boundary.
 
