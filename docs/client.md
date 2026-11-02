@@ -17,7 +17,7 @@ Download a matching application from [client releases](https://github.com/risens
 | Install | Select an instruction mode, detect targets, inject or remove instructions, and prepare or install host plugins. Changing instruction mode rewrites instructions for all enabled agents without changing plugins; disabling an agent removes its injected instructions but keeps its plugin. Some plugins require the host UI to finish installation. DSH instruction injection overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back up the target first. |
 | Access Grants | Create, inspect and revoke read-only subtree grants, including inherited access. |
 | Settings | Change theme, layout, language, login startup, automatic Runtime connection and updates, channels, work and diary modes, and data directory; import/export memories, back up the database, import shared material, and import/export client settings. |
-| Updates | Check, download, cancel and apply client updates; check and install or update the CLI, or open release and mirror pages. With automatic updates enabled, the client can restart after downloading when no business operation is running. |
+| Updates | Configure automatic updates and check intervals separately for the client and Runtime. Check, download, cancel and apply client updates, or check and install or update the CLI. With automatic restart enabled, the client can restart after downloading when no business operation is running. |
 | Operations | Inspect write status, request IDs and session receipts; query the original request when its result is unknown. Host-operation outcomes must be checked on their own page. |
 | Diagnostics | Inspect connection and health, run the CLI doctor and export diagnostics. |
 | Tray | The quick panel shows status and can sync or open the main window. The panel can be refreshed manually and refreshes when focused or shown again. Its menu can start or stop Runtime, check updates and quit the client while leaving Runtime running. |
@@ -26,7 +26,7 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-The page and tray screenshots show the Client 2 0.2.22 frontend running in a browser with simulated data. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
+The page and tray screenshots show the Client 2 0.2.23 frontend running in a browser with simulated data. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
@@ -45,6 +45,8 @@ In **Memories**, choose tree, list, cards or graph. Select an entry to read it, 
 In tree and list views, click a title to open the entry, or click elsewhere on the row to select it. Hold Ctrl (Command on macOS) to select multiple entries, or Shift to select a visible range. Once multiple entries are selected, use **Merge selected**. Library search returns at most 50 results.
 
 Directory filters include type, storage area, project and tags, with a sort control. Project and tag filters use exact matches. Use **Load more** when more entries are available; these filters apply only to loaded entries.
+
+With a Runtime that supports metadata lists, the client attempts to complete the memory directory, requesting up to 100,000 entries. In sidebar layout, drag the sidebar edge to adjust its width. On the memory page, drag the divider between the directory and reader; the divider is unavailable in graph view.
 
 After a deletion, the current page offers **Restore deleted memory**. If that control is no longer available, use a compatible CLI with the original ID to restore the entry. Permanently purging ciphertext cannot be undone.
 
@@ -78,7 +80,7 @@ Open **Accounts & Spaces** to sign in, recover keys or initialize a new offline 
 
 On **Install**, inspect the target, select an instruction mode and enable an agent. Review the result, then finish any host-specific installation or hook approval in the agent. Disabling an agent removes injected instructions but keeps the plugin. Changing the mode rewrites instructions for enabled agents. Review the DSH path and back it up before injection. The [plugin pages](plugins/) explain each host.
 
-Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Install page in client 0.2.22 does not offer a Codex file preview.
+Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Install page in client 0.2.23 does not offer a Codex file preview.
 
 Some targets are initially collapsed; choose **Show … more** to see them. Instruction modes are normal, read-only and off. After selecting one, choose **Apply and rewrite enabled prompts**.
 
@@ -98,6 +100,8 @@ If a write shows an unconfirmed result, choose **Query original request** in **O
 
 Settings also controls workspace mode, diary recording, fonts and reading typography. The interface language and CLI display language are configured separately. A client-settings backup does not contain memory keys; save memory exports and database backups separately.
 
+On **Updates**, configure automatic client downloads, automatic client restart and automatic installation of the client-managed Runtime separately. Choose a check interval for the client and Runtime independently. If automatic restart is off, choose **Restart & apply** after downloading; client updates are not applied while a business operation is running.
+
 ![Client settings page](/client2/settings-en.png)
 
 ![Desktop client and CLI updates page](/client2/updates-en.png)
@@ -116,4 +120,4 @@ A lost write receipt does not prove that the write failed. The client keeps its 
 
 ## Packaging boundary {#packaging-boundary}
 
-Windows uses an executable and requires WebView2. macOS uses an app bundle; Linux requires GTK 3, WebKitGTK 4.1 and platform libraries. Desktop and CLI/native runtime are distributed separately. Verify platform prerequisites and release assets; the client does not bundle model weights. See [Windows packaging](windows-packaging.md) and [client integration](CLIENT-GUIDE.md).
+Windows uses an executable and requires WebView2. The macOS app bundle requires macOS 12 or later. Linux requires GTK 3, WebKitGTK 4.1, X11 client libraries and system libraries compatible with Ubuntu 22.04; it does not run directly on Alpine/musl. Desktop and CLI/native runtime are distributed separately. Verify platform prerequisites and release assets; the client does not bundle model weights. See [Windows packaging](windows-packaging.md) and [client integration](CLIENT-GUIDE.md).
