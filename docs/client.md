@@ -26,7 +26,7 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-The page and tray screenshots show the Client 2 frontend running in a browser with simulated data. The Updates, memory editor and merge screenshots are from 0.2.25; the others are from 0.2.24. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
+The page and tray screenshots show the Client 2 frontend running in a browser with simulated data. The Updates, memory reader, editor and merge screenshots are from 0.2.25; the others are from 0.2.24. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
@@ -55,6 +55,8 @@ After a deletion, the current page offers **Restore deleted memory**. If that co
 After selecting a memory and opening its content, use the tools below it. **Promote one level** moves the memory and its children under the next ancestor. **Purge ciphertext** requires the full memory ID; it clears the current version’s ciphertext and cannot be undone. Runtime may retain pending revisions according to its sync and conflict rules.
 
 **Book material** and **Subtree install material** use the selected memory as their root. **Portrait material** summarizes the whole library instead. The client sets a limit of 40 entries per category; its theme ranking and timeline also use the whole library. These buttons display the material in a window, so inspect it before sharing.
+
+![Selected memory content and tools](/client2/memory-reader-en.png)
 
 ![Memory tree and search](/client2/memories-en.png)
 
