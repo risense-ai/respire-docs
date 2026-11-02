@@ -82,7 +82,7 @@ rsrs status
 
 A fresh profile reports a local store in offline mode. After registering or logging in, synchronization depends on the account and sync configuration; check `rsrs status`.
 
-Run the bundled check to install the embedding model and inspect the model, store, lock, remote and injection state.
+Run the check to inspect the model, store, lock, remote and injection state. When needed, `--fix` may download the model or schedule background preparation. Read the output and task progress, and wait for the current task to finish.
 
 ```powershell
 rsrs doctor --fix
@@ -233,7 +233,7 @@ pnpm add -g rsrs-cli
 # 2) Verify.
 rsrs --version
 
-# 3) Initialize and repair the model.
+# 3) Check setup and prepare the model if needed.
 rsrs status
 rsrs doctor --fix
 

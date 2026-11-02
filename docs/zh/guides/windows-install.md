@@ -82,7 +82,7 @@ rsrs status
 
 新配置文件会报告本地存储处于离线模式。注册或登录后，同步取决于账户和同步配置；请检查 `rsrs status`。
 
-运行捆绑检查以安装嵌入模型并检查模型、存储、锁、远程和注入状态。
+运行检查，查看模型、存储、锁、远程连接和注入状态。`--fix` 在需要时可能下载模型，也可能安排后台准备；请查看输出和任务进度，等待当前任务完成。
 
 ```powershell
 rsrs doctor --fix
@@ -233,7 +233,7 @@ pnpm add -g rsrs-cli
 # 2) Verify.
 rsrs --version
 
-# 3) Initialize and repair the model.
+# 3) Check setup and prepare the model if needed.
 rsrs status
 rsrs doctor --fix
 
