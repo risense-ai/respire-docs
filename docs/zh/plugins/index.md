@@ -27,9 +27,9 @@ Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾
 
 Client 2 可在“更新”页安装 CLI 和 Runtime，不需要通过 npm 安装。客户端不一定将可执行文件加入 PATH，因此 Agent 可能无法自动找到它。
 
-默认路径为 `~/.rsrs/client2/runtime/<version>/rsrs`；Windows 的文件名为 `rsrs.exe`。请将 `<version>` 换成已安装版本。如果 Client 2 设置了 `RSRS_DATA_DIR`，请用该目录替代 `~/.rsrs`。根据插件支持的设置指定可执行文件，或将其目录加入宿主的 PATH。必要时重启宿主，再检查它是否连接到运行中的 Runtime。更新可能改变版本目录，更新后请重新核对路径。
+默认路径为 `~/.rsrs/client2/runtime/<version>/rsrs`；Windows 的文件名为 `rsrs.exe`。请将 `<version>` 换成已安装版本。如果 Client 2 设置了 `RSRS_DATA_DIR`，请用该目录替代 `~/.rsrs`。如果在插件配置中填写路径，请使用完整的绝对路径；不要假设插件会展开 `~`。也可以将可执行文件所在目录加入宿主的 PATH。必要时重启宿主，再检查它是否连接到运行中的 Runtime。更新可能改变版本目录，更新后请重新核对路径。
 
-Codex 可设置 `RESPIRE_RSRS_PATH`，Pi 可使用 `--respire-rsrs`；Hermes 和 Qoder 支持 `RESPIRE_BIN`。请确保设置传入宿主进程。
+Codex 可设置 `RESPIRE_RSRS_PATH`，Pi 可使用 `--respire-rsrs`，DSH 可配置 `rsrsPath`。ZCode、Kimi、Qoder 和 Hermes 支持 `RESPIRE_BIN`；Dim 和 WorkBuddy 可使用 `RESPITE_RSRS` 或各自配置中的 `rsrs`。环境变量必须传入宿主进程。Magpie 直接连接本机 HTTP Runtime，无需为插件配置 CLI 路径。
 
 ## 调优 {#tuning}
 

@@ -8,8 +8,9 @@
 
 Requires Magpie 0.1.1273+, Bun 1.3.6+, and an installed, running and unlocked Respire HTTP Runtime. The plugin README recommends Magpie 0.1.2208+ for local agent origin detection; settings hot reload requires 0.1.1531+. These host version claims have not been independently verified here.
 
+Before installing, confirm in Client 2 Overview or Diagnostics that the local Runtime is connected, and make sure the library is unlocked. The Magpie plugin connects to Runtime over HTTP; it does not require `rsrs` to be available in the terminal. If you use a standalone CLI, you can also check with `rsrs --client-only status --json`.
+
 ```sh
-rsrs --client-only status --json
 magpie plugin add @rsrsai/magpie
 ```
 
@@ -29,4 +30,4 @@ Only `local` and `magpie-key` origins are accepted. The plugin reads policy and 
 
 Archive sends turn messages, tool content and relevant memories to the configured generation provider and may incur model usage. Set credentials in the host environment; `authorizationEnv` stores the variable name only. Encrypted state and backups default to `~/.rsrs/magpie`, but the encryption key is stored in the same directory. Protect the entire directory.
 
-A disabled or removed plugin cannot immediately notify an already detached worker. The worker checks control before new generation and writes and has a 280-second budget. Unconfirmed writes are not automatically retried. The host does not expose real SessionStart, resume or compaction events, and queueing cannot recover a completion notification lost before enqueue. Check `rsrs --client-only status --json` and the plugin settings when unavailable.
+A disabled or removed plugin cannot immediately notify an already detached worker. The worker checks control before new generation and writes and has a 280-second budget. Unconfirmed writes are not automatically retried. The host does not expose real SessionStart, resume or compaction events, and queueing cannot recover a completion notification lost before enqueue. When unavailable, check Client 2 connection status and the plugin settings; standalone CLI users can also run `rsrs --client-only status --json`.
