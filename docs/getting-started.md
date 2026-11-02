@@ -29,6 +29,8 @@ The screenshot shows the Client 2 0.2.24 frontend with simulated data, not a rea
 
 Open **Accounts & Spaces**. If you already have an account, choose **Browser sign-in** or the available password sign-in and complete the prompts. On a new device, follow the recovery flow for your existing keys.
 
+To create a cloud account, choose **Register account** under **Account login and recovery**, enter the server and account credentials, and securely save any recovery material returned. Password authentication requires CLI 1.0.18 or a compatible version with account RPC support.
+
 For a new local-only library, choose **Initialize offline memory store**. This creates recovery material for a library without existing local keys; save that material privately. Do not generate replacement keys for an existing library merely to fix sign-in. Cloud sign-in and sync can be configured separately.
 
 ## Connect an AI tool {#connect-an-ai-tool}
