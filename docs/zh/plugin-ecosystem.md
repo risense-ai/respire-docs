@@ -8,7 +8,7 @@
 | 钩子 | `plugins.json` 事件命令 | 写入前检查和操作后通知 |
 | 代理指令 | `rsrs inject` | 工作前召回、工作后保存 |
 | MCP | 标准 I/O 上的 `rsrs mcp` | 为兼容客户端提供受支持的记忆工具 |
-| 桌面端 | CLI sidecar | 基于相同命令行为的用户界面 |
+| 桌面端 | Client 2 使用本机 Runtime RPC 和受限宿主操作 | 提供受支持的 Runtime 与 CLI 操作界面 |
 
 ```mermaid
 flowchart TD

@@ -1,45 +1,31 @@
 # Respire plugins
 
-Respire ships one plugin family with a thin adapter per host: every plugin hooks the [respire engine](../getting-started.md) (CLI name `rsrs`) into an agent loop — title-tier recall on every round, one-prefix store, and a Stop storage check. Local-first, encrypted on device, last-writer-wins sync in the cloud.
+Respire provides a separate plugin for each host. Recall, storage, wrap-up and configuration differ by host; consult the host page. Plugins do not bundle the `rsrs` engine; install and prepare it using the [getting-started guide](../getting-started.md).
 
-The plugins share one runtime design:
-
-| Moment | Behavior |
-| --- | --- |
-| Session start | Injects the memory ground rules and runs a one-shot probe: not signed in → registration guidance; library nearly empty → first-day seeding guidance; missing model → optional model install (silent when everything is ready) |
-| Every prompt | Runs `rsrs recall --titles` and injects the title tier — score, 8-character short id and title; the agent pulls full records with `rsrs show <id>` on demand |
-| Prompt starts with the store prefixes | Prompts starting with 「记：」, 「存：」 or `remember:` are stored directly via `rsrs remember … --importance important`; when the engine flags a near-duplicate the plugin reports the candidates and lets the model decide (attach or force-write) |
-| Stop (agent finished) | Storage check: one extra round nudges the model to store the new facts, decisions and lessons of this session; plain chat ends without a nudge. Guarded against loops and throttled by `store_nudge_every` |
-| Prompt starts with `/nomem` | Recall is skipped for that turn |
-
-**Models are optional.** Registration, login, sync and recall work without any on-device model — the engine falls back to lexical retrieval. BGE-M3 is a pure enhancement: install it with `rsrs model install && rsrs model activate m3` when you want stronger semantic recall. Missing models never block or error.
+Select a host name for installation, usage, configuration and troubleshooting. Dim uses a letter placeholder; the other icons identify the host or its brand.
 
 ## Hosts
 
 | Host | Repository | Install path | Manifest | Stop contract |
 | --- | --- | --- | --- | --- |
-| ZCode | [respire-zcode](https://github.com/risense-ai/respire-zcode) | Local marketplace source | `.claude-plugin/marketplace.json` | `{"decision":"block","reason":…}` |
-| Kimi Code | [respire-kimi](https://github.com/risense-ai/respire-kimi) | `/plugins install` (GitHub or local path) | `kimi.plugin.json` | `hookSpecificOutput.permissionDecision: "deny"` |
-| Dim | [respire-dimcode](https://github.com/risense-ai/respire-dimcode) | `dim plugin marketplace` | `.codex-plugin/plugin.json` | `{"decision":"block","reason":…}` |
-| Qoder | [respire-qoder](https://github.com/risense-ai/respire-qoder) | `qoder plugins install` | `.qoder-plugin/plugin.json` | `{"decision":"deny"}` |
-| WorkBuddy | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | `install.sh` or the `codebuddy` CLI | `.codebuddy-plugin/marketplace.json` | `hookSpecificOutput.permissionDecision` |
-| Hermes | [respire-hermes](https://github.com/risense-ai/respire-hermes) | Directory memory provider | `plugin.yaml` | turn-end check via the provider API |
-| Codex | [respire-codex](https://github.com/risense-ai/respire-codex) | npm marketplace (`codex plugin add`) | `.codex-plugin/plugin.json` | one continuation reminder per reviewed turn |
-| Pi | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` (extension) | one storage review continuation after settlement |
+| <img src="/agents/zcode.png" alt="" width="24" height="24"> [ZCode](./zcode.md) | [respire-zcode](https://github.com/risense-ai/respire-zcode) | Local marketplace source | `.claude-plugin/marketplace.json` | `{"decision":"block","reason":…}` |
+| <img src="/agents/kimi.png" alt="" width="24" height="24"> [Kimi Code](./kimi.md) | [respire-kimi](https://github.com/risense-ai/respire-kimi) | `/plugins install` (GitHub or local path) | `kimi.plugin.json` | `hookSpecificOutput.permissionDecision: "deny"` |
+| <img src="/agents/dimcode.svg" alt="" width="24" height="24"> [Dim](./dimcode.md) | [respire-dimcode](https://github.com/risense-ai/respire-dimcode) | `dim plugin marketplace` | `.codex-plugin/plugin.json` | `{"decision":"block","reason":…}` |
+| <img src="/agents/qoder.png" alt="" width="24" height="24"> [Qoder](./qoder.md) | [respire-qoder](https://github.com/risense-ai/respire-qoder) | `qoder plugins install` | `.qoder-plugin/plugin.json` | `{"decision":"deny"}` |
+| <img src="/agents/workbuddy.png" alt="" width="24" height="24"> [WorkBuddy](./workbuddy.md) | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | `install.sh` or the `codebuddy` CLI | `.codebuddy-plugin/marketplace.json` | `hookSpecificOutput.permissionDecision` |
+| <img src="/agents/hermes.png" alt="" width="24" height="24"> [Hermes](./hermes.md) | [respire-hermes](https://github.com/risense-ai/respire-hermes) | Directory memory provider | `plugin.yaml` | reminder during a later prefetch |
+| <img src="/agents/codex.png" alt="" width="24" height="24"> [Codex](./codex.md) | [respire-codex](https://github.com/risense-ai/respire-codex) | npm marketplace | `.codex-plugin/plugin.json` | asynchronous background check |
+| <img src="/agents/pi.png" alt="" width="24" height="24"> [Pi](./pi.md) | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` | background check after settlement |
+| <img src="/agents/dsh.png" alt="" width="24" height="24"> [DSH](./dsh.md) | [respire-dsh](https://github.com/risense-ai/respire-dsh) | `plugin_manager` | `package.json` | at most one reminder per turn |
+| <img src="/agents/magpie.svg" alt="" width="24" height="24"> [Magpie](./magpie.md) | [respire-magpie](https://github.com/risense-ai/respire-magpie) | `magpie plugin add` | `package.json` | background archive after response |
 
-Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md)
+Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md)
 
-The engine is the same everywhere. Installing a plugin never installs the engine: when `rsrs` is missing the plugin hands `npm i -g @rsrsai/cli@latest` to the agent, which installs it inside the session — no manual step required. Registration works once per machine: sign up at [rsrs.rs](https://rsrs.rs), then run `rsrs register`; daily use is `rsrs login` (browser authorization) and `rsrs status` to check state. Auto-sync stays on; `rsrs sync` forces a round. The six hook adapters are Python scripts installed from git marketplaces; the Codex and Pi extensions are npm-packaged Node.js additions that invoke only `rsrs --client-only`.
-
-## First use
-
-1. **Register and sign in.** Create an account at [rsrs.rs](https://rsrs.rs), then run `rsrs register` on the device. Works fully without a model.
-2. **Import existing rules and memories (one-off, LLM-extracted).** Start a session in the host and paste the import prompt from the host page — it walks the agent through your `AGENTS.md` files and skill files, extracts reusable facts, conventions and red lines (secrets excluded — only their location is recorded), deduplicates, and stores everything with `rsrs remember`.
-3. **Optional: the on-device model.** `rsrs model install && rsrs model activate m3` for stronger semantic recall. Skip it and everything still works.
+Confirm `rsrs --version` works, then prepare the Runtime, login and unlock as the host page requires. Some older adapters suggest installing `rsrs-cli` when the engine is missing; the user decides whether to run it.
 
 ## Tuning
 
-Every adapter reads the same configuration file, `respire.config.json`, next to its hooks (create it from the bundled `respire.config.example.json`; changes apply to new sessions and never touch login state):
+The table applies to most Python hook adapters. Check each host page for its configuration location and supported fields; Hermes, Codex, Pi, DSH and Magpie use different configuration.
 
 | Field | Default | Meaning |
 | --- | --- | --- |
@@ -51,18 +37,15 @@ Every adapter reads the same configuration file, `respire.config.json`, next to 
 | `budget_chars` | `1500` | Total injection budget per round |
 | `enabled` | `true` | Master switch; `false` silences the whole memory layer |
 | `store_nudge_every` | `1` | Stop-check throttle: `1` = every round, `N` = every N rounds, `0` = off |
-| `skip_prefixes` | `[]` | Host-internal prompts (case-insensitive prefixes) that skip recall and store |
+| `skip_prefixes` | Host-specific | Host-internal prompts (case-insensitive prefixes) that skip recall and store |
 | `log` | `true` | Append one line per event to `hook.log` (rotated past 256 KB) |
 
 Filtering is off by default on purpose: the noise is already bounded by the engine skip gate, the limit of 5 and the title tier. Lowering the threshold has historically rescued false negatives — a missed memory costs more than two extra title lines.
 
 ## Troubleshooting
 
-- **Hooks apply to new sessions.** After installing or updating a plugin, start a new session; running sessions do not hot-reload (Kimi Code: `/reload`).
-- **Cold-start window.** Engine cold start plus model load measured 7s+, hence hook timeouts of 20s. A failed probe surfaces diagnostics at session start instead of failing silently.
-- **Recall quality is bounded by the engine.** On vocabulary gaps BGE-M3 may miss a real record; the ground rules tell the model to re-query with synonyms, broader terms or English words.
-- **Every event leaves a trace.** `hook.log` in the data directory records one line per event (timestamp, event, output size, duration, query summary) — read it to judge whether recall "works".
+Check `rsrs --version` and `rsrs --client-only status --json`, then confirm the plugin is loaded as described on its host page. Some Python hooks write query fragments to local `hook.log`; redaction is not a complete secret scanner, so protect the logs.
 
 ## Data safety
 
-The library is local; a fresh configuration is offline mode (no network, no account — recall and store work, writes queue locally and sync after login). Only ciphertext reaches the cloud: records are encrypted on the device before upload, and the server never holds account decryption keys. Enterprises can self-host the sync server ([server deployment](../server-deployment.md)) so data never leaves the network.
+Recalled content and receipts may enter host context and reach the model provider. Local encryption does not change this; see each host page for background processing and data flows.

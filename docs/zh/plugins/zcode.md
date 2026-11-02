@@ -1,5 +1,7 @@
 # ZCode 版 respire {#respire-for-zcode}
 
+<img src="/agents/zcode.png" alt="ZCode logo" width="56" height="56">
+
 [respire-zcode](https://github.com/risense-ai/respire-zcode) 以 ZCode 标准插件市场把 respire 记忆引擎装进 ZCode：每轮标题档自动召回、「记：」一前缀即落库、Stop 存储检查。共用运行时行为、首次使用步骤与调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
@@ -17,7 +19,7 @@ python3 scripts/validate_plugin.py                     # self-check: structure /
 2. **个人 → risense-zcode → respire → 安装**。
 3. 开**新会话**——SessionStart 注入简则即标志钩子已挂上。
 
-市场源即管理入口：**设置 → 插件** 停用或移除插件；删除市场源（插件市场 → 市场源 → risense-zcode）一并移除。引擎（`rsrs`）缺失时插件把安装命令（`npm i -g @rsrsai/cli@latest`）注入会话交 agent 代装——检测就绪后同会话内即恢复。
+市场源即管理入口：**设置 → 插件** 停用或移除插件；删除市场源（插件市场 → 市场源 → risense-zcode）一并移除。引擎（`rsrs`）缺失时插件把安装命令（`npm i -g rsrs-cli@latest`）注入会话交 agent 代装——检测就绪后同会话内即恢复。
 
 ## 会话内发生什么 {#what-happens-in-a-session}
 

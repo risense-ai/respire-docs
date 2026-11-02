@@ -1,10 +1,12 @@
 # 批量整理提取的记忆 {#batch-tidying-extracted-memories}
 
-`rsrs extract` 从支持的平台导入会话并为每个会话写入一个摘要记忆。每个摘要在创建时都没有父节点，因此大量导入会导致许多分散的根节点。本文描述了一种确定性、无需模型的方法，通过 `resort` 将这些根节点统一归档到锚点下并一次性附加。该方法可通过另一 `resort` 调用撤销，且不依赖任何模型服务。
+`rsrs extract` 可导入会话摘要。未指定父节点时，摘要会成为根节点。本页介绍如何检查并用 `resort` 分批归档。原本无父节点的条目不能通过重新挂接精确还原。
 
 ## 问题 {#the-problem}
 
-每个会话导入都会生成一个摘要，其内容记录了源平台和会话 ID、工作目录、模型、第一条指令和最后更新时间。摘要使用 `--importance important` 写入且没有解析的父节点，因此每个条目都成为根节点。批量导入可能一次添加数百个根节点。这些根节点不会被报告为孤儿：`audit` 仅在父节点 ID 悬挂时才将条目标记为孤儿，而根节点不是孤儿，因此 `audit` 可能全部显示绿色，但树结构仍可能碎片化。
+默认导入使用 `--importance important`，未指定父节点时成为根节点。
+
+批量导入可能一次添加数百个根节点。这些根节点不会被报告为孤儿：`audit` 仅在父节点 ID 悬挂时才将条目标记为孤儿，而根节点不是孤儿，因此 `audit` 可能全部显示绿色，但树结构仍可能碎片化。
 
 ## 为什么标准整理无法解决此问题 {#why-the-standard-tidy-does-not-fix-it}
 
@@ -13,13 +15,13 @@
 | 命令 | 行为 |
 | --- | --- |
 | `classify --plan` | 仅限本地；不执行语义分组，因此通常不会提出任何建议 |
-| `classify --tree --auto` | 需要配置分类后端，通过 `classify --ds <key>` 设置 |
+| `classify --tree --auto` | 需要可用的分类后端；可使用 `classify-config` 查看配置 |
 
-由于这两种方式都无法可靠覆盖导入的摘要，应使用确定性分类：为每个条目分配规则，创建归档锚点，然后通过 `resort` 批量附加。结果无需模型且可回滚。
+可根据工作目录和关键词人工分类，再用 `resort` 批量附加。先核对每条记录。
 
 ## 确定性分类 {#deterministic-classification}
 
-该流程通过工作目录和关键词规则将每个分散的根节点分配到归档锚点，创建锚点到选定的树根下，并通过单次 `resort --spec` 调用附加所有子节点。`resort` 默认进行预览，仅在使用 `--go` 时写入，因此在预览确认前不会有任何更改。在任何写入前保持完整的导出快照；本地存储没有版本历史记录，`update` 和 `merge` 不可逆。
+该流程按规则分配归档锚点，创建锚点后通过 `resort --spec` 附加子节点。只有 `resort` 自身默认预览，创建锚点会写入。写入前请备份。
 
 ## 先决条件 {#prerequisites}
 
@@ -55,14 +57,14 @@ rsrs --client-only tree-cure
 
 ### 选择目标 {#select-targets}
 
-选择批量处理范围。`--since-resort` 表示自上次整理以来添加的所有内容，这是默认范围；`--since 1900` 覆盖整个存储。
+选择批量处理范围。`--since-resort` 筛选上次整理后创建的记录；`--since 1900` 指定较早的下界。`--limit` 会截断结果，创建时间为空的旧记录也会被排除。
 
 ```sh
 rsrs list --since-resort --limit 500 --json
 rsrs list --since 1900 --limit 5000 --json
 ```
 
-输出仅包含简短 ID 和标题，没有父节点或重要性。使用 `rsrs show <id> --json` 读取详细信息。
+`rsrs list --json` 的 `details` 包含完整记录；使用 `rsrs show <id> --json` 检查具体条目。
 
 ### 诊断树结构 {#diagnose-the-tree}
 
@@ -74,11 +76,11 @@ rsrs tree-cure
 rsrs defrag
 ```
 
-将大多数相同标题组和 defrag 集群视为误报。真正需要处理的条目类型是真实重复条目、错误附加或损坏的链接以及分散的根节点。
+逐条检查同标题组和 defrag 相似簇；相似本身不能证明重复。请检查真实重复、错误或损坏的链接以及分散的根节点。
 
 ### 备份数据 {#back-up-the-data}
 
-在写入前导出完整的纯文本快照到持久目录。不要使用临时目录。导出包含每条记录的明文，因此请限制对该目录的访问（例如仅限用户的 ACL），并在适当情况下加密。
+写入前请将明文导出到持久目录，每次使用新路径，因为导出会覆盖已有文件。请限制对目录的访问，并在适当情况下加密。
 
 ```powershell
 rsrs export C:\Users\<user>\rsrs-backups\memories_YYYYMMDD.json
@@ -128,7 +130,7 @@ rsrs resort --spec '<JSON>' --json
 rsrs resort --spec '<JSON>' --go --json
 ```
 
-干运行报告 `status=pending` 和 `moved=N`。写入报告 `status=ok`、`moved=N` 和 `counter=reset`。由于 JSON 接近 Windows 命令行长度限制（约 32 KB），每个调用分块处理约 300 条目。通过脚本传递参数列表而非 shell 更适合 PowerShell 中引用 JSON 参数，因为引号可能丢失。
+干运行报告 `status=pending` 和 `moved=N`。写入报告 `status=ok`、`moved=N` 和 `counter=reset`。请将大量操作分批：安全大小取决于 JSON 和平台的命令行长度限制。写入前检查每一批。PowerShell 可能丢失 JSON 参数中的引号，因此宜通过脚本的参数列表传递。
 
 ### 验证结果 {#verify-the-result}
 
@@ -150,17 +152,17 @@ rsrs tree --outline --json
 | 根节点数量 | `rsrs tree-cure` | 无父节点的导入摘要 |
 | 孤叶节点 | `rsrs tree-cure` | 作为现有节点下挂载的候选 |
 | 孤儿节点 | `rsrs audit --json` | 悬浮的父节点 ID；根节点不计入此处 |
-| 同标题组 | `rsrs audit --json` | 通常来自共享摘要首行的误报 |
+| 同标题组 | `rsrs audit --json` | 逐条检查；同标题不能证明重复 |
 | 截断标题 | `rsrs audit --json` | 导入过程中标题被截断；编辑前需审查 |
 | 最大深度 | `rsrs audit --json` | 树的整体深度用于上下文 |
-| 整理簇 | `rsrs defrag` | 相似性簇；大多是误报，不要合并 |
+| 整理簇 | `rsrs defrag` | 相似簇合并前需要逐条检查 |
 
 ## 命令速查表 {#command-cheat-sheet}
 
 | 目的 | 命令 |
 | --- | --- |
 | 选择一批数据 | `rsrs list --since-resort --limit 500 --json` |
-| 选择整个存储 | `rsrs list --since 1900 --limit 5000 --json` |
+| 按较早日期选择 | `rsrs list --since 1900 --limit 5000 --json` |
 | 诊断 | `rsrs audit --json`, `rsrs tree-cure`, `rsrs defrag` |
 | 备份 | `rsrs export <persistent-dir>/memories_YYYYMMDD.json` |
 | 创建锚点 | `rsrs remember "<purpose>" --title "Session archive: <project>" --importance important --parent <tree-name-or-id> --json` |
@@ -172,32 +174,18 @@ rsrs tree --outline --json
 
 ## 单命令辅助脚本 {#single-command-helper-script}
 
-辅助脚本可在同一主机上运行整个序列。它导出快照，查找无父节点的根节点，进行分类，创建或复用锚点，然后预览或写入 `resort --spec`。它并非完全只读：在 `--go` 门控之前，它会用 `remember` 创建任何缺失的锚点，因此预览也可能写入；未提供 `--backup` 时，它会写入临时快照而非持久快照。请提供持久且受保护的 `--backup` 路径并在使用前审查脚本，或先自行创建锚点。
-
-编辑脚本顶部的配置块：
-
-- `PREFIXES` 列出作为分散根节点处理的标题前缀。如果导入条目带有如 `session-import` 的标签，脚本首先检测该标签并使用前缀作为备用方案。
-- `TARGET_ROOT` 是创建锚点的树根。使用内置目录名称或节点 ID。
-- `ANCHORS` 映射每个主题到其关键词规则。保留最终的备用条目并不要删除它。
-
-```bash
-python tidy_extracted.py
-python tidy_extracted.py --go
-python tidy_extracted.py --rsrs <path-to-rsrs> --client-only --backup <snapshot-path>
-```
-
-脚本随附相关技能在 `memory-batch-tidy/scripts/tidy_extracted.py`。参见 [技能仓库](skills-repo.md) 了解周围布局，以及 [CLI 命令](../cli.md) 和 [CLI JSON](../cli-api.md) 了解底层选项。
+技能仓库中的 `memory-batch-tidy/scripts/tidy_extracted.py` 仅供审查，不建议直接运行：预览也会创建锚点，重复运行会覆盖同一路径的明文导出，而且同名锚点可能被错误复用。脚本不会分块，也不保存逐条撤销计划。请手动检查目标并使用不同的受保护备份路径。
 
 ## 常见陷阱 {#common-pitfalls}
 
 1. 先预览。`resort` 默认不写入；确认 `status=pending` 和 `moved=N` 后再添加 `--go`。
 2. `resort --go` 会重置 TIDY 计数器并报告 `counter=reset`。这是预期行为，无需单独使用 `--reset`。
-3. 同标题不等于同一条目。摘要共享首行模板，因此 `same_title_groups` 通常是误报。
-4. 整理簇大多是误报。绝不要合并目录根节点、同一句子模式的不同部分或树的不同分支。
-5. 合并前检查子节点。使用 `remember --merge-ids` 进行真实重复合并会删除旧条目，因此需检查其子节点并立即将任何孤立子节点重新附加到新条目。
+3. 同标题不能证明重复。请逐条检查 `same_title_groups`。
+4. 相似不能证明重复。合并前请检查 defrag 相似簇及其上下文。
+5. 合并前备份并记录子节点。`remember --merge-ids` 会删除旧条目；请检查结果并重新附加孤立的子节点。
 6. 引号。通过 PowerShell 将包含引号的 JSON 字符串传递给原生程序可能导致引号丢失；改用参数列表传递。
-7. 控制台编码。在 Windows 上，Python 默认使用 cp1252 编码，打印时可能失败；先设置 `PYTHONIOENCODING=utf-8` 或重新配置 stdout 为 UTF-8。
-8. 过大的批次。将操作数超过约 300 的规格拆分，并将导出和备份保存在持久目录中。
+7. 控制台编码。Windows 上输出编码因环境而异；必要时设置 `PYTHONIOENCODING=utf-8`。
+8. 过大的批次。请按平台限制拆分规格，并将导出和备份保存在持久目录中。
 
 ## 回滚 {#rollback}
 
@@ -205,7 +193,7 @@ python tidy_extracted.py --rsrs <path-to-rsrs> --client-only --backup <snapshot-
 
 可通过 `rsrs forget <anchor-id>` 删除空锚点，通过 `rsrs restore <full-id>` 恢复软删除条目。
 
-如需精确恢复，请使用备份步骤中的导出快照。它不是原地恢复：`rsrs import` 会生成新 ID 并追加副本，因此将快照导入已更改的库会保留原有条目并产生重复记录。应改为恢复到全新的配置文件。本地存储不保留版本历史记录，因此 `update` 和 `merge` 不可逆，任何写入前都需要备份。
+`rsrs import` 会生成新 ID 并追加副本，不会原地恢复。也可在写入前创建 `rsrs snapshot create` 数据库快照；恢复不会回滚服务端，且会隔离同步。请先阅读 [快照说明](https://github.com/risense-ai/respire-cli/blob/main/docs/snapshots.md)。保留备份，因为无法保证每次修改都有可恢复版本。
 
 ## 相关页面 {#related-pages}
 

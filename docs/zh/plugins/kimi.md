@@ -1,5 +1,7 @@
 # Kimi Code 版 respire {#respire-for-kimi-code}
 
+<img src="/agents/kimi.png" alt="Kimi Code logo" width="56" height="56">
+
 [respire-kimi](https://github.com/risense-ai/respire-kimi) 以 Kimi Code 标准 `/plugins` 链路把 respire 记忆引擎装进 Kimi Code：每轮标题档自动召回、「记：」一前缀即落库、Stop 存储检查。共用运行时行为、首次使用步骤与调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
@@ -14,7 +16,7 @@
 
 升级：在 `/plugins` 面板对 respire 执行更新（或重新 install 覆盖），随后 `/reload`。
 
-引擎（`rsrs`）缺失时插件把 `npm i -g @rsrsai/cli@latest` 交给 agent 代跑，装完同会话内即恢复召回与落库。
+引擎（`rsrs`）缺失时插件把 `npm i -g rsrs-cli@latest` 交给 agent 代跑，装完同会话内即恢复召回与落库。
 
 ## 会话内发生什么 {#what-happens-in-a-session}
 

@@ -137,7 +137,7 @@ Diary fragment search is documented against the published DEV reference, not the
 
 ## Runnable clients
 
-Both examples issue only a status request, print the full response even for business failures and preserve its exit code. They record the request ID before POST, disable redirects and do not retry. A send/read/parse failure after POST can leave the outcome unknown; use that ID as described below before considering a write again. They do not start or update the runtime.
+Both examples issue only a status request. They check the protocol but do not enforce a supported `bin` version; production clients must check their tested version before sending commands. They print the full response even for business failures and preserve its exit code. They record the request ID before POST, disable redirects and do not retry. A send/read/parse failure after POST can leave the outcome unknown; use that ID as described below before considering a write again. They do not start or update the runtime.
 
 ### Python
 

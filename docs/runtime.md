@@ -72,9 +72,11 @@ share host loopback addresses.
 | Administration | `https://admin.rsrs.rs` |
 | Default API | `https://api.rsrs.rs` |
 
-The default API can be changed through the server settings. Respire uses `~/.rsrs` and port `15169`; startup preserves the selected account and does not import old profiles. Use TUI **Migrate old version** or `rsrs migrate` to choose an explicit source and destination account. Original directories remain intact. Explicit
+The default API can be changed through the server settings. Respire uses `~/.rsrs` and port `15169`; startup preserves the selected account and does not import old profiles. Use TUI **Migrate old version** or `rsrs migrate` to choose an explicit source and destination account. Source databases and credentials are preserved; successful migration writes `.rsrs-migrated.json` in the source directory. Explicit
 `ONEMEMORY_*` overrides remain supported, and the database filename and wire format
 remain compatible.
+
+Migration publishes the destination before writing its source receipt. If the receipt write fails, the command reports an error but the destination may already exist. List migration sources and inspect the recorded destination before retrying; the destination receipt can identify an already completed migration.
 
 ## Account login, switching and indexing
 

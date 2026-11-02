@@ -10,15 +10,15 @@ flowchart LR
 
 | Installation route | Requirement |
 |---|---|
-| npm | `@rsrsai/cli` launcher and matching platform package |
-| Desktop installer | Compatible assets in [Respire Releases](https://github.com/risense-ai/respire-releases/releases) repository |
+| npm | `rsrs-cli` launcher and matching platform package |
+| Desktop installer | Compatible assets in [Client 2 releases](https://github.com/risense-ai/respire-client2/releases) |
 | Source | Infrastructure source plus a matching Core SDK |
 
 For a version available in the package registry, choose one package manager:
 
 ```sh
-npm i -g @rsrsai/cli
-pnpm add -g @rsrsai/cli
+npm i -g rsrs-cli
+pnpm add -g rsrs-cli
 ```
 
 Both package managers install the `rsrs` command. For source builds, see [Development](development.md).
@@ -46,7 +46,7 @@ RSRS_LIBC=musl rsrs doctor
 export RSRS_LIBC=glibc
 ```
 
-GNU packages require a compatible glibc host and do not run on Alpine. If optional dependencies were omitted, install the selected platform package at the same version as `@rsrsai/cli`. Intel Mac is not an artifact target.
+GNU packages require a compatible glibc host and do not run on Alpine. If optional dependencies were omitted, install the selected platform package at the same version as `rsrs-cli`. Intel Mac is not an artifact target.
 
 ## First commands
 
@@ -61,11 +61,19 @@ rsrs --help
 
 | Identity | Command |
 |---|---|
-| First cloud account | `rsrs register --user <name> --pass <login-password> --super <recovery-password>` |
+| First cloud account | Use the interactive registration steps below |
 | Browser login | `rsrs login` or `rsrs login --oauth`; complete dashboard login/TOTP and approve the CLI |
 | Terminal login | `rsrs login --interactive`; enter password, TOTP when required, then the super password |
 | New device | Use the recovery options described by `rsrs login --help` and [Sync and keys](sync-and-keys.md) |
-| Local only | `rsrs keygen --pass <password>` |
+| Local only | `rsrs keygen --json` |
+
+Use `keygen` only for a new profile without existing keys; do not regenerate keys for an existing library. Save `summary.super` from the JSON output privately as recovery material. To register a cloud account for this new profile, use a host terminal and enter the login password at the prompt:
+
+```sh
+rsrs keygen --json
+rsrs --runtime-internal --stop
+rsrs --direct register --user <name>
+```
 
 Keep recovery material outside Git and chat logs. A server cannot recover a lost client decryption secret. Do not replace existing keys merely to fix a login problem.
 

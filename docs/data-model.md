@@ -1,6 +1,6 @@
 # Data model
 
-Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, data and keys without copying old accounts. Explicit migration discovers supported accounts in `~/.onememory`, `~/.respire` and legacy-format `.rsrs` profiles; the user selects a source and destination. Original directories remain intact. Current options use `RSRS_*`; `ONEMEMORY_*` and old `RESPIRE_*` options are read-only compatibility aliases. A present current option takes precedence.
+Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, data and keys without copying old accounts. Explicit migration discovers supported accounts in `~/.onememory`, `~/.respire` and legacy-format `.rsrs` profiles; the user selects a source and destination. Source databases and credentials are preserved; a successful migration writes `.rsrs-migrated.json` in the source directory. Current options use `RSRS_*`; `ONEMEMORY_*` and old `RESPIRE_*` options are read-only compatibility aliases. A present current option takes precedence.
 
 | Local item | Purpose |
 |---|---|
@@ -11,11 +11,9 @@ Respire uses `~/.rsrs`. Startup preserves the current account, API preferences, 
 | `~/.rsrs/models/` | Default tokenizer/model resources |
 | `~/.rsrs/inference.json` | Inference-engine settings |
 
-`RSRS_DATA_DIR` selects the data root. Do not commit session files, database copies or recovery material.
+`RSRS_DATA_DIR` selects the data root. Explicit model-directory options remain compatible overrides. Do not commit session files, database copies or recovery material.
 
-An explicitly configured `RSRS_DATA_DIR` selects that directory. Explicit model-directory options remain compatible overrides.
-
-The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. New accounts and accounts that have completed explicit migration write encrypted values with a `rsrs:v1:` marker and `rsrs:*` HKDF labels. Unmigrated libraries keep their original read and write format until the user explicitly migrates them; startup and ordinary writes do not convert them. Migration leaves the original source intact. Unmarked old values retain their original decryptor. Older clients cannot decrypt new-format ciphertext; update each client before migrating and synchronizing the account.
+The local runtime defaults to port `15169`. Explicit migration snapshots its chosen source; runtime takeover is a separate host operation that verifies the listener identity and waits for process, port and database-lock release. The desktop application identifier is `ai.risense.respire`. New accounts and accounts that have completed explicit migration write encrypted values with a `rsrs:v1:` marker and `rsrs:*` HKDF labels. Unmigrated libraries keep their original read and write format until the user explicitly migrates them; startup and ordinary writes do not convert them. Unmarked old values retain their original decryptor. Older clients cannot decrypt new-format ciphertext; update each client before migrating and synchronizing the account.
 
 ## Existing accounts
 
@@ -31,6 +29,8 @@ flowchart LR
 ```
 
 Run `rsrs migrate` to list source IDs, then `rsrs migrate --source <source-id> --account <new-name>` to migrate a selected account, or use **Migrate old version** in the TUI. Backup-only directories are not account sources. Stable source identity and completion receipts prevent reimport when source ordering changes. Existing destinations are refused; migration does not switch the active account. Doctor and TUI suggest only pending sources and never start migration automatically.
+
+Migration publishes the destination before writing the source receipt. If that write fails, the command reports an error but the destination may already exist. List migration sources and inspect the recorded destination before retrying; the destination receipt can identify an already completed migration.
 
 Migration retains usernames, login passwords, original super Keys, record IDs, metadata and pending changes. It recalculates internal derived keys, re-encrypts records and rewraps the unchanged URK using the original user factors. It does not reset a vault or generate replacement super Keys. The old immutable sync journal remains in the original library; the new projection queues new operations while preserving acknowledged base revisions. Any undecryptable record, including a deleted record, prevents full migration and its completion marker. Only known obsolete official API addresses are rewritten in the imported copy; custom addresses and the active account's API preferences remain unchanged.
 

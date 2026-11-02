@@ -1,68 +1,51 @@
 # Respire 插件 {#respire-plugins}
 
-Respire 为每个宿主提供一个薄适配插件：把 [respire 引擎](../getting-started.md)（CLI 名 `rsrs`）挂进 agent 循环——每轮标题档自动召回、「记：」一前缀即落库、Stop 存储检查。本地优先、端侧加密、云端 LWW 同步。
+Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾和配置不同，请以宿主页为准。插件不附带 `rsrs` 引擎；先按[入门指南](../getting-started.md)安装并准备引擎。
 
-所有插件共用一套运行时设计：
-
-| 时机 | 行为 |
-| --- | --- |
-| 会话开始 | 注入记忆层简则，并做一次三态探测：未登录附注册引导、库近空附首日存料引导、缺语义模型附可选装法；一切就绪时零打扰 |
-| 每轮 prompt | 自动 `rsrs recall --titles` 注入标题档——分数、8 位短 id、标题；正文由 agent 按需 `rsrs show <id>` 取 |
-| prompt 以存料前缀开头 | 以「记：」「存：」或 `remember:` 开头的 prompt 直接 `rsrs remember … --importance important` 落库；引擎判为相似时不写入，回执转述候选，由模型决断（挂靠或直写） |
-| Stop（AI 干完活） | 存储检查：续跑一轮，提示模型把本轮新的事实、决定与教训分条落库；闲聊不催。防循环＋`store_nudge_every` 节流 |
-| prompt 以 `/nomem` 开头 | 本轮跳过召回 |
-
-**模型可选。** 注册、登录、同步、召回全不依赖端侧模型——未装模型时引擎自动走词面档。BGE-M3 是纯可选增强：想要更好的语义召回再 `rsrs model install && rsrs model activate m3`，缺模型不报错、不拦路。
+点击宿主名称，可查看安装、使用、配置和排障说明。Dim 暂用字母图标；其余图标对应各宿主或其品牌。
 
 ## 宿主 {#hosts}
 
-| 宿主 | 仓库 | 安装通路 | 清单 | Stop 契约 |
+| 宿主 | 仓库 | 安装方式 | 清单 | 结束时的行为 |
 | --- | --- | --- | --- | --- |
-| ZCode | [respire-zcode](https://github.com/risense-ai/respire-zcode) | 本地目录市场源 | `.claude-plugin/marketplace.json` | `{"decision":"block","reason":…}` |
-| Kimi Code | [respire-kimi](https://github.com/risense-ai/respire-kimi) | `/plugins install`（GitHub 或本地路径） | `kimi.plugin.json` | `hookSpecificOutput.permissionDecision: "deny"` |
-| Dim | [respire-dimcode](https://github.com/risense-ai/respire-dimcode) | `dim plugin marketplace` | `.codex-plugin/plugin.json` | `{"decision":"block","reason":…}` |
-| Qoder | [respire-qoder](https://github.com/risense-ai/respire-qoder) | `qoder plugins install` | `.qoder-plugin/plugin.json` | `{"decision":"deny"}` |
-| WorkBuddy | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | `install.sh` 或 `codebuddy` CLI | `.codebuddy-plugin/marketplace.json` | `hookSpecificOutput.permissionDecision` |
-| Hermes | [respire-hermes](https://github.com/risense-ai/respire-hermes) | 目录式 memory provider | `plugin.yaml` | provider API 的轮末检查 |
-| Codex | [respire-codex](https://github.com/risense-ai/respire-codex) | npm 市场（`codex plugin add`） | `.codex-plugin/plugin.json` | 每审阅轮至多一次续跑提醒 |
-| Pi | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json`（extension） | settlement 后至多一次存料审查续跑 |
+| <img src="/agents/zcode.png" alt="" width="24" height="24"> [ZCode](./zcode.md) | [respire-zcode](https://github.com/risense-ai/respire-zcode) | 本地目录市场源 | `.claude-plugin/marketplace.json` | `{"decision":"block","reason":…}` |
+| <img src="/agents/kimi.png" alt="" width="24" height="24"> [Kimi Code](./kimi.md) | [respire-kimi](https://github.com/risense-ai/respire-kimi) | `/plugins install`（GitHub 或本地路径） | `kimi.plugin.json` | `hookSpecificOutput.permissionDecision: "deny"` |
+| <img src="/agents/dimcode.svg" alt="" width="24" height="24"> [Dim](./dimcode.md) | [respire-dimcode](https://github.com/risense-ai/respire-dimcode) | `dim plugin marketplace` | `.codex-plugin/plugin.json` | `{"decision":"block","reason":…}` |
+| <img src="/agents/qoder.png" alt="" width="24" height="24"> [Qoder](./qoder.md) | [respire-qoder](https://github.com/risense-ai/respire-qoder) | `qoder plugins install` | `.qoder-plugin/plugin.json` | `{"decision":"deny"}` |
+| <img src="/agents/workbuddy.png" alt="" width="24" height="24"> [WorkBuddy](./workbuddy.md) | [respire-workbuddy](https://github.com/risense-ai/respire-workbuddy) | `install.sh` 或 `codebuddy` CLI | `.codebuddy-plugin/marketplace.json` | `hookSpecificOutput.permissionDecision` |
+| <img src="/agents/hermes.png" alt="" width="24" height="24"> [Hermes](./hermes.md) | [respire-hermes](https://github.com/risense-ai/respire-hermes) | 目录式 memory provider | `plugin.yaml` | 后续 prefetch 中的存储提醒 |
+| <img src="/agents/codex.png" alt="" width="24" height="24"> [Codex](./codex.md) | [respire-codex](https://github.com/risense-ai/respire-codex) | npm 市场 | `.codex-plugin/plugin.json` | 异步后台检查 |
+| <img src="/agents/pi.png" alt="" width="24" height="24"> [Pi](./pi.md) | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` | 结算后后台检查 |
+| <img src="/agents/dsh.png" alt="" width="24" height="24"> [DSH](./dsh.md) | [respire-dsh](https://github.com/risense-ai/respire-dsh) | `plugin_manager` | `package.json` | 每轮至多一次提醒 |
+| <img src="/agents/magpie.svg" alt="" width="24" height="24"> [Magpie](./magpie.md) | [respire-magpie](https://github.com/risense-ai/respire-magpie) | `magpie plugin add` | `package.json` | 回复后后台归档 |
 
-各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md)
+各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md)
 
-引擎处处同一套。装插件不装引擎：`rsrs` 缺失时插件把 `npm i -g @rsrsai/cli@latest` 交给 agent 会话内代装，无需手动操作。注册每台机器一次：在 [rsrs.rs](https://rsrs.rs) 注册后本机 `rsrs register`；日常 `rsrs login` 浏览器授权、`rsrs status` 查态；autosync 常开，`rsrs sync` 手动同步。六个钩子适配是装自 git 市场源的 Python 脚本；Codex 与 Pi 扩展是 npm 打包的 Node.js 附加件，只调 `rsrs --client-only`。
-
-## 首次使用 {#first-use}
-
-1. **注册登录。** 在 [rsrs.rs](https://rsrs.rs) 注册账号，本机 `rsrs register`。不依赖模型，开箱即用。
-2. **导入既有规则与记忆（一次成库，LLM 代抽）。** 在宿主开个新会话，粘贴对应宿主页给出的导入提示词——agent 会逐个读取你的 `AGENTS.md` 与技能文件，抽出可复用的事实、约定与红线（口令等敏感信息一律排除、只记位置），去重后用 `rsrs remember` 分条存入。
-3. **可选：端侧模型。** `rsrs model install && rsrs model activate m3` 换取更强的语义召回；不装完全可用。
+先确认 `rsrs --version` 可用，再按宿主页准备 Runtime、登录及解锁。缺少引擎时，部分旧版插件会提示运行 `rsrs-cli` 安装命令；是否执行由用户决定。
 
 ## 调优 {#tuning}
 
-各适配读同一份配置文件 `respire.config.json`，位于其 hooks 旁（从包内 `respire.config.example.json` 复制；改动新会话生效，不涉及登录与账号）：
+下表适用于多数 Python 钩子适配器；配置位置和支持字段以宿主页为准。Hermes、Codex、Pi、DSH 和 Magpie 使用不同配置方式。
 
 | 字段 | 默认 | 含义 |
 | --- | --- | --- |
 | `rsrs` | `""` | 引擎路径；空 = 自动探测（`PATH` → `~/.local/bin` → `~/.rsrs/bin`，宿主另有扩展） |
-| `recall_threshold` | `0.0` | 召回分数下限；**0 = 默认关（引擎直出不过滤）**——设正数才启用过滤 |
+| `recall_threshold` | `0.0` | 召回分数下限；**0 = 默认关（插件不按分数过滤引擎结果）**——设正数才启用过滤 |
 | `recall_limit` | `5` | 每轮取前 N 条标题 |
-| `min_prompt_chars` | `2` | 短于该长度的 prompt 跳过召回 |
-| `session_rules` | `true` | 是否注入会话开始简则 |
+| `min_prompt_chars` | `2` | 短于该长度的 提示不进行召回 |
+| `session_rules` | `true` | 是否在会话开始时加入记忆规则 |
 | `budget_chars` | `1500` | 单轮注入总预算 |
-| `enabled` | `true` | 总开关；`false` = 记忆层全线静默 |
-| `store_nudge_every` | `1` | 存储检查节流：`1` = 每轮、`N` = 每 N 轮、`0` = 关 |
-| `skip_prefixes` | `[]` | 宿主内部提示白名单（前缀、大小写不敏感）：命中则本轮不召回不落库 |
-| `log` | `true` | 每事件一行 `hook.log` 留痕（超 256 KB 清轮） |
+| `enabled` | `true` | 总开关；`false` = 关闭记忆功能 |
+| `store_nudge_every` | `1` | 存储检查频率：`1` = 每轮、`N` = 每 N 轮、`0` = 关 |
+| `skip_prefixes` | 宿主各异 | 宿主内部提示的跳过前缀（不区分大小写）：匹配时不召回、不存储 |
+| `log` | `true` | 每个事件向 `hook.log` 写一行（超过 256 KB 后清空） |
 
-过滤默认不设阈值，是有意为之：噪音已被三层框住——引擎 skip 门、limit 5、标题档。历史教训：阈值每降一次都是真相关被拦的补救，漏召代价远大于多看两行标题。
+默认不按分数过滤召回结果。引擎会判断是否跳过召回，插件默认最多返回五条标题；需要过滤时可调整阈值。
 
 ## 排障 {#troubleshooting}
 
-- **钩子以新会话为准。** 安装或更新插件后开新会话；运行中的会话不热载（Kimi Code 用 `/reload`）。
-- **冷启动窗。** 引擎冷启加模型加载实测 7 秒以上，故 hook 超时 20 秒。探测失败会在会话开始注入诊断段，不静默失败。
-- **召回质量是引擎上限。** 用词鸿沟下 BGE-M3 可能漏召真条；简则已约束模型换同义词、上位词或英文词补查。
-- **每个事件都留痕。** 数据目录的 `hook.log` 每事件一行（时间、事件、输出大小、耗时、查询摘要）——按行复盘召回灵不灵。
+检查 `rsrs --version`、`rsrs --client-only status --json`，并按宿主页确认插件已加载。部分 Python 钩子将查询片段写入本地 `hook.log`；日志脱敏不能识别所有敏感信息，请保护日志。
 
 ## 数据安全 {#data-safety}
 
-记忆库在本机；新配置即离线模式（不联网、不注册——召回落库照常，写入留本地队列，登录后补同步）。上云的只有密文：记录在本地加密后才上传，服务端永不持有账户解密密钥。企业可自建同步服务器（见[服务端部署](../server-deployment.md)），数据不出内网。
+召回内容和回执可能进入宿主上下文并发送给模型提供商。本地加密不改变这一点；各插件的后台处理和数据流见对应页面。

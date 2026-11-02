@@ -44,13 +44,13 @@ flowchart LR
 {"verdict":"block","reason":"review required"}
 ```
 
-即使失败处理为 `skip`，显式 block 判定仍具有否决效力。后置钩子的标准输出不构成写入决策。应将事件载荷视为敏感数据：预览和查询可能含私密文本。
+即使失败处理为 `skip`，显式 block 判定仍具有否决效力。后置钩子的 `block` 无法撤销已经完成的操作，但会停止该事件的后续钩子。应将事件载荷视为敏感数据：预览和查询可能含私密文本。
 
 ```sh
 rsrs plugin list
 rsrs plugin test pre-remember --payload '{"content_head":"example","title":"test"}'
 ```
 
-`plugin test` 会实际运行配置的命令。钩子应及时退出，在适当情况下保持幂等，并避免输出秘密。超时不能保证终止外部子进程。插件不应打开内部数据库，也不应从钩子中递归调用 CLI。
+`plugin test` 会实际运行配置的命令。钩子应及时退出，在适当情况下保持幂等，并避免输出秘密。超时不是硬性执行期限：CLI 不会终止子进程，超时后还会等待标准输入写入线程。因此，子进程不读取输入时，CLI 返回可能超过配置的超时时间。插件不应打开内部数据库，也不应从钩子中递归调用 CLI。
 
 参阅[集成方式](plugin-ecosystem.md)和 [CLI JSON](cli-api.md)。

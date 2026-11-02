@@ -8,7 +8,7 @@ Use the supported CLI contract to add workflows around Respire without depending
 | Hook | `plugins.json` event commands | Pre-write checks and post-operation notifications |
 | Agent instructions | `rsrs inject` | Recall-before-work and save-after-work behavior |
 | MCP | `rsrs mcp` over standard I/O | Supported memory tools for compatible clients |
-| Desktop | CLI sidecar | User interface over the same command behavior |
+| Desktop | Client 2 uses local Runtime RPC and restricted host actions | User interface over supported Runtime and CLI operations |
 
 ```mermaid
 flowchart TD

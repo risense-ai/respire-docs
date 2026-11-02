@@ -39,9 +39,34 @@ int32_t rs_core_create(const uint8_t *config, size_t config_len,
                        rs_core **out_core, rs_buffer *out_error);
 int32_t rs_core_call(rs_core *core, const uint8_t *request, size_t request_len,
                      rs_buffer *out_response);
+/* Additive JSON memory_metadata_contract=1 operations require explicit host
+ * snapshots, time, scope and verified evidence. No new C pointers or ABI version.
+ * Omitted query evidence_context preserves legacy retrieval behavior. */
+/* Additive model_input_stream_contract=1 extension. Calls on a handle are serial.
+ * Begin reserves at most 1 GiB; all pending/loading inputs share a 1 GiB budget.
+ * Append copies at most 4 MiB at the exact next offset. Null+0 is a no-op.
+ * A matching commit consumes input on ALL non-structural outcomes, including
+ * errors. Null core/output pointers reject before consumption. Other pointer
+ * validity, writable output slots and exclusive live handles are caller obligations. Stale or
+ * wrong-handle tickets cannot consume a newer input. Abort is idempotent.
+ * Destroy releases pending input. Published models retain existing global
+ * lifetime semantics. No writable backing pointer or allocator crosses ABI.
+ * Initially CPU-owned ORT only; tokenizers remain borrowed for commit.
+ */
+int32_t rs_core_model_input_begin(rs_core *core, size_t model_len,
+    uint64_t *out_ticket, rs_buffer *out_response);
+int32_t rs_core_model_input_append(rs_core *core, uint64_t ticket,
+    size_t expected_offset, const uint8_t *bytes, size_t bytes_len, rs_buffer *out_response);
+int32_t rs_core_model_input_commit(rs_core *core, uint64_t ticket,
+    const uint8_t *config, size_t config_len,
+    const uint8_t *tokenizer, size_t tokenizer_len, rs_buffer *out_response);
+int32_t rs_core_model_input_abort(rs_core *core, uint64_t ticket, rs_buffer *out_response);
+
 /* Raw model/tokenizer buffers, not base64 JSON or paths. Core retains an owned
  * memory copy. Config contains model, asset_id, engine, execution_timeout_secs,
- * optional session_options_id. For explicit reuse_current=true, both raw inputs
+ * optional session_options_id and background_intra_threads (1..16, default 1;
+ * requires inference_thread_contract 1). Foreground remains single threaded.
+ * For explicit reuse_current=true, both raw inputs
  * must be empty and the matching model/config must already be cached in memory.
  * Output uses the usual JSON envelope with request_id="". */
 int32_t rs_core_model_load(rs_core *core, const uint8_t *config, size_t config_len,

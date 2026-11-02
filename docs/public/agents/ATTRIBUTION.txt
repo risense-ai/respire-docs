@@ -1,0 +1,7 @@
+# Agent artwork
+
+Codex, DeepSeek Harness, Hermes, Kimi, Pi, Qoder, WorkBuddy and ZCode images are copied from [Agent HUD](https://github.com/jazzenchen/agent-hud-open/tree/main/src/packages/hud/src/assets). Codex uses its ChatGPT image. See the included LobeIcons license and upstream notices. Brand marks remain the property of their owners.
+
+Magpie's mark comes from [Magpie](https://github.com/yetone/magpie/blob/main/build/icon/magpie-small.svg), licensed under MIT.
+
+The Dim tile is a typographic placeholder, not an official logo.

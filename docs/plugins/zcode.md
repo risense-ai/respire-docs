@@ -1,5 +1,7 @@
 # Respire for ZCode
 
+<img src="/agents/zcode.png" alt="ZCode logo" width="56" height="56">
+
 [respire-zcode](https://github.com/risense-ai/respire-zcode) installs the respire memory engine into ZCode through the standard plugin marketplace: title-tier recall on every round, one-prefix store, Stop storage check. See the [plugin overview](./index.md) for the shared runtime behavior, first-use steps and tuning reference.
 
 ## Install
@@ -17,7 +19,7 @@ Then in the ZCode client:
 2. **Personal → risense-zcode → respire → Install**.
 3. Start a **new session** — the SessionStart rules injection confirms the hook is live.
 
-The marketplace doubles as the manager: **Settings → Plugins** enables, disables or removes the plugin; removing the marketplace source (Plugin marketplace → Marketplace sources → risense-zcode) removes everything. When the engine (`rsrs`) is missing, the plugin injects the install command (`npm i -g @rsrsai/cli@latest`) into the session and the agent installs it — recovery is same-session once detection turns ready.
+The marketplace doubles as the manager: **Settings → Plugins** enables, disables or removes the plugin; removing the marketplace source (Plugin marketplace → Marketplace sources → risense-zcode) removes everything. When the engine (`rsrs`) is missing, the plugin injects the install command (`npm i -g rsrs-cli@latest`) into the session and the agent installs it — recovery is same-session once detection turns ready.
 
 ## What happens in a session
 

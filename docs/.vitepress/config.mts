@@ -60,6 +60,8 @@ export default defineConfig({
             { text: 'Hermes', link: '/zh/plugins/hermes' },
             { text: 'Codex', link: '/zh/plugins/codex' },
             { text: 'Pi', link: '/zh/plugins/pi' },
+            { text: 'DSH', link: '/zh/plugins/dsh' },
+            { text: 'Magpie', link: '/zh/plugins/magpie' },
           ] },
           { text: '操作指南', items: [
             { text: 'Windows 安装', link: '/zh/guides/windows-install' },
@@ -67,7 +69,6 @@ export default defineConfig({
             { text: '批量整理提取记忆', link: '/zh/guides/batch-tidy-extracted' },
             { text: '示例：注入豆包', link: '/zh/guides/agent-example-doubao' },
             { text: '技能仓库安装与使用', link: '/zh/guides/skills-repo' },
-            { text: 'memTools 桌面收录', link: '/zh/guides/memtools' },
           ] },
           { text: '架构', items: [
             { text: '数据流', link: '/zh/architecture' },
@@ -82,7 +83,7 @@ export default defineConfig({
           { text: '接口', items: [
             { text: 'CLI JSON', link: '/zh/cli-api' },
             { text: 'Runtime RPC', link: '/zh/runtime-rpc' },
-            { text: 'RPC 完整功能参考', link: '/zh/runtime-rpc-commands' },
+            { text: 'RPC 参考（1.0.17-dev.14）', link: '/zh/runtime-rpc-commands' },
             { text: '服务端 API', link: '/zh/server' },
             { text: '请求边界', link: '/zh/server-request-boundaries' },
             { text: '契约', link: '/zh/contracts' },
@@ -183,6 +184,8 @@ export default defineConfig({
         { text: 'Hermes', link: '/plugins/hermes' },
         { text: 'Codex', link: '/plugins/codex' },
         { text: 'Pi', link: '/plugins/pi' },
+        { text: 'DSH', link: '/plugins/dsh' },
+        { text: 'Magpie', link: '/plugins/magpie' },
       ] },
       { text: 'Guides', items: [
         { text: 'Installing on Windows', link: '/guides/windows-install' },
@@ -190,7 +193,6 @@ export default defineConfig({
         { text: 'Batch-tidying extracted memories', link: '/guides/batch-tidy-extracted' },
         { text: 'Worked example: Doubao', link: '/guides/agent-example-doubao' },
         { text: 'Skills repository', link: '/guides/skills-repo' },
-        { text: 'memTools desktop capture', link: '/guides/memtools' },
       ] },
       { text: 'Architecture', items: [
         { text: 'Data flow', link: '/architecture' },
@@ -205,7 +207,7 @@ export default defineConfig({
       { text: 'Interfaces', items: [
         { text: 'CLI JSON', link: '/cli-api' },
         { text: 'Runtime RPC', link: '/runtime-rpc' },
-        { text: 'All RPC functions', link: '/runtime-rpc-commands' },
+        { text: 'RPC reference (1.0.17-dev.14)', link: '/runtime-rpc-commands' },
         { text: 'Server API', link: '/server' },
         { text: 'Request boundaries', link: '/server-request-boundaries' },
         { text: 'Contracts', link: '/contracts' },

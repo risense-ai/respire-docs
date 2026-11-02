@@ -1,12 +1,20 @@
 # Respire for Qoder
 
+<img src="/agents/qoder.png" alt="Qoder logo" width="56" height="56">
+
 [respire-qoder](https://github.com/risense-ai/respire-qoder) is the Qoder port of the Dim adapter: it uses Qoder's plugin hooks to attach the respire engine to the agent loop — title-tier recall on every round, one-prefix store, a Stop storage check. See the [plugin overview](./index.md) for the shared runtime behavior, first-use steps and tuning reference.
 
 ## Install
 
 ### 1. Qoder plugin
 
-From a directory:
+First clone the plugin repository and obtain its absolute path:
+
+```bash
+git clone https://github.com/risense-ai/respire-qoder.git
+```
+
+Then install from the directory:
 
 ```bash
 qoder plugins install /absolute/path/to/respire-qoder
@@ -24,16 +32,11 @@ After installing, run `/plugins reload` in a session or restart it. Qoder Deskto
 ### 2. Engine (the agent can install it for you)
 
 ```bash
-npm i -g @rsrsai/cli@latest
+npm i -g rsrs-cli@latest
 rsrs --version
 ```
 
-Without global write permission, try:
-
-```bash
-npm config set prefix ~/.npm-global
-npm i -g @rsrsai/cli@latest
-```
+If global installation is unavailable, consult the engine installation guide.
 
 The plugin probes for the engine every round; once installed, recall and store recover within the same session.
 
@@ -68,7 +71,7 @@ Sign up at [rsrs.rs](https://rsrs.rs), then run `rsrs register`. Daily: `rsrs lo
 Configuration priority: `RESPITE_CONFIG` environment variable → `$QODER_PLUGIN_DATA/respire.config.json` → `<plugin root>/hooks/respire.config.json`. Copy from the bundled example:
 
 ```bash
-cp hooks/respire.config.example.json hooks/respire.config.json
+cp hooks/respire.config.example.json "${QODER_PLUGIN_DATA:-hooks}/respire.config.json"
 ```
 
 Shared fields are documented in the [overview](./index.md#tuning). Qoder-specific: if you already wrote the respire instructions into `~/.qoder/rules` via `rsrs inject`, set `session_rules: false` to avoid double injection. Environment variables: `RESPIRE_BIN` (engine path), `RESPITE_RSRS` (legacy alias), `RESPITE_CONFIG`, `RESPITE_LOG`.

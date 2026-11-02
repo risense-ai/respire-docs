@@ -55,7 +55,9 @@ CLI / TUI / MCP stdio 连接 `127.0.0.1`。为兼容旧运行时，首次健康�
 | 管理后台 | `https://admin.rsrs.rs` |
 | 默认 API | `https://api.rsrs.rs` |
 
-可以通过服务器设置更改默认 API。Respire 使用 `~/.rsrs` 和端口 `15169`；启动时保留选定账户，不会导入旧档案。使用 TUI 的 **Migrate old version（迁移旧版本）** 或 `rsrs migrate` 显式选择源与目标账户。原目录保持完整。仍支持显式 `ONEMEMORY_*` 覆盖设置，数据库文件名和传输格式也保持兼容。
+可以通过服务器设置更改默认 API。Respire 使用 `~/.rsrs` 和端口 `15169`；启动时保留选定账户，不会导入旧档案。使用 TUI 的 **Migrate old version（迁移旧版本）** 或 `rsrs migrate` 显式选择源与目标账户。源数据库和凭据会保留；迁移成功后会在源目录写入 `.rsrs-migrated.json`。仍支持显式 `ONEMEMORY_*` 覆盖设置，数据库文件名和传输格式也保持兼容。
+
+迁移先发布目标，再写入源回执。如果回执写入失败，命令会报错，但目标可能已经存在。重试前先列出迁移来源并检查记录的目标；目标回执可以识别已完成的迁移。
 
 ## 账户登录、切换与索引 {#account-login-switching-and-indexing}
 

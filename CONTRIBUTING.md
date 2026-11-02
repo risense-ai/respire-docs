@@ -1,6 +1,6 @@
 # Contributing
 
-Keep documentation in English, with concise diagrams, tables and runnable examples. Describe product behavior and developer interfaces; keep migration logs, internal planning and task status outside the documentation.
+Keep public pages paired in English and Simplified Chinese, with concise diagrams, tables and runnable examples. Describe product behavior and developer interfaces; keep migration logs, internal planning and task status outside the documentation.
 
 | Area | Requirement |
 | --- | --- |

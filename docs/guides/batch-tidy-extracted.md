@@ -1,10 +1,10 @@
 # Batch-tidying extracted memories
 
-`rsrs extract` imports sessions from supported platforms and writes one summary memory per session. Each summary is created without a parent, so a large import leaves many scattered root nodes. This page describes a deterministic, model-free way to group those roots under archive anchors and attach them in a single pass with `resort`. The approach can be reversed with another `resort` call and does not depend on any model service.
+`rsrs extract` can import session summaries. Without a parent, summaries become roots. This page describes how to inspect and archive them in batches with `resort`. Reattaching cannot exactly restore an originally parentless record.
 
 ## The problem
 
-Each session import produces one summary whose body records the source platform and session id, the working directory, the model, the first instruction, and the last update time. The summary is written with `--importance important` and with no resolved parent, so every entry becomes a root node. A bulk import can add hundreds of roots at once. These roots are not reported as orphans: `audit` counts an orphan only when a parent id dangles, and a root is not an orphan, so `audit` can be all green while the tree stays fragmented.
+By default, imported summaries use `--importance important` and become roots when no parent is specified. A bulk import can add hundreds of roots at once. These roots are not reported as orphans: `audit` counts an orphan only when a parent id dangles, and a root is not an orphan, so `audit` can be all green while the tree stays fragmented.
 
 ## Why the standard tidy does not fix it
 
@@ -13,13 +13,13 @@ The built-in tidy commands do not attach an unparented imported entry automatica
 | Command | Behavior |
 | --- | --- |
 | `classify --plan` | Local only; performs no semantic grouping, so it usually proposes nothing |
-| `classify --tree --auto` | Requires a configured classification backend, set with `classify --ds <key>` |
+| `classify --tree --auto` | Requires an available classification backend; inspect it with `classify-config` |
 
-Because neither path reliably covers imported summaries, use deterministic classification instead: assign a rule per entry, build archive anchors, then batch attach with `resort`. The result needs no model and can be rolled back.
+Classify entries by working directory and keywords, then attach them with `resort`. Review each entry first.
 
 ## Deterministic classification
 
-The flow assigns each scattered root to an archive anchor by working directory and keyword rules, creates the anchors under a chosen tree root, and attaches every child with a single `resort --spec` call. `resort` previews by default and writes only with `--go`, so nothing changes until the preview is confirmed. Keep a full export snapshot before any write; the local store has no version history and `update` and `merge` are not reversible.
+The flow assigns roots to archive anchors, creates anchors, then attaches children with `resort --spec`. Only `resort` itself previews by default; creating anchors writes data. Back up before writing.
 
 ## Prerequisites
 
@@ -55,14 +55,14 @@ rsrs --client-only tree-cure
 
 ### Select targets
 
-Choose the batch. `--since-resort` means everything added since the last tidy, which is the default scope; `--since 1900` covers the whole store.
+Choose the batch. `--since-resort` selects entries created since the last tidy; `--since 1900` sets an early lower bound. `--limit` truncates results, and old entries with an empty creation time are excluded.
 
 ```sh
 rsrs list --since-resort --limit 500 --json
 rsrs list --since 1900 --limit 5000 --json
 ```
 
-The output contains only a short id and a title, with no parent or importance. Read details with `rsrs show <id> --json`.
+`rsrs list --json` includes full records in `details`; use `rsrs show <id> --json` to inspect an entry.
 
 ### Diagnose the tree
 
@@ -74,11 +74,11 @@ rsrs tree-cure
 rsrs defrag
 ```
 
-Treat most same-title groups and defrag clusters as false positives. The entry types that genuinely need action are true duplicate entries, mis-attached or broken links, and scattered roots.
+Review same-title groups and defrag clusters entry by entry; similarity alone does not establish duplication. Check for true duplicates, misplaced or broken links, and scattered roots.
 
 ### Back up the data
 
-Export a full plaintext snapshot to a persistent directory before writing. Do not use a temporary directory. The export contains every record in plaintext, so restrict access to the directory (for example, a user-only ACL) and encrypt it when appropriate.
+Export a plaintext snapshot to a persistent directory before writing. Use a new path each time: export overwrites existing files. Do not use a temporary directory. The export contains every record in plaintext, so restrict access to the directory (for example, a user-only ACL) and encrypt it when appropriate.
 
 ```powershell
 rsrs export C:\Users\<user>\rsrs-backups\memories_YYYYMMDD.json
@@ -128,7 +128,7 @@ rsrs resort --spec '<JSON>' --json
 rsrs resort --spec '<JSON>' --go --json
 ```
 
-A dry run reports `status=pending` and `moved=N`. The write reports `status=ok`, `moved=N`, and `counter=reset`. Chunk the operations at roughly 300 entries per call because the JSON approaches the command-line length limit on Windows, around 32 KB. Quoting a JSON argument with quotes through PowerShell can drop the quotes, so prefer passing arguments as a list through a script instead of the shell.
+A dry run reports `status=pending` and `moved=N`. The write reports `status=ok`, `moved=N`, and `counter=reset`. Split large operations into batches: the safe size depends on the JSON and the platform's command-line limit. Check each batch before writing. PowerShell may drop quotes in a JSON argument, so prefer passing arguments as a list through a script.
 
 ### Verify the result
 
@@ -150,17 +150,17 @@ Acceptance criteria: `roots` drops clearly, `lone leaf` falls to or near zero, `
 | Root count | `rsrs tree-cure` | Imported summaries that have no parent |
 | Lone leaf | `rsrs tree-cure` | A candidate for mounting under an existing node |
 | Orphans | `rsrs audit --json` | Dangling parent id; a root is not counted here |
-| Same-title groups | `rsrs audit --json` | Usually false positives from a shared summary first line |
+| Same-title groups | `rsrs audit --json` | Review each record; a shared title does not prove duplication |
 | Truncated titles | `rsrs audit --json` | Titles cut off during import; review before editing |
 | Maximum depth | `rsrs audit --json` | Overall tree depth for context |
-| Defrag clusters | `rsrs defrag` | Similarity clusters; mostly false positives, do not merge |
+| Defrag clusters | `rsrs defrag` | Similarity clusters require individual review before merging |
 
 ## Command cheat sheet
 
 | Purpose | Command |
 | --- | --- |
 | Select a batch | `rsrs list --since-resort --limit 500 --json` |
-| Select the whole store | `rsrs list --since 1900 --limit 5000 --json` |
+| Select from an early date | `rsrs list --since 1900 --limit 5000 --json` |
 | Diagnose | `rsrs audit --json`, `rsrs tree-cure`, `rsrs defrag` |
 | Back up | `rsrs export <persistent-dir>/memories_YYYYMMDD.json` |
 | Create an anchor | `rsrs remember "<purpose>" --title "Session archive: <project>" --importance important --parent <tree-name-or-id> --json` |
@@ -172,32 +172,18 @@ Acceptance criteria: `roots` drops clearly, `lone leaf` falls to or near zero, `
 
 ## Single command helper script
 
-A helper script can run the whole sequence on the same host. It exports a snapshot, finds the unparented roots, classifies them, creates or reuses anchors, and then previews or writes a `resort --spec`. It is not fully read-only: before the `--go` gate it creates any missing anchors with `remember`, so even a preview can write, and without `--backup` it writes a temporary snapshot instead of a persistent one. Supply a persistent, protected `--backup` path and review the helper before using it, or create the anchors yourself first.
-
-Edit the configuration block at the top of the script:
-
-- `PREFIXES` lists the title prefixes treated as scattered roots. If imported entries carry a tag such as `session-import`, the script detects the tag first and uses the prefix as a fallback.
-- `TARGET_ROOT` is the tree root under which anchors are created. Use a built-in catalog name or a node id.
-- `ANCHORS` maps each topic to its keyword rules. Keep the final fallback entry and do not delete it.
-
-```bash
-python tidy_extracted.py
-python tidy_extracted.py --go
-python tidy_extracted.py --rsrs <path-to-rsrs> --client-only --backup <snapshot-path>
-```
-
-The script ships with the related skill in `memory-batch-tidy/scripts/tidy_extracted.py`. See [Skills repository](skills-repo.md) for the surrounding layout, and [CLI commands](../cli.md) and [CLI JSON](../cli-api.md) for the underlying options.
+The skills repository contains `memory-batch-tidy/scripts/tidy_extracted.py`, but do not run it without review: preview creates anchors, repeated runs overwrite the plaintext export at the same path, and an unrelated same-title anchor can be reused. The script does not chunk operations or save a per-entry undo plan. Review targets manually and use distinct protected backup paths.
 
 ## Common pitfalls
 
 1. Preview first. `resort` does not write by default; confirm `status=pending` and `moved=N` before adding `--go`.
 2. `resort --go` resets the TIDY counter and reports `counter=reset`. This is expected and no separate `--reset` is needed.
-3. The same title is not the same entry. Summaries share a boilerplate first line, so `same_title_groups` is usually a false positive.
-4. Defrag clusters are mostly false positives. Never merge a catalog root, differing sections of one sentence pattern, or separate branches of a tree.
-5. Check descendants before merging. A real duplicate merge with `remember --merge-ids` deletes the old entry, so inspect its children and re-attach any orphaned children to the new entry immediately.
+3. The same title does not prove duplication. Review each `same_title_groups` entry.
+4. Similarity does not prove duplication. Review defrag clusters and their context before merging.
+5. Back up and record children before merging. `remember --merge-ids` deletes the old entries; inspect the result and re-attach any orphaned children.
 6. Quoting. Passing a JSON string with quotes to a native program through PowerShell can drop the quotes; pass arguments as a list instead.
-7. Console encoding. On Windows, Python defaults to cp1252 and can fail while printing; set `PYTHONIOENCODING=utf-8` or reconfigure stdout to UTF-8 first.
-8. Oversized batches. Split a spec above roughly 300 operations, and keep exports and backups in a persistent directory.
+7. Console encoding. Windows output encoding varies by environment; set `PYTHONIOENCODING=utf-8` when needed.
+8. Oversized batches. Split the spec to fit the platform limit, and keep exports and backups in a persistent directory.
 
 ## Rollback
 
@@ -205,7 +191,7 @@ An attachment can be reversed by pointing each child back to its recorded origin
 
 An empty anchor can be removed with `rsrs forget <anchor-id>`, and a soft-deleted entry can be restored with `rsrs restore <full-id>`.
 
-For an exact restore, use the export snapshot from the backup step. It is not an in-place restore: `rsrs import` mints new ids and appends copies, so importing into the changed library leaves the changed originals in place and duplicates records. Restore into a fresh profile instead. The local store keeps no version history, so `update` and `merge` are not reversible and a backup is required before any write.
+`rsrs import` mints new ids and appends copies; it does not restore in place. Alternatively, create a database snapshot with `rsrs snapshot create` before writing. Restore does not roll back the server and quarantines sync; read the [snapshot instructions](https://github.com/risense-ai/respire-cli/blob/main/docs/snapshots.md) first. Keep a backup because a recoverable revision is not guaranteed for every change.
 
 ## Related pages
 

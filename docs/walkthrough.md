@@ -14,7 +14,7 @@ sequenceDiagram
   Core-->>CLI: Features and final proposals
   CLI->>Store: Encrypt and persist approved change
   CLI-->>User: Result
-  Store->>Server: Encrypted background sync
+  Store->>Server: Encrypted sync when configured
 ```
 
 | Step | Command / action |
@@ -28,6 +28,6 @@ sequenceDiagram
 | Sync deliberately | `rsrs sync` with a valid server identity |
 | Recover another device | Follow [Sync and keys](sync-and-keys.md) using existing account recovery material |
 
-Logging out of the server is different from forgetting local identity. Read each command's help before removing identity information. A plaintext export and an encrypted database backup are different artifacts.
+Logging out of the server is different from forgetting local identity. Read each command's help before removing identity information. A database backup differs from a plaintext export, but can contain plaintext metadata; protect both.
 
 [CLI reference](cli.md) · [Client](client.md)

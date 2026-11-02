@@ -1,5 +1,7 @@
 # Respire for Hermes Agent
 
+<img src="/agents/hermes.png" alt="Hermes logo" width="56" height="56">
+
 [respire-hermes](https://github.com/risense-ai/respire-hermes) implements the [Memory Provider Plugins](https://hermes-agent.nousresearch.com/docs/developer-guide/memory-provider-plugin) contract, so Hermes shares the same local encrypted library as the other agents on this machine (ZCode, Kimi Code and friends). Unlike the hook adapters, it is a **directory provider**: Hermes calls it through the provider API rather than shell hooks. See the [plugin overview](./index.md) for the shared tuning reference.
 
 ## What it does
@@ -8,22 +10,24 @@
 - **`system_prompt_block`**: injects the usage rules plus a state probe (engine missing / not signed in / empty library / model missing — one section each, silent when ready)
 - **Three tools**: `respire_recall` / `respire_show` / `respire_remember` (store-with-judgment: near-duplicates return candidates; the model decides to attach or force-write)
 - Prompts starting with 「记：」 / 「存：」 / `remember:` are stored directly by the provider; `/nomem` disables automatic recall for the turn
-- A turn-end check nudges storage only when the session produced something new
+- Later prefetch calls may add a storage reminder based on turn count and recent storage time
 - fail-open: engine missing, timeout or parse failure degrade to an empty injection — the host turn is never blocked
 
 It is a **wrapper-style provider with zero Python dependency footprint**: the engine is the npm-installed `rsrs` CLI called as a sidecar subprocess. The plugin root carries no `pyproject.toml` / `pip_dependencies`, so it enjoys the `HERMES_HOME` survival contract (`hermes update` leaves the directory alone). Note that the respire library itself is **user-level** — one library per person shared across all agents and Hermes profiles, by design, unlike Hermes' per-profile storage default. Hermes allows only one external memory provider at a time.
 
 ## Install
 
-Prerequisites: Python 3.9+ (bundled with Hermes) and Node.js (for the engine sidecar).
+Prerequisites: Python 3.9+ and Hermes 0.22.5 or later. The README lists Linux and Apple Silicon macOS; other platforms and versions need verification.
 
 ```bash
 # 1) Engine (skip if installed; verify with rsrs --version)
-npm i -g @rsrsai/cli@latest
-rsrs register --user <your name>   # first-device registration, sign up at https://rsrs.rs
+npm i -g rsrs-cli@latest
+rsrs --version
 # semantic recall (optional): rsrs model install && rsrs model activate m3
 
 # 2) Plugin (either way)
+git clone https://github.com/risense-ai/respire-hermes.git
+cd respire-hermes
 bash scripts/install.sh                 # copies into $HERMES_HOME/plugins/respire/
 # or manually: cp -R this directory (minus .git/dist) to ~/.hermes/plugins/respire/
 
@@ -90,7 +94,7 @@ A read-only skill `respire:respire` (the full memory playbook) is also registere
 
 ## Known limits
 
-- **No real-machine E2E yet**: the contracts were taken item by item from the official memory-provider-plugin documentation (2026-10-23 edition); local verification used a structure-equivalent stub plus a real `rsrs` engine tool/prefetch/config loop (`tests/test_provider.py`). If real-machine behavior differs, the most likely spots are `get_tool_schemas()` (OpenAI function format, inferred) and `get_status_config()` (flat dict, inferred).
+- **Limited real-machine validation**: the README records a provider-chain check on the Hermes 0.22.5 baseline. Stub tests do not establish behavior on other versions, platforms or concurrent sessions.
 - The desktop settings-panel file (`config_schema.py`) has no published format; configure by editing `respire.json` for now.
 - The optional `on_memory_write` hook is not implemented: entries added or changed through Hermes' built-in `memory` tool are not mirrored into rsrs automatically. Migrate them with [Import existing memory](#import-existing-memory); long-term automatic sync would require adding that hook.
 

@@ -17,8 +17,8 @@ flowchart TD
 | CLI | `cargo test --locked -p respire` after SDK setup |
 | Infrastructure crates | Their existing Cargo tests after SDK setup |
 | Server | `cargo test --locked -p respire_service`; database integration checks need PostgreSQL |
-| Client UI | Existing tests/build in `client/tree-ui` |
-| Desktop | Staged compatible CLI sidecar, runtime resources and platform dependencies |
+| Client UI | Embedded frontend in `respire-client2`; run existing syntax checks |
+| Desktop | Go/Wails build and platform dependencies; obtain a compatible CLI and runtime separately |
 
 ## SDK setup
 

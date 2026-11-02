@@ -674,7 +674,7 @@ Options:
 
 ### `remember` {#cmd-remember}
 
-Store a memory (local authority store; encrypts + embeds automatically). Judge-then-store (dedup first, then choose): without --force, an internal recall runs first - high similarity -&gt; suggest merge (--merge-ids "id1,id2" deletes old, writes a combined entry); medium -&gt; suggest attach (--parent as cause); no candidate or --force writes directly. --parent = causal attach; parent/child is cause/effect.
+Store a memory in the local authority store, encrypting and embedding it automatically. The original help below simplifies judge-then-store: in this version, an internal recall runs only when --force, --merge-ids, --supersedes and --parent are absent, --see-also is empty, and importance is not trivial. Merge or parent candidates return pending without writing; otherwise the command continues to the write path. Explicit merge, parent and association options skip this candidate check.
 
 Calling boundary: `RPC`.
 

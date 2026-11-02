@@ -1,6 +1,8 @@
 # Pi 版 respire {#respire-for-pi}
 
-[respire-pi](https://github.com/risense-ai/respire-pi) 是 Pi coding agent 1.3.0 的原生记忆扩展，经 npm 以 `@rsrsai/pi` 分发：每轮答前自动召回标题、「记：」一前缀即落库、轮末做一次存料审查。与 Codex 插件同为 npm 分发的 Node.js 形态，且只调 `rsrs --client-only`。共用调优参考见[插件总览](./index.md)。
+<img src="/agents/pi.png" alt="Pi logo" width="56" height="56">
+
+[respire-pi](https://github.com/risense-ai/respire-pi) 是 Pi coding agent 1.3.0 的原生记忆扩展，经 npm 以 `@rsrsai/pi` 分发：每轮答前自动召回标题、用「记：」前缀请求保存，以及在符合条件时于结算后进行后台存储审查。与 Codex 插件同为 npm 分发的 Node.js 形态，且只调 `rsrs --client-only`。共用调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
 
@@ -9,7 +11,7 @@
 需要时单独装引擎：
 
 ```sh
-npm install -g @rsrsai/cli@latest
+npm install -g rsrs-cli@latest
 rsrs --version
 rsrs --client-only status --json
 ```
@@ -68,11 +70,11 @@ pi --respire-rsrs /path/to/rsrs
 | `/nomem` 或 `#nomem` 后接空白/结束 | 该条输入跳过自动记忆处理 |
 | 疑似凭据 | 跳过自动召回与落库 |
 | `before_agent_start` | 向结构化系统提示追加稳定简则 |
-| 记忆操作成功 settlement 后 | 至多一次存料审查续跑；显式落库成功则抑制 |
-| 运行中止/失败、引擎跳过或引擎不可用 | 不自动续跑 |
+| agent 运行完成并结算后 | 自动处理启用且引擎就绪时，至多启动一次独立后台审查；运行中止或显式落库成功时不启动 |
+| 运行中止/失败、引擎跳过或引擎不可用 | 不启动后台审查 |
 
-召回结果与回执经 Pi 的 `input` 变换附加到同一条输入，因此出现在保存的用户消息里、并保持挂在 steering/后续输入上；原始文本与图像附件保留。扩展生成的输入被忽略。会话切换与关闭会取消未完成的引擎调用。
+召回结果与回执作为请求上下文提供，不写入用户消息、会话文件或编辑历史。扩展生成的输入被忽略。会话切换与关闭会取消未完成的引擎调用。
 
-凭据检测是尽力而为——不要提交口令、token 或私钥。收尾审查只提醒 agent 存有用的新发现，不会自动把对话记录搬进记忆。
+凭据检测是尽力而为，不要提交口令、token 或私钥。运行成功、自动处理启用、引擎就绪且本轮没有成功的显式存储时，结算后可启动独立后台任务，提取并尝试保存一条事实；它可能将本轮内容发送给所选模型提供商。失败或结果未确认时先查库，不自动重试。
 
 测试与发版流程见[仓库 README](https://github.com/risense-ai/respire-pi#readme)。

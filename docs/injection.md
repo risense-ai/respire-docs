@@ -14,7 +14,7 @@ Run `inject --targets` to inspect resolved paths and detection state on the curr
 | --- | --- |
 | Managed block | Replaces only the block between Respire markers |
 | Reference | Writes an instruction file and updates the supported configuration reference |
-| Full-file target | Uses the instruction text as the target's contents |
+| Full-file target | Replaces the target contents with the instruction text |
 
 ```mermaid
 flowchart LR
@@ -32,6 +32,6 @@ flowchart LR
 | Instruction source changed | Rebuild or update the CLI, then run `inject` again |
 | Runtime connection failure | Inspect the local runtime and authentication; do not silently switch execution modes |
 
-Managed blocks use `<!-- respire:begin -->` and `<!-- respire:end -->`. Preserve unrelated instructions outside the block. Review a full-file target before installation.
+Managed blocks use `<!-- respire:begin -->` and `<!-- respire:end -->`. Preserve unrelated instructions outside the block. The DSH full-file target is `~/.dsh/AGENTS.md`: injection replaces its existing contents and removes a symlink at that path before writing. Inspect and back up the target before installation.
 
 See [CLI](cli.md), [CLI JSON](cli-api.md), [plugins](plugin-dev.md) and the ready-made [AI tool plugins](plugins/index.md).

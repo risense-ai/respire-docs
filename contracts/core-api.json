@@ -22,9 +22,14 @@
     "taxonomy_classify",
     "classify_business",
     "query_business",
+    "memory_metadata_validate",
+    "memory_evidence_evaluate",
     "related_business",
     "index_generation",
     "index_status",
+    "resident_publish",
+    "resident_release",
+    "index_reusable",
     "model_status",
     "model_probe",
     "engine_control"
@@ -65,5 +70,22 @@
     "respire_core",
     "respire_core_ffi",
     "respire_winml"
-  ]
+  ],
+  "optionalExtensions": {
+    "model_input_stream_contract": {
+      "version": 1,
+      "requires": "cpu-owned-ort-experiment",
+      "experimental": true,
+      "abiVersionUnchanged": 65538,
+      "maxModelBytes": 1073741824,
+      "maxChunkBytes": 4194304,
+      "stagingBudgetBytes": 1073741824,
+      "functions": [
+        "rs_core_model_input_begin",
+        "rs_core_model_input_append",
+        "rs_core_model_input_commit",
+        "rs_core_model_input_abort"
+      ]
+    }
+  }
 }

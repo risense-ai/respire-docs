@@ -1,7 +1,9 @@
 # Memory associations
 
-Recall keeps its original ranked `details` array and appends bounded title-only
-associations in a separate `related` array. Each association contains `id`,
+Where association expansion is available, recall keeps its original ranked `details`
+array and appends bounded title-only associations in a separate `related` array.
+Metadata-aware recall and recall with a render budget currently return no expanded
+associations. Each association contains `id`,
 `title`, `source_id` and `relation`: `new_version`, `old_version`, `see_also`,
 `co_recall` or `neighbor`. Read bodies with `show`; titles are untrusted data.
 The summary counts original hits and associations separately. An active
@@ -28,8 +30,12 @@ neighbor inference, exclusions, scope filtering and budgets. No vector,
 intermediate cosine value, strategy threshold or selector plan is returned.
 The main hit IDs and scores are unchanged by associations.
 
-`--no-related` disables expansion and superseded hints for this request. The
-Host compatibility environment switch `RSRS_RELATED=0` disables expansion
+`--no-related` disables expansion and normally suppresses superseded hints. In the
+non-metadata recall path with a render budget, source inspection shows that the
+budget branch can retain superseded hints before checking this flag
+(`respire-cli/cli/src/main.rs`, `respire-cli/cli/src/recall_select.rs`); this
+combination has not been verified by an end-to-end test. The host compatibility
+environment switch `RSRS_RELATED=0` disables expansion
 while retaining replacement warnings; process-environment changes require a
 runtime restart by the host owner. The host passes explicit association settings
 to Core; Core owns the association policy and does not read the environment.

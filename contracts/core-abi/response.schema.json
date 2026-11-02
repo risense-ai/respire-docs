@@ -19,6 +19,116 @@
     }
   },
   "$defs": {
+    "queryBusinessResult": {
+      "type": "object",
+      "required": ["items", "mode", "warning", "routing", "retrieval"],
+      "properties": {
+        "items": {"type": "array"},
+        "mode": {"enum": ["fast", "quality"]},
+        "warning": {"type": ["string", "null"]},
+        "routing": {"$ref": "#/$defs/recallRouting"},
+        "retrieval": {"type": "object"},
+        "intent": {"enum": ["typed", "howto", "fact"]},
+        "procedure_pass": {"type": "integer", "minimum": 0},
+        "procedure_promoted": {"type": "boolean"},
+        "budget": {"$ref": "#/$defs/renderBudgetReceipt"},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidenceEvaluation"}},
+        "filtered_by_evidence": {"type": "integer", "minimum": 0},
+        "filtered_by_score": {"type": "integer", "minimum": 0, "description": "Present only when render_min_score was supplied; counts final selected items removed before the budget."}
+      }
+    },
+    "renderBudgetReceipt": {
+      "oneOf": [{"$ref": "#/$defs/titleRenderBudgetReceipt"}, {"$ref": "#/$defs/briefRenderBudgetReceipt"}]
+    },
+    "briefSelectedItem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "representation", "rendered_text", "evidence", "source_refs", "scope", "valid_until"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "representation": {"enum": ["full", "summary", "title"]},
+        "rendered_text": {"type": "string"},
+        "evidence": {"$ref": "#/$defs/evidenceEvaluation"},
+        "source_refs": {"type": "array", "items": {"$ref": "request.schema.json#/$defs/sourceRef"}},
+        "scope": {"anyOf": [{"$ref": "request.schema.json#/$defs/verificationScope"}, {"type": "null"}]},
+        "valid_until": {"anyOf": [{"$ref": "request.schema.json#/$defs/metadataTime"}, {"type": "null"}]}
+      }
+    },
+    "briefRenderBudgetReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["budget_chars", "chars", "tokens", "estimated", "tokenizer_id", "representation", "items", "rendered_text", "candidate_count", "selected_count", "dropped_by_budget", "dropped_by_incomplete", "dropped_by_duplicate", "status"],
+      "properties": {
+        "budget_chars": {"type": "integer", "minimum": 0},
+        "chars": {"type": "integer", "minimum": 0},
+        "tokens": {"type": "null"},
+        "estimated": {"const": true},
+        "tokenizer_id": {"type": "null"},
+        "representation": {"enum": ["full", "summary", "title", "mixed", null]},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/briefSelectedItem"}},
+        "rendered_text": {"type": "string"},
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "selected_count": {"type": "integer", "minimum": 0},
+        "dropped_by_budget": {"type": "integer", "minimum": 0},
+        "dropped_by_incomplete": {"type": "integer", "minimum": 0},
+        "dropped_by_duplicate": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["selected", "empty_candidates", "all_dropped_by_budget", "all_dropped_by_incomplete", "all_dropped", "wrapper_over_budget"]}
+      }
+    },
+    "titleRenderBudgetReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["budget_chars", "chars", "tokens", "estimated", "tokenizer_id", "representation", "items", "rendered_text", "candidate_count", "selected_count", "dropped_by_budget", "dropped_by_duplicate", "status"],
+      "properties": {
+        "budget_chars": {"type": "integer", "minimum": 0},
+        "chars": {"type": "integer", "minimum": 0},
+        "tokens": {"type": "null"},
+        "estimated": {"const": true},
+        "tokenizer_id": {"type": "null"},
+        "representation": {"const": "title"},
+        "items": {"type": "array", "items": {"$ref": "request.schema.json#/$defs/renderItem"}},
+        "rendered_text": {"type": "string"},
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "selected_count": {"type": "integer", "minimum": 0},
+        "dropped_by_budget": {"type": "integer", "minimum": 0},
+        "dropped_by_duplicate": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["selected", "empty_candidates", "all_dropped_by_budget", "wrapper_over_budget"]}
+      }
+    },
+    "budgetedQueryResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["items", "budget"],
+      "properties": {
+        "items": {"type": "array"},
+        "budget": {"$ref": "#/$defs/renderBudgetReceipt"}
+      }
+    },
+    "recallRouting": {
+      "type": "object", "additionalProperties": false,
+      "required": ["temporal", "route_on", "ablate"],
+      "properties": {
+        "temporal": {"type": "boolean"},
+        "route_on": {"type": "boolean"},
+        "ablate": {"type": "string"},
+        "read_heat": {"type": "boolean"},
+        "heat_source": {"enum": ["none", "feedback_good", "recall_count"]},
+        "heat_disabled_reason": {"enum": ["hot_ablated", "read_heat_disabled", null]}
+      }
+    },
+    "metadataValidation": {
+      "type": "object", "additionalProperties": false, "required": ["record_revision"],
+      "properties": {"record_revision": {"$ref": "request.schema.json#/$defs/metadataRevision"}, "claim_digest": {"$ref": "request.schema.json#/$defs/metadataRevision"}, "intent_digest": {"$ref": "request.schema.json#/$defs/metadataRevision"}}
+    },
+    "evidenceEvaluation": {
+      "type": "object", "additionalProperties": false, "required": ["id", "record_revision", "evidence_state", "fact_eligible", "due_reasons", "reason_codes"],
+      "properties": {
+        "id": {"type": "string"}, "record_revision": {"anyOf": [{"$ref": "request.schema.json#/$defs/metadataRevision"}, {"type": "null"}]},
+        "evidence_state": {"enum": ["unverified", "verified"]}, "fact_eligible": {"type": "boolean"},
+        "due_reasons": {"type": "array", "uniqueItems": true, "items": {"enum": ["review_due", "unverified", "expired", "source_invalid", "source_unavailable", "cycle"]}},
+        "reason_codes": {"type": "array", "uniqueItems": true, "items": {"enum": ["deleted", "superseded", "expired", "review_due", "unverified", "verification_revision_mismatch", "scope_unknown", "scope_mismatch", "source_unavailable", "source_revision_mismatch", "source_invalid", "cycle", "root_unavailable", "root_changed", "authority_unavailable", "authority_rejected", "unsupported_metadata"]}}
+      }
+    },
+    "evidenceQueryResult": {
+      "type": "object", "required": ["items", "evidence", "filtered_by_evidence"],
+      "properties": {"items": {"type": "array"}, "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidenceEvaluation"}}, "filtered_by_evidence": {"type": "integer", "minimum": 0}, "budget": {"$ref": "#/$defs/renderBudgetReceipt"}}
+    },
     "relatedResult": {
       "type": "object", "additionalProperties": false, "required": ["related", "superseded"],
       "properties": {

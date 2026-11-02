@@ -1,12 +1,20 @@
 # Qoder 版 respire {#respire-for-qoder}
 
+<img src="/agents/qoder.png" alt="Qoder logo" width="56" height="56">
+
 [respire-qoder](https://github.com/risense-ai/respire-qoder) 是 Dim 版的 Qoder 移植：用 Qoder 的插件钩子把 respire 引擎挂进 agent 循环——每轮标题档自动召回、「记：」一前缀即落库、收尾做一次存储检查。共用运行时行为、首次使用步骤与调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
 
 ### 1. Qoder 插件 {#_1-qoder-plugin}
 
-按目录安装：
+先下载插件仓库，并取得其绝对路径：
+
+```bash
+git clone https://github.com/risense-ai/respire-qoder.git
+```
+
+然后按目录安装：
 
 ```bash
 qoder plugins install /absolute/path/to/respire-qoder
@@ -24,16 +32,11 @@ qoder plugins install respire-qoder@risense
 ### 2. 引擎（缺失时 agent 可代装） {#_2-engine-the-agent-can-install-it-for-you}
 
 ```bash
-npm i -g @rsrsai/cli@latest
+npm i -g rsrs-cli@latest
 rsrs --version
 ```
 
-无全局写权限时先试：
-
-```bash
-npm config set prefix ~/.npm-global
-npm i -g @rsrsai/cli@latest
-```
+无全局安装权限时，请参阅引擎安装指南。
 
 插件每轮实时探测引擎；装好**同会话内**即恢复召回与「记：」落库。
 
@@ -68,7 +71,7 @@ npm i -g @rsrsai/cli@latest
 配置优先级：`RESPITE_CONFIG` 环境变量 → `$QODER_PLUGIN_DATA/respire.config.json` → `<plugin root>/hooks/respire.config.json`。从 example 复制即可：
 
 ```bash
-cp hooks/respire.config.example.json hooks/respire.config.json
+cp hooks/respire.config.example.json "${QODER_PLUGIN_DATA:-hooks}/respire.config.json"
 ```
 
 公共字段见[总览](./index.md#tuning)。Qoder 特有：若你已用 `rsrs inject` 往 `~/.qoder/rules` 写过 respire 全文，建议 `session_rules: false` 防双份注入。环境变量：`RESPIRE_BIN`（引擎路径）、`RESPITE_RSRS`（兼容旧名）、`RESPITE_CONFIG`、`RESPITE_LOG`。

@@ -18,7 +18,7 @@ flowchart LR
 | Print the destination without opening a browser | `rsrs web --no-open` |
 | Local operations | CLI commands and the authenticated background runtime |
 
-The CLI contains no embedded browser application. Its background runtime continues to handle local commands and queued network synchronization.
+The CLI contains no embedded browser application. Its background runtime continues to handle local commands and queued network synchronization. The [desktop client](../client.md) is a separate Wails application connected to the local Runtime.
 
 The runtime uses port `15169` and `~/.rsrs`. Its local HTTP interface is for authenticated CLI and tool communication, not a dashboard.
 

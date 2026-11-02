@@ -5,9 +5,9 @@
 ```mermaid
 flowchart LR
   CLI["rsrs web"] --> Browser["dash.rsrs.rs"]
-  Browser --> API["账户 API"]
-  Commands["记忆命令"] --> Runtime["本地已认证运行时"]
-  Runtime --> Store[("本地 SQLite")]
+  Browser --> API["Account API"]
+  Commands["Memory commands"] --> Runtime["Local authenticated runtime"]
+  Runtime --> Store[("Local SQLite")]
 ```
 
 | 项目 | 行为 |
@@ -18,7 +18,7 @@ flowchart LR
 | 不打开浏览器，只输出目标地址 | `rsrs web --no-open` |
 | 本地操作 | CLI 命令和已认证后台运行时 |
 
-CLI 不包含嵌入式浏览器应用。后台运行时继续处理本地命令和排队的网络同步。
+CLI 不包含嵌入式浏览器应用。后台运行时继续处理本地命令和排队的网络同步。[桌面客户端](../client.md)是独立的 Wails 应用，连接本机 Runtime。
 
 运行时使用端口 `15169` 和 `~/.rsrs`。其本地 HTTP 接口用于已认证 CLI 和工具通信，不是控制台。
 

@@ -1,6 +1,8 @@
 # Codex 版 respire {#respire-for-codex}
 
-[respire-codex](https://github.com/risense-ai/respire-codex) 是原生 Codex 记忆插件，经 npm 以 `@rsrsai/codex` 分发：用户输入时召回、显式请求时落库、收尾提醒 agent 存好新发现。与钩子适配不同，它是 Node.js 扩展且只调 `rsrs --client-only`——从不启动、停止或升级 runtime。共用调优参考见[插件总览](./index.md)。
+<img src="/agents/codex.png" alt="Codex logo" width="56" height="56">
+
+[respire-codex](https://github.com/risense-ai/respire-codex) 是原生 Codex 记忆插件，经 npm 以 `@rsrsai/codex` 分发：用户输入时召回、显式请求时落库、符合条件时在后台检查并整理新发现。与钩子适配不同，它是 Node.js 扩展且只调 `rsrs --client-only`——从不启动、停止或升级 runtime。共用调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
 
@@ -9,7 +11,7 @@
 先备好引擎（已可用可跳过）：
 
 ```sh
-npm install -g @rsrsai/cli@latest
+npm install -g rsrs-cli@latest
 rsrs --version
 rsrs --client-only status --json
 ```
@@ -31,7 +33,7 @@ codex plugin add respire@rsrsai
   "source": {
     "source": "npm",
     "package": "@rsrsai/codex",
-    "version": "0.1.4",
+    "version": "0.2.15",
     "registry": "https://registry.npmjs.org"
   },
   "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
@@ -52,7 +54,7 @@ codex plugin marketplace upgrade rsrsai
 codex plugin add respire@rsrsai
 ```
 
-重启 Codex，在插件详情确认版本，并在 `/hooks` 审阅变更的钩子。若发版后版本号仍显示旧值，是 npm 元数据缓存——PowerShell 里：
+重启 Codex，在插件详情确认版本，并在 `/hooks` 审阅变更的钩子。若发版后版本号仍显示旧值，可能是 npm 元数据缓存——PowerShell 里：
 
 ```powershell
 $env:npm_config_prefer_online = 'true'
@@ -70,22 +72,22 @@ Remove-Item Env:npm_config_prefer_online
 | 普通用户输入 | 同步 `recall --titles --json`——至多 5 条、1500 字符内；正文由 agent 按需读 |
 | 「记：」「存：」「记录：」「记住：」、`remember:` | 尝试一次 `remember`，回执为 success、pending 或 unconfirmed |
 | `/nomem` 或 `#nomem` 后接空白 | 该条输入跳过自动召回；库模式不变，收尾检查仍可运行 |
-| `Stop` | 每轮至多一次续跑提醒，且仅在有成功召回的轮；显式落库成功则抑制 |
+| `Stop` | 符合条件的轮次至多启动一次后台记忆检查；显式落库成功则抑制 |
 
 回执三态。**Success** 带真实记录 id——确认写入。**Pending** 表示引擎发现近似候选且**未写入**：agent 读候选，决定更新、合并还是挂靠。**Unconfirmed** 表示结果未知（超时、取消、缺有效 id）：写入可能已提交，先查库——插件不会重试。`plan` 模式跳过显式落库。
 
-记忆标题是参考数据不是指令。收尾提醒只让 agent 评估并落库新发现，不归档会话。`stop_hook_active`、会话/轮去重与续跑标记防循环；插件自身的续跑不再触发召回或落库。subagent 钩子未启用。
+记忆标题是参考数据，不是指令。符合条件时，Stop 会异步启动后台任务。任务读取本轮消息、工具结果及相关记忆，并可整理和写入记忆。结果未确认时先查库，不自动重试。subagent 钩子未启用。
 
 ## 配置、状态与隐私 {#configuration-state-and-privacy}
 
 - `RESPIRE_RSRS_PATH`：可选的可执行路径或命令名；默认 `rsrs`。`PLUGIN_ROOT` 与 `PLUGIN_DATA` 由 Codex 提供；状态绝不写入安装目录。
-- 每次引擎调用限 20 秒、1 MiB stdout；hook 超时分别为 30/30/5 秒。
+- 每次引擎调用限 20 秒、1 MiB stdout；hook 超时分别为 30/30/300 秒。
 - Windows 上参数以 JSON stdin 传给固定 PowerShell 适配器——用户输入绝不拼进脚本源码。
-- `PLUGIN_DATA/sessions/` 只存哈希标识、处理阶段与去重标记——不存用户文本、召回标题或口令。每会话保留最近 32 轮。
+- `PLUGIN_DATA/sessions/` 保存哈希标识、处理阶段、去重标记及归档进度和结果；不存对话正文或口令。每会话保留最近 32 轮。
 - 状态更新用锁与原子替换。崩溃残留的 `.lock` 会让该会话后续召回/落库报失败并跳过；确认该会话钩子已停后删锁文件或开新会话。
 - 常见凭据模式会跳过，但这不是完整的秘密扫描器——提交前先移除敏感内容。注入的标题与回执会进入 Codex 上下文、可能到达所配置的模型提供商；本地加密不改变这一点。
 - 引擎原始 stderr 不落日志，只暴露错误类别；失败不阻断用户主任务。
 
 `/hooks` 里一个 Respire 钩子都没有时，检查目标安装是否启用且含 `.codex-plugin/plugin.json` 与 `hooks/hooks.json`。钩子在列但不生效，审阅信任状态并重启。钩子报引擎错误时，跑 `rsrs --client-only status --json` 与 setup 技能。
 
-Stop 输出会在保留续跑文本的同时请求 `suppressOutput: true`；Codex 0.163.0 解析但忽略该字段，提醒仍可见。测试与发版流程见[仓库 README](https://github.com/risense-ai/respire-codex#readme)。
+后台任务可能将本轮消息、工具结果和相关记忆发送给配置的模型提供商。测试与发版流程见[仓库 README](https://github.com/risense-ai/respire-codex#readme)。

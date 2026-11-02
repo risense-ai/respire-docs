@@ -4,14 +4,14 @@
 
 ```mermaid
 flowchart LR
-  AI["AI 工具"] --> CLI["CLI"]
-  Browser["本地 Web"] --> CLI
-  Desktop["桌面客户端"] --> CLI
-  CLI --> App["基础设施 app / 加密 / 存储"]
-  App --> SDK["安全 SDK"]
-  SDK --> Core["Core：模型与算法"]
-  App --> DB[("本地 SQLite")]
-  DB <-->|密文| Server["服务端"]
+  AI["AI tools"] --> CLI["CLI"]
+  Browser["Hosted Dashboard"] --> Server
+  Desktop["Desktop client"] --> CLI
+  CLI --> App["Infrastructure app / crypto / storage"]
+  App --> SDK["Safe SDK"]
+  SDK --> Core["Core: models and algorithms"]
+  App --> DB[("Local SQLite")]
+  DB <-->|Ciphertext| Server["Server"]
 ```
 
 | 组件 | 职责 |
@@ -20,7 +20,7 @@ flowchart LR
 | Core | 模型执行、检索、排序、判重与上下文选择 |
 | 基础设施 crates | 协议、密码学、持久化、同步与安全 SDK 适配 |
 | 服务端 | 身份认证与各用户的密文存储 |
-| Web / 桌面 | 使用 CLI 操作的同一套树形界面 |
+| 控制台 / 桌面 | 托管账户控制台，以及使用本机 Runtime RPC 的独立桌面客户端 |
 | 插件 | 面向 ZCode、Kimi Code、Dim、Qoder、WorkBuddy、Hermes、Codex 与 Pi 的宿主适配；见 [AI 工具插件](plugins/index.md) |
 | 官网 | 产品介绍，与记忆客户端分离 |
 

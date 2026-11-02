@@ -1,5 +1,7 @@
 # Dim 版 respire {#respire-for-dim}
 
+<img src="/agents/dimcode.svg" alt="Dim 字母标识" width="56" height="56">
+
 [respire-dimcode](https://github.com/risense-ai/respire-dimcode) 以 Dim 标准插件市场把 respire 记忆引擎装进 Dim agent：每轮标题档自动召回、「记：」一前缀即落库、Stop 存储检查。共用运行时行为、首次使用步骤与调优参考见[插件总览](./index.md)。
 
 ## 安装 {#install}
@@ -30,7 +32,7 @@ echo '{"prompt":"respire 测试"}' | python3 ~/.dimcode/v2/plugins/respire/hooks
 
 两条 Dim 现状须知（已核源码）：`dim` **无** `plugin list` 子命令；`dim hooks list` 只列 project/user 两路配置、**不列插件钩子**——list 显示空不等于钩子没挂。插件本体在 TUI / Desktop 插件页查，生效与否以新会话实测为准。
 
-引擎（`rsrs`）缺失时插件把 `npm i -g @rsrsai/cli@latest` 注入会话代装。**新会话起生效。**
+引擎（`rsrs`）缺失时插件把 `npm i -g rsrs-cli@latest` 注入会话代装。**新会话起生效。**
 
 ## 会话内发生什么 {#what-happens-in-a-session}
 
@@ -71,6 +73,7 @@ echo '{"prompt":"respire 测试"}' | python3 ~/.dimcode/v2/plugins/respire/hooks
 `dim` 无 `plugin uninstall` 子命令（已核源码）——搬移式卸载，**目标必须在 plugins 根之外**（根内带 manifest 的残留目录会被 Dim 当插件继续加载、钩子双跑）：
 
 ```bash
+mkdir -p ~/.dimcode/v2/plugins-backup
 mv ~/.dimcode/v2/plugins/respire ~/.dimcode/v2/plugins-backup/respire.removed-$(date +%s)
 ```
 

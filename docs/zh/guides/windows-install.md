@@ -11,7 +11,7 @@ Respire（通过 `rsrs` 命令调用）是一个本地优先、端到端加密�
 | 控制台 | `https://dash.rsrs.rs` |
 | 本地运行时 | `http://127.0.0.1:15169` |
 
-安装的可执行文件帮助信息是权威来源。通过 `rsrs --version`、`rsrs --help` 和 `rsrs prompt --json` 确认可用命令和选项。撰写本文时注册表发布 `1.0.11` 作为默认版本，`1.0.12-dev.1` 在开发渠道；这些仅作为示例，而非保证。
+安装的可执行文件帮助信息是权威来源。通过 `rsrs --version`、`rsrs --help` 和 `rsrs prompt --json` 确认可用命令和选项。
 
 ## 先决条件 {#prerequisites}
 
@@ -21,7 +21,7 @@ Respire（通过 `rsrs` 命令调用）是一个本地优先、端到端加密�
 
 ## 安装 CLI {#install-the-cli}
 
-简短包名 `rsrs-cli` 和作用域名称 `@rsrsai/cli` 是同一包的两个入口点，版本相同。仅安装其中一个，否则两者可能争夺 `rsrs` 命令。
+安装 `rsrs-cli`。
 
 ### 使用 pnpm 安装 {#install-with-pnpm}
 
@@ -43,10 +43,10 @@ npm install -g rsrs-cli
 
 ### 安装开发渠道 {#install-the-dev-channel}
 
-新功能通常在开发渠道早于默认版本发布。开发渠道仅在作用域名称下发布，而非 `rsrs-cli`。
+新功能可能在默认版本之前进入开发渠道。
 
 ```powershell
-pnpm add -g @rsrsai/cli@dev
+pnpm add -g rsrs-cli@dev
 ```
 
 ## 验证安装 {#verify-the-installation}
@@ -61,13 +61,13 @@ where.exe rsrs
 
 ## 首次初始化 {#first-initialization}
 
-任何 `rsrs` 命令的首次运行会创建本地存储和 `~/.rsrs` 下的配置文件。默认配置文件名为 `main`。
+需要存储的命令会在 `~/.rsrs` 下初始化配置文件。默认配置文件名为 `main`。
 
 ```powershell
 rsrs status
 ```
 
-新配置文件会报告本地存储处于离线模式。注册或登录云账户后，会报告自动云同步。
+新配置文件会报告本地存储处于离线模式。注册或登录后，同步取决于账户和同步配置；请检查 `rsrs status`。
 
 运行捆绑检查以安装嵌入模型并检查模型、存储、锁、远程和注入状态。
 
@@ -87,7 +87,7 @@ rsrs model probe
 
 ## 创建账户并登录 {#create-an-account-and-log-in}
 
-账户设置将本地密钥材料与云账户结合。先生成密钥材料，再注册。注册需在主机终端运行，以便在隐藏提示下收集登录密码；`--direct` 还要求运行时已停止。
+对于没有密钥的新配置，先生成密钥材料，再注册。不要为已有记忆库再次运行 `keygen`。注册需在主机终端运行，以便在隐藏提示下收集登录密码；`--direct` 还要求运行时已停止。
 
 ```powershell
 # 1. Create local key material; the echoed super code is shown once.
@@ -115,7 +115,7 @@ rsrs login
 rsrs login --interactive --user <user-name>
 ```
 
-超级密码仅显示一次且丢失后无法恢复。保持离线以备恢复。不要共享或提交 `session.json` 或账户密钥。仅在需要时导出解密密钥，因为输出为明文。`--out` 在 Unix 上以 `600` 模式创建文件；在 Windows 上它会继承目标目录的 ACL，因此请选择私有且访问受限的目录，并在将其作为受保护的恢复存储前核验所生成文件的 ACL：
+请私密保存 `keygen --json` 输出中的 `summary.super` 恢复码。不要共享或提交 `session.json` 或账户密钥。仅在需要时导出解密密钥，因为输出为明文。`--out` 在 Unix 上以 `600` 模式创建文件；在 Windows 上它会继承目标目录的 ACL，因此请选择私有且访问受限的目录，并核验文件的 ACL：
 
 ```powershell
 rsrs keys-export --out <path>\rsrs-keys.txt
@@ -125,7 +125,7 @@ rsrs keys-export --out <path>\rsrs-keys.txt
 
 ## 存储和检索第一条记忆 {#store-and-retrieve-a-first-memory}
 
-读取命令仅在使用 `--json` 时返回完整内容。
+输出因命令而异。使用 `--json` 获取机器可读的详细信息，并使用 `show` 检查选中的记录。
 
 ```powershell
 # Store a memory; a similar candidate is proposed before writing.
@@ -158,7 +158,7 @@ rsrs diary --date today --json
 
 ## 理解运行时 {#understand-the-runtime}
 
-命令连接到 `127.0.0.1:15169` 的驻留本地运行时，而非每次启动进程。不要对同一配置文件并发运行 `rsrs` 命令；竞争命令会争夺运行时并导致阻塞。脚本时添加超时，只把非机密的 `register` 选项作为命令参数，并让 `register` 通过隐藏提示收集凭据；`login` 使用浏览器授权，或用 `--interactive` 进行隐藏的密码提示。
+命令连接到 `127.0.0.1:15169` 的驻留本地运行时。不要并发运行模型操作。编写脚本时添加超时，不要将秘密作为命令参数；`register` 和 `login --interactive` 可通过隐藏提示收集凭据。
 
 | 选项 | 效果 |
 | --- | --- |
@@ -185,7 +185,7 @@ rsrs update-check
 rsrs account list
 ```
 
-导出文件包含纯文本，数据库备份不会替代密钥备份。在执行破坏性操作前，请进行备份。完整命令集请参见 [CLI 命令](../cli.md) 和 [CLI JSON](../cli-api.md)。
+导出文件包含明文，且会覆盖已有文件；每次请选择新路径。数据库备份不包含访问授权，也不能替代密钥备份。在执行破坏性操作前，请进行备份。详见 [CLI 命令](../cli.md) 和 [CLI JSON](../cli-api.md)。
 
 ## 连接 AI 应用程序 {#connect-ai-applications}
 
@@ -194,7 +194,7 @@ rsrs inject --targets
 rsrs inject --all
 ```
 
-注入会写入策略文本，指示代理何时回忆和记住信息。它不会安装自动钩子；自动触发需要注册的 MCP 服务器或 `plugins.json` 条目。注入后重启目标应用程序以加载新指令。详见 [代理集成](../injection.md)。
+注入会写入指令，但不会安装自动钩子。自动行为取决于宿主的插件和钩子支持。重启目标应用并确认它加载了指令。详见 [代理集成](../injection.md)。
 
 ## 故障排除 {#troubleshooting}
 
@@ -203,9 +203,9 @@ rsrs inject --all
 | `ERR_PNPM_NO_GLOBAL_BIN_DIR` | 未配置 pnpm 全局 bin 目录 | 安装前设置 `global-bin-dir` |
 | `BGE-M3 files missing` | 嵌入模型缺失 | 运行 `rsrs model install`，然后 `rsrs model activate m3` |
 | 回忆超时出现 `os error 10060` | 本地地址通过代理路由 | 将 `127.0.0.1,localhost` 添加到 `NO_PROXY` |
-| 命令停止响应 | 推理工作线程饱和或存在残留进程 | 运行 `rsrs model reset-cpu`；使用 `Get-Process rsrs` 检查 |
+| 命令停止响应 | 推理工作线程饱和或存在残留进程 | 使用 `Get-Process rsrs` 检查；`rsrs model reset-cpu` 会切换到 CPU 并停止运行时 |
 | `another model operation is running` | 并发模型操作 | 等待当前操作完成；不要并发运行 |
-| `backup` 报告 `os error 80` | 目标文件已存在 | 删除或重命名该文件 |
+| `backup` 报告 `os error 80` | 目标文件已存在 | 选择新的备份路径 |
 | `keygen would overwrite it` | 密钥材料已存在 | 仅在新配置文件上运行 `keygen` |
 | `doctor` 退出代码 1 | 注入或整理项未满足 | 通常不是安装失败 |
 

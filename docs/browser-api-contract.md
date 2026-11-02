@@ -20,8 +20,9 @@ route `/#/authorize` accepts a displayed user code; `/#/authorize?code=...`
 prefills it. After normal password and TOTP sign-in, the page shows the account,
 device and user code and requires an explicit approve/deny action through
 `/api/self/cli-authorization/{code}`. Readonly sessions cannot approve. The CLI
-checks the returned verification origin and requests the memory super password
-locally after approval; the server never receives that decryption factor.
+checks the returned verification origin. After approval, current vaults use the
+super password locally; a legacy version-1 vault instead requires the original
+login password and Account Secret. The server does not receive these decryption factors.
 
 Authenticated TOTP confirm/disable failures use HTTP 400; HTTP 401 continues to
 mean an invalid login session. A correct disable operation clears the binding
@@ -29,10 +30,11 @@ without revoking sessions. Wrong codes preserve both binding and session. Login
 TOTP tickets allow up to five failed attempts before invalidation and are
 consumed on successful verification; the second-factor page can retry a typo.
 
-Schema version 5 adds only the device-grant table and expiry index. Existing
+The historical schema version 5 migration adds the device-grant table and expiry index. Existing
 account/vault/memory rows and session tokens are preserved. Deploy the API and
 matching DEV dashboard before accepting the new CLI dev release; an older API
 returns an explicit failure rather than silently falling back to password login.
+Later server revisions include further migrations; check the deployed binary's migration list.
 
 
 See the [producer API contract](https://github.com/risense-ai/respire-server/blob/main/docs/browser-api-contract.md) for deployment transport details and [OpenAPI](https://github.com/risense-ai/respire-docs/blob/main/contracts/openapi.yaml) for request and response schemas.

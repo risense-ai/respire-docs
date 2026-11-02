@@ -11,7 +11,7 @@ Respire, invoked as the `rsrs` command, is a local-first, end-to-end encrypted m
 | Dashboard | `https://dash.rsrs.rs` |
 | Local runtime | `http://127.0.0.1:15169` |
 
-The installed executable's help is the source of truth. Confirm the available commands and options with `rsrs --version`, `rsrs --help` and `rsrs prompt --json`. At the time of writing the registry published `1.0.11` as the default release and `1.0.12-dev.1` on the dev channel; treat these as examples, not a guarantee.
+The installed executable's help is the source of truth. Confirm the available commands and options with `rsrs --version`, `rsrs --help` and `rsrs prompt --json`.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ The installed executable's help is the source of truth. Confirm the available co
 
 ## Install the CLI
 
-The short package name `rsrs-cli` and the scoped name `@rsrsai/cli` are two entry points of the same package at the same version. Install only one of them, otherwise both may compete for the `rsrs` command.
+Install `rsrs-cli`.
 
 ### Install with pnpm
 
@@ -43,10 +43,10 @@ npm install -g rsrs-cli
 
 ### Install the dev channel
 
-New features often appear on the dev channel before the default release. The dev channel is published only under the scoped name, not under `rsrs-cli`.
+New features may appear on the dev channel before the default release.
 
 ```powershell
-pnpm add -g @rsrsai/cli@dev
+pnpm add -g rsrs-cli@dev
 ```
 
 ## Verify the installation
@@ -61,13 +61,13 @@ The `where.exe` output should resolve to the `rsrs` executable inside the global
 
 ## First initialization
 
-The first run of any `rsrs` command creates the local store and a profile under `~/.rsrs`. The default profile name is `main`.
+Commands that need a store initialize a profile under `~/.rsrs`. The default profile name is `main`.
 
 ```powershell
 rsrs status
 ```
 
-A fresh profile reports a local store in offline mode. After registering or logging in to a cloud account, it reports automatic cloud synchronization.
+A fresh profile reports a local store in offline mode. After registering or logging in, synchronization depends on the account and sync configuration; check `rsrs status`.
 
 Run the bundled check to install the embedding model and inspect the model, store, lock, remote and injection state.
 
@@ -87,7 +87,7 @@ A successful probe returns `ready:true` with `dimensions:1024`. Activation is re
 
 ## Create an account and log in
 
-Account setup combines local key material with a cloud account. Generate the key material first, then register. Registration runs in the host terminal, where it can collect the login password at a hidden prompt; `--direct` also requires the runtime to be stopped.
+For a new profile without keys, generate the key material first, then register. Do not run `keygen` again for an existing library. Registration runs in the host terminal, where it can collect the login password at a hidden prompt; `--direct` also requires the runtime to be stopped.
 
 ```powershell
 # 1. Create local key material; the echoed super code is shown once.
@@ -115,7 +115,7 @@ rsrs login
 rsrs login --interactive --user <user-name>
 ```
 
-The super password is displayed once and cannot be recovered if lost. Keep it offline for recovery. Do not share or commit `session.json` or the account secret. Export the decrypt keys only when you need them, because the output is plaintext. `--out` creates the file with mode `600` on Unix; on Windows it inherits the destination directory's ACLs, so choose a private, access-restricted directory and verify the resulting file's ACL before relying on it as protected recovery storage:
+Save `summary.super` from the `keygen --json` output privately as recovery material. Do not share or commit `session.json` or the account secret. Export decrypt keys only when needed; the output is plaintext. `--out` creates the file with mode `600` on Unix; on Windows it inherits the destination directory ACLs, so choose a private directory and verify the file ACL:
 
 ```powershell
 rsrs keys-export --out <path>\rsrs-keys.txt
@@ -125,7 +125,7 @@ rsrs keys-export --out <path>\rsrs-keys.txt
 
 ## Store and retrieve a first memory
 
-Read commands return full content only with `--json`.
+Output varies by command. Use `--json` for machine-readable details, and `show` to inspect a selected record.
 
 ```powershell
 # Store a memory; a similar candidate is proposed before writing.
@@ -158,7 +158,7 @@ The `normal` value is deprecated. Prefer a three-section body describing the cau
 
 ## Understand the runtime
 
-Commands connect to a resident local runtime on `127.0.0.1:15169` rather than starting a process each time. Do not run `rsrs` commands concurrently against the same profile; competing commands contend for the runtime and stall. Add a timeout when scripting, pass only non-secret `register` options as command arguments, and let `register` collect credentials through hidden prompts; `login` uses browser authorization or `--interactive` for a hidden password prompt.
+Commands connect to a resident local runtime on `127.0.0.1:15169`. Do not run concurrent model operations. Add a timeout when scripting and keep secrets out of command arguments; `register` and `login --interactive` can collect credentials through hidden prompts.
 
 | Option | Effect |
 | --- | --- |
@@ -185,7 +185,7 @@ rsrs update-check
 rsrs account list
 ```
 
-An export contains plaintext, and a database backup does not replace a key backup. Back up before destructive operations. The full command surface is documented in [CLI commands](../cli.md) and [CLI JSON](../cli-api.md).
+An export contains plaintext and overwrites an existing file; choose a new path each time. A database backup excludes access grants and does not replace a key backup. Back up before destructive operations. See [CLI commands](../cli.md) and [CLI JSON](../cli-api.md).
 
 ## Connect AI applications
 
@@ -194,7 +194,7 @@ rsrs inject --targets
 rsrs inject --all
 ```
 
-Injection writes policy text that tells an agent when to recall and remember. It does not install automatic hooks; automatic triggering requires a registered MCP server or a `plugins.json` entry. Restart the target application after injection so it loads the new instructions. See [Agent integration](../injection.md).
+Injection writes instructions but does not install automatic hooks. Automatic behavior depends on the host plugin and hook support. Restart the target application and verify that it loads the instructions. See [Agent integration](../injection.md).
 
 ## Troubleshooting
 
@@ -203,9 +203,9 @@ Injection writes policy text that tells an agent when to recall and remember. It
 | `ERR_PNPM_NO_GLOBAL_BIN_DIR` | pnpm global bin not configured | Set `global-bin-dir` before installing |
 | `BGE-M3 files missing` | Embedding model missing | Run `rsrs model install`, then `rsrs model activate m3` |
 | Recall times out with `os error 10060` | A local address is routed through a proxy | Add `127.0.0.1,localhost` to `NO_PROXY` |
-| A command stops responding | Inference worker saturated or a stray process exists | Run `rsrs model reset-cpu`; inspect with `Get-Process rsrs` |
+| A command stops responding | Inference worker saturation or a stray process | Inspect with `Get-Process rsrs`; `rsrs model reset-cpu` selects CPU and stops the runtime |
 | `another model operation is running` | Concurrent model operations | Wait for the current operation; do not run concurrently |
-| `backup` reports `os error 80` | The target file already exists | Remove or rename it |
+| `backup` reports `os error 80` | The target file already exists | Choose a new backup path |
 | `keygen would overwrite it` | Key material already exists | Only run `keygen` on a new profile |
 | `doctor` exits with code 1 | Injection or tidy items are not met | Usually not an installation failure |
 
