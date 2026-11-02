@@ -86,6 +86,8 @@ The page also configures the quality-recall service, switches recall mode, sched
 
 The client uses parallel downloads for the baseline model and individual weights. Once baseline files are ready, the models page attempts to schedule indexing; check the result shown on the page. **Cancel current task** targets a model task reported by the Runtime and should not be assumed to cancel the client download.
 
+After an interrupted download, partial chunks may remain in the model directory and use disk space. The client attempts to resume them on retry, then checks file size and SHA-256. If the server does not support range requests, it falls back to a single stream.
+
 ![Model and index controls](/client2/models-en.png)
 
 The panels below show retrieval, indexing and the quality-recall service. The address and model are examples.
