@@ -160,6 +160,7 @@
 | `docs/browser-api-contract.md` | 已读，已调整 | server 和 CLI；线上状态未核验 |
 | `docs/cli-api.md` | 已读，已调整 | CLI、相关源码与文档；未逐项运行 |
 | `docs/cli.md` | 已读，已调整 | CLI、相关源码与文档；未逐项运行 |
+| `docs/cli-install.md` | 从快速开始拆出，已检查中英文对应 | 独立 CLI 安装；未逐项运行命令 |
 | `docs/client.md` | 已读，已调整 | client2 和 CLI；非 Windows 未实测 |
 | `docs/contracts.md` | 已读，已调整 | Core、CLI 和契约；发布兼容性待核验 |
 | `docs/data-model.md` | 已读，已调整 | CLI、相关源码与文档；未逐项运行 |
@@ -216,6 +217,8 @@
 历史 RPC 清单固定为 `1.0.17-dev.14`，不代表当前 CLI 的完整命令集；原始帮助保留，正文注明判重例外。源码工作树中的未提交功能不能当作已发布或已部署。
 
 ## 检查结果
+
+以下为原审查批次的记录。后续新增独立 CLI 安装页，目前共 52 组中英文页面；后续批次的构建与发布结果见对应拉取请求。
 
 - `node contracts/validate.mjs`：通过。
 - `npm run build`：通过，校验 51 组页面及 7915 个内部链接和资源；构建提示 chunk 超过 500 kB。
