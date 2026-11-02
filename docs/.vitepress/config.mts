@@ -32,7 +32,9 @@ export default defineConfig({
           linkLabel: '返回中文首页',
           linkText: '返回首页',
         },
+        logoLink: { link: 'https://rsrs.rs/zh/', target: '_self' },
         nav: [
+          { text: '首页', link: 'https://rsrs.rs/zh/', target: '_self' },
           { text: '概览', link: '/zh/' },
           { text: '快速开始', link: '/zh/getting-started' },
           { text: '接口', link: '/zh/cli-api' },
@@ -115,6 +117,7 @@ export default defineConfig({
   },
   themeConfig: {
     logo: { light: '/logo.svg', dark: '/logo-reverse.svg' },
+    logoLink: { link: 'https://rsrs.rs/', target: '_self' },
     siteTitle: false,
     outline: { level: [2, 3], label: 'On this page' },
     search: {
@@ -157,6 +160,7 @@ export default defineConfig({
     },
     docFooter: { prev: 'Previous', next: 'Next' },
     nav: [
+      { text: 'Home', link: 'https://rsrs.rs/', target: '_self' },
       { text: 'Overview', link: '/' },
       { text: 'Get started', link: '/getting-started' },
       { text: 'Interfaces', link: '/cli-api' },
