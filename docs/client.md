@@ -52,6 +52,10 @@ With a Runtime that supports metadata lists, the client attempts to complete the
 
 After a deletion, the current page offers **Restore deleted memory**. If that control is no longer available, use a compatible CLI with the original ID to restore the entry. Permanently purging ciphertext cannot be undone.
 
+After selecting a memory and opening its content, use the tools below it. **Promote one level** moves the memory and its children under the next ancestor. **Purge ciphertext** requires the full memory ID; it clears the current version’s ciphertext and cannot be undone. Runtime may retain pending revisions according to its sync and conflict rules.
+
+**Book material** and **Subtree install material** use the selected memory as their root. **Portrait material** summarizes the whole library instead. The client sets a limit of 40 entries per category; its theme ranking and timeline also use the whole library. These buttons display the material in a window, so inspect it before sharing.
+
 ![Memory tree and search](/client2/memories-en.png)
 
 When creating a memory, set its type, storage area, parent, content and tags. Use **Find similar memories** to inspect candidates; bypass the duplicate check only when you intend to create a separate entry.
