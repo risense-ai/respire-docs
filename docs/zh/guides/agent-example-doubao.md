@@ -19,10 +19,9 @@
 
 ## 先决条件 {#prerequisites}
 
-安装CLI并确认本地运行时健康。设置详情请参见[Windows安装](windows-install.md)和[入门指南](../getting-started.md)。
+可以使用 Client 2 安装的 CLI，也可以按需独立安装。请确认本地 Runtime 正常，并确保终端能够找到 `rsrs`；路径设置见[插件如何使用客户端管理的 CLI](../plugins/#using-the-client-managed-cli)。设置详情请参见[Windows安装](windows-install.md)和[入门指南](../getting-started.md)。
 
 ```powershell
-npm i -g rsrs-cli
 rsrs status
 ```
 

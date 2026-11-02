@@ -13,15 +13,16 @@
 - 后续请求按轮数和最近存储时间决定是否加入存储提醒
 - fail-open：引擎缺失/超时/解析失败一律降级为空注入，绝不阻断宿主回合
 
-形态是 **wrapper 式目录 provider、零 Python 依赖面**：引擎是 npm 装的 `rsrs` CLI sidecar（subprocess 调用）。插件根无 `pyproject.toml` / `pip_dependencies`，享受 `HERMES_HOME` 生存契约（`hermes update` 不动本目录）。注意 respire 库本身是**用户级**——一人一库、跨 agent 与 Hermes profile 共享，这是 respire 的产品设计，与 Hermes 默认的按 profile 隔离不同。Hermes 同一时间只允许一个外部 memory provider 激活。
+形态是 **wrapper 式目录 provider、零 Python 依赖面**：引擎是 `rsrs` CLI sidecar（subprocess 调用）。插件根无 `pyproject.toml` / `pip_dependencies`，享受 `HERMES_HOME` 生存契约（`hermes update` 不动本目录）。注意 respire 库本身是**用户级**——一人一库、跨 agent 与 Hermes profile 共享，这是 respire 的产品设计，与 Hermes 默认的按 profile 隔离不同。Hermes 同一时间只允许一个外部 memory provider 激活。
 
 ## 安装 {#install}
 
 前置：Python 3.9+，Hermes 0.22.5 及以上；README 列出 Linux 与 Apple Silicon macOS。其他平台和版本需自行验证。
 
+可以使用 Client 2 安装的 CLI；只有需要独立安装时才选择其他安装方式。如果宿主找不到 CLI，请参阅[插件如何使用客户端管理的 CLI](./index.md#using-the-client-managed-cli)。
+
 ```bash
 # 1) Engine (skip if installed; verify with rsrs --version)
-npm i -g rsrs-cli@latest
 rsrs --version
 # semantic recall (optional): rsrs model install && rsrs model activate m3
 

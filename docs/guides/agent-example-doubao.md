@@ -19,10 +19,9 @@ The injected instructions ask the agent to recall and save reusable conclusions.
 
 ## Prerequisites
 
-Install the CLI and confirm that the local runtime is healthy. For setup details see [Installing on Windows](windows-install.md) and [Getting started](../getting-started.md).
+Use the CLI installed by Client 2, or install it separately if needed, and confirm the local Runtime is healthy. The terminal must be able to find `rsrs`; see [CLI access for plugins](../plugins/#using-the-client-managed-cli). For setup details see [Installing on Windows](windows-install.md) and [Getting started](../getting-started.md).
 
 ```powershell
-npm i -g rsrs-cli
 rsrs status
 ```
 

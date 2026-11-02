@@ -10,8 +10,9 @@
 
 先备好引擎（已可用可跳过）：
 
+可以使用 Client 2 安装的 CLI；只有需要独立安装时才选择其他安装方式。如果宿主找不到 CLI，请参阅[插件如何使用客户端管理的 CLI](./index.md#using-the-client-managed-cli)。
+
 ```sh
-npm install -g rsrs-cli@latest
 rsrs --version
 rsrs --client-only status --json
 ```

@@ -21,7 +21,15 @@ Select a host name for installation, usage, configuration and troubleshooting. D
 
 Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md)
 
-Confirm `rsrs --version` works, then prepare the Runtime, login and unlock as the host page requires. Some older adapters suggest installing `rsrs-cli` when the engine is missing; the user decides whether to run it.
+Prepare the CLI and Runtime as described below, then sign in and unlock the library according to the host page. Some older adapters suggest installing `rsrs-cli` when the engine is missing; the user decides whether to run it.
+
+## Using the client-managed CLI {#using-the-client-managed-cli}
+
+Client 2 can install the CLI and Runtime from its **Updates** page without npm. The client does not necessarily add the executable to PATH, so an agent may not discover it automatically.
+
+By default, the executable is under `~/.rsrs/client2/runtime/<version>/rsrs` (on Windows, `rsrs.exe`); replace `<version>` with the installed version. If `RSRS_DATA_DIR` is set for Client 2, use that directory instead of `~/.rsrs`. Configure the executable path using the host plugin’s supported setting, or make the directory available on the host’s PATH. Restart the host if needed, and verify its connection to the running Runtime. An update can change the versioned path, so check it again after updating.
+
+For Codex, set `RESPIRE_RSRS_PATH`; for Pi, use `--respire-rsrs`. Hermes and Qoder support `RESPIRE_BIN`. The host must receive the setting in its own environment.
 
 ## Tuning
 

@@ -31,12 +31,13 @@ After installing, run `/plugins reload` in a session or restart it. Qoder Deskto
 
 ### 2. Engine (the agent can install it for you)
 
+Use the CLI installed by Client 2, or install it separately only if needed. If the host cannot find it, see [CLI access for plugins](./index.md#using-the-client-managed-cli).
+
 ```bash
-npm i -g rsrs-cli@latest
 rsrs --version
 ```
 
-If global installation is unavailable, consult the engine installation guide.
+To install the CLI independently, see [Standalone CLI installation](../cli-install.md).
 
 The plugin probes for the engine every round; once installed, recall and store recover within the same session.
 
