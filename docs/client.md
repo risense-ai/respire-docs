@@ -26,7 +26,7 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-The page and tray screenshots show the Client 2 frontend running in a browser with simulated data. The Updates screenshot is from 0.2.25; the others are from 0.2.24. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
+The page and tray screenshots show the Client 2 frontend running in a browser with simulated data. The Updates, memory editor and merge screenshots are from 0.2.25; the others are from 0.2.24. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
@@ -53,6 +53,16 @@ With a Runtime that supports metadata lists, the client attempts to complete the
 After a deletion, the current page offers **Restore deleted memory**. If that control is no longer available, use a compatible CLI with the original ID to restore the entry. Permanently purging ciphertext cannot be undone.
 
 ![Memory tree and search](/client2/memories-en.png)
+
+When creating a memory, set its type, storage area, parent, content and tags. Use **Find similar memories** to inspect candidates; bypass the duplicate check only when you intend to create a separate entry.
+
+![Memory editor](/client2/memory-editor-en.png)
+
+For a merge, the editor combines the selected titles and contents into a draft. Review the full content and parent before confirming. The old entries are replaced; unselected children are promoted to surviving ancestors and are not automatically attached to the new entry.
+
+![Merge editor and warning](/client2/memory-merge-en.png)
+
+Undo covers only the latest eligible operation: creation in the main area with a `created` result, edits that remain in the main area, deletion or a move. It does not undo diary creation, edits across storage areas or a merge. Check the current content before using it.
 
 Use **Diary** to navigate by month or day, search dates and open a fragment with its neighbors. Use the **Organize** page to review grouping, similarity and structure suggestions; preview a move plan before applying it. AI organization requires a configured service and sends the selected material to it.
 
