@@ -108,7 +108,11 @@ Use **Access Grants** to inspect, create or revoke read-only access to a memory 
 
 To create a grant, enter the subtree root ID and its tool or purpose. The grant includes descendants; after revocation, tools using that token can no longer read the granted scope.
 
+After creation, the client displays the grant material. Store the token securely and share it only with trusted tools. To inspect direct and inherited grants, select a memory on the Memories page and choose **View access grants**. Moving a memory can change its inherited access; check again after a move.
+
 ![Access Grants page](/client2/grants-en.png)
+
+![New read-only subtree grant](/client2/grant-create-en.png)
 
 ### Settings, updates and diagnostics {#settings-updates-and-diagnostics}
 
@@ -126,6 +130,8 @@ Choose the desktop and CLI / Runtime release channels separately on **Updates**.
 
 The panel below shows data import and backup actions. Memory exports contain plaintext; store them securely.
 
+When importing shared material, the client shows a preview and submits the import only after you confirm. Importing client settings overwrites the current settings; that operation does not change memory data.
+
 ![Data import and backup actions](/client2/settings-backup-en.png)
 
 ![Desktop client and CLI updates page](/client2/updates-en.png)
@@ -141,6 +147,8 @@ JSON memory exports and shared materials contain plaintext. Key exports and reco
 AI organization sends selected memory material to the configured service. Quality recall sends the query and candidate titles. Service keys are passed to the CLI through standard input for storage in the system credential store. Diagnostic exports can contain local paths, operation errors and full session receipts; inspect them before sharing.
 
 A lost write receipt does not prove that the write failed. The client keeps its request ID and queries the original request rather than replaying it. Full receipts are kept during the session; after restart only request metadata remains. An older Runtime or CLI may lack features, and missing release assets are reported rather than replaced with another architecture.
+
+After switching the data directory, the page may report that the setting was saved but the Runtime switch is unconfirmed. Refresh Diagnostics and check the current directory before taking further action; do not resubmit the request.
 
 ## Packaging boundary {#packaging-boundary}
 
