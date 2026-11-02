@@ -6,7 +6,7 @@ The desktop client provides a graphical interface for getting started. Windows 1
 
 1. Open [Client 2 releases](https://github.com/risense-ai/respire-client2/releases/latest) and download the file for your processor: `respire-windows-amd64.exe` for x64 or `respire-windows-arm64.exe` for ARM64.
 2. Place the file in a permanent writable directory and run it. The desktop client does not require Node.js, npm, Go or Rust.
-3. If no Runtime is connected, open **Updates**, select **Download & install**, and check the result. Desktop and CLI releases are separate, so a desktop download does not guarantee that a matching Runtime is available.
+3. If no Runtime is connected, open **Updates**, select **Download & install**, and check the result. Desktop and CLI releases are separate, so a desktop download does not guarantee that a matching Runtime is available. For the case where automatic Runtime restart is off, see [Connect the Runtime](../getting-started.md#connect-the-runtime).
 4. Follow [Getting started](../getting-started.md#sign-in-or-create-a-local-library) to sign in or create a local library, connect an agent and save your first memory.
 
 The rest of this page covers the CLI alternative for terminal users.

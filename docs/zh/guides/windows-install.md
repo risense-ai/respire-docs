@@ -6,7 +6,7 @@
 
 1. 打开 [Client 2 发布页](https://github.com/risense-ai/respire-client2/releases/latest)，下载与处理器匹配的文件：x64 选择 `respire-windows-amd64.exe`，ARM64 选择 `respire-windows-arm64.exe`。
 2. 将文件放在可写入的固定目录中，然后运行。桌面客户端不需要 Node.js、npm、Go 或 Rust。
-3. 如果尚未连接 Runtime，打开客户端的“更新”页，选择“下载并安装”，并检查结果。桌面端与 CLI 分别发布，因此客户端安装包存在不代表匹配的 Runtime 一定可用。
+3. 如果尚未连接 Runtime，打开客户端的“更新”页，选择“下载并安装”，并检查结果。桌面端与 CLI 分别发布，因此客户端安装包存在不代表匹配的 Runtime 一定可用。关闭 Runtime 自动重启时的步骤见[连接 Runtime](../getting-started.md#connect-the-runtime)。
 4. 按[快速开始](../getting-started.md#sign-in-or-create-a-local-library)登录或创建本地记忆库，再连接 Agent 并创建第一条记忆。
 
 下方是 CLI 备选方案，适合需要在终端操作的用户。

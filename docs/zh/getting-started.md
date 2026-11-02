@@ -17,6 +17,8 @@
 
 首次打开客户端时，按提示选择界面语言；之后可以在右上角或“设置”中切换。接着查看侧栏的连接状态。客户端可以连接兼容的本机 Runtime，也可以自行下载安装匹配的 CLI 和 Runtime。这个安装过程不需要 npm。如果没有可用的 Runtime，请打开“更新”，选择“下载并安装”，并查看页面显示的进度和结果。缺少发布文件或版本不兼容时，客户端会显示错误；无法连接时可查看[诊断说明](client.md#settings-updates-and-diagnostics)。
 
+如果关闭了 Runtime 自动重启，安装后的版本会在下次启动 Runtime 时生效。CLI / Runtime 区域的“重启并应用”可用时，也可以用它启动新版本。
+
 Client 2 将 CLI 保存在带版本号的目录中，不一定会把 `rsrs` 加入终端或 Agent 的 PATH。如果插件找不到它，请参阅[插件如何使用客户端管理的 CLI](plugins/#using-the-client-managed-cli)。
 
 ![桌面端概览及 Runtime、同步状态](/client2/overview-zh.png)

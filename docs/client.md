@@ -26,7 +26,7 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-The page and tray screenshots show the Client 2 0.2.24 frontend running in a browser with simulated data. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
+The page and tray screenshots show the Client 2 frontend running in a browser with simulated data. The Updates screenshot is from 0.2.25; the others are from 0.2.24. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
@@ -46,7 +46,7 @@ In **Memories**, choose tree, list, cards or graph. Select an entry to read it, 
 
 In tree and list views, click a title to open the entry, or click elsewhere on the row to select it. Hold Ctrl (Command on macOS) to select multiple entries, or Shift to select a visible range. Once multiple entries are selected, use **Merge selected**. Library search returns at most 50 results.
 
-Directory filters include type, storage area, project and tags, with a sort control. Project and tag filters use exact matches. Use **Load more** when more entries are available; these filters apply only to loaded entries.
+Directory filters include type, storage area, project and tags, with a sort control. Project and tag filters use exact matches. Use **Load more** when more entries are available; these filters apply only to loaded entries. When idle, the client attempts to reload the directory about every 30 seconds; displayed results depend on the read status.
 
 With a Runtime that supports metadata lists, the client attempts to complete the memory directory, requesting up to 100,000 entries. In sidebar layout, drag the sidebar edge to adjust its width. On the memory page, drag the divider between the directory and reader; the divider is unavailable in graph view.
 
@@ -98,7 +98,7 @@ The panel below shows sync and server settings. The address is an example.
 
 On **Configure Agent**, inspect the target, select an instruction mode and enable an agent. Review the result, then finish any host-specific installation or hook approval in the agent. Disabling an agent removes injected instructions but keeps the plugin. Changing the mode rewrites instructions for enabled agents. Review the DSH path and back it up before injection. The [plugin pages](plugins/) explain each host.
 
-Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Configure Agent page in client 0.2.24 does not offer a Codex file preview.
+Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Configure Agent page in client 0.2.25 does not offer a Codex file preview.
 
 Some targets are initially collapsed; choose **Show … more** to see them. Instruction modes are normal, read-only and off. After selecting one, choose **Apply and rewrite enabled prompts**.
 
@@ -122,9 +122,9 @@ If a write shows an unconfirmed result, choose **Query original request** in **O
 
 Settings also controls workspace mode, diary recording, fonts and reading typography. The interface language and CLI display language are configured separately. A client-settings backup does not contain memory keys; save memory exports and database backups separately.
 
-On **Updates**, configure automatic client downloads, automatic client restart and automatic installation of the client-managed Runtime separately. Choose a check interval for the client and Runtime independently. If automatic restart is off, choose **Restart & apply** after downloading; client updates are not applied while a business operation is running.
+On **Updates**, configure automatic client downloads and restarts separately from automatic installation and restart of the client-managed Runtime. Choose a check interval for each independently. If automatic client restart is off, choose **Restart & apply** in the desktop section after downloading; client updates are not applied while a business operation is running.
 
-Choose the desktop and CLI / Runtime release channels separately on **Updates**. Changing channels does not automatically downgrade an installed version.
+If automatic Runtime restart is off, the installed version applies the next time Runtime starts. When available, you can also choose **Restart & apply** in the CLI / Runtime section. Check the running version shown on the page. Choose the desktop and CLI / Runtime release channels separately; changing channels does not automatically downgrade an installed version.
 
 ![Client settings page](/client2/settings-en.png)
 

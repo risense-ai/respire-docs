@@ -17,6 +17,8 @@ For example, [CLI 1.0.19](https://github.com/risense-ai/respire-cli/releases/tag
 
 On first launch, choose the interface language when prompted; you can change it later at the top right or in **Settings**. Then check the connection indicator in the sidebar. The app can connect to a compatible local Runtime. It can also download and install the matching CLI and Runtime itself; npm is not required for this installation. If no Runtime is available, open **Updates**, choose **Download & install**, and follow the displayed status. A missing release asset or incompatible version is reported in the client; see [Diagnostics](client.md#settings-updates-and-diagnostics) if it does not connect.
 
+If automatic Runtime restart is off, the installed version applies the next time Runtime starts. When available, use **Restart & apply** in the CLI / Runtime section to start the new version.
+
 Client 2 keeps its managed CLI in a versioned directory. It does not necessarily add `rsrs` to your terminal or agent PATH. If a plugin cannot find it, see [CLI access for plugins](plugins/#using-the-client-managed-cli).
 
 ![Desktop overview with Runtime and sync status](/client2/overview-en.png)
