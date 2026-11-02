@@ -15,13 +15,13 @@ For example, [CLI 1.0.19](https://github.com/risense-ai/respire-cli/releases/tag
 
 ## Connect the Runtime {#connect-the-runtime}
 
-On first launch, choose the interface language when prompted; you can change it later at the top right or in **Settings**. Then check the connection indicator in the sidebar. The app can connect to a compatible local Runtime. It can also download and install the matching CLI and Runtime itself; npm is not required for this installation. If no Runtime is available, open **Updates**, choose **Install / update CLI**, and follow the displayed status. A missing release asset or incompatible version is reported in the client; see [Diagnostics](client.md#settings-updates-and-diagnostics) if it does not connect.
+On first launch, choose the interface language when prompted; you can change it later at the top right or in **Settings**. Then check the connection indicator in the sidebar. The app can connect to a compatible local Runtime. It can also download and install the matching CLI and Runtime itself; npm is not required for this installation. If no Runtime is available, open **Updates**, choose **Download & install**, and follow the displayed status. A missing release asset or incompatible version is reported in the client; see [Diagnostics](client.md#settings-updates-and-diagnostics) if it does not connect.
 
 Client 2 keeps its managed CLI in a versioned directory. It does not necessarily add `rsrs` to your terminal or agent PATH. If a plugin cannot find it, see [CLI access for plugins](plugins/#using-the-client-managed-cli).
 
 ![Desktop overview with Runtime and sync status](/client2/overview-en.png)
 
-The screenshot shows the Client 2 0.2.23 frontend with simulated data, not a real account. The interface and status can differ on your device.
+The screenshot shows the Client 2 0.2.24 frontend with simulated data, not a real account. The interface and status can differ on your device.
 
 ## Sign in or create a local library {#sign-in-or-create-a-local-library}
 
@@ -31,7 +31,7 @@ For a new local-only library, choose **Initialize offline memory store**. This c
 
 ## Connect an AI tool {#connect-an-ai-tool}
 
-Open **Install**, choose an instruction mode and enable the agent you use. The client writes instructions and prepares or installs the matching plugin where supported. Some hosts require you to finish installation or trust hooks in the host itself; follow the result shown on screen and the [agent plugin guide](plugins/).
+Open **Configure Agent**, choose an instruction mode and enable the agent you use. The client writes instructions and prepares or installs the matching plugin where supported. Some hosts require you to finish installation or trust hooks in the host itself; follow the result shown on screen and the [agent plugin guide](plugins/).
 
 Review the destination and existing instructions first. Switching mode rewrites instructions for enabled agents; disabling an agent removes its injected instructions but leaves the plugin installed. For DSH, injection can overwrite `~/.dsh/AGENTS.md`; inspect and back up that path first.
 

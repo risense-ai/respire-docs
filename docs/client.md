@@ -12,9 +12,9 @@ Download a matching application from [client releases](https://github.com/risens
 | Memories | Browse tree, list, cards or graph; filter loaded entries or search the library; read, create, edit, move, merge, copy, delete, restore, share and inspect causal chains. The editor offers a three-part template and similar-memory search; candidates can be read and selected as parents, or deduplication can be explicitly bypassed. Tools include promotion, grant inspection, book, portrait and subtree materials, and permanent ciphertext purge. |
 | Diary | Browse by month or day, search across dates and open fragments and neighbors. |
 | Organize | Inspect grouping suggestions, similar entries and structural audit; generate, edit, copy, preview and apply a validated local move plan; preview suggestions individually or together. Configure a service to preview or execute AI organization by item limit, subtree or entire library. |
-| Models & Index | Select download source, prepare or download weights, cancel work or uninstall models; select an installed weight and engine, install NPU providers, probe inference, prepare or rebuild the index, configure recall, and run recall checks and a nine-round benchmark. Weights can be downloaded again; applying an engine reloads the model and verifies inference, falling back to CPU on failure. |
+| Models & Index | Select download source, prepare or download weights, cancel Runtime model tasks or uninstall models; select an installed weight and engine, install NPU providers, probe inference, prepare or rebuild the index, configure recall, and run recall checks and a nine-round benchmark. Weights can be downloaded again; applying an engine reloads the model and verifies inference, falling back to CPU on failure. |
 | Accounts & Spaces | Browser or password login, registration, recovery, super-password reset, offline initialization, key export and logout; switch accounts, inspect or migrate old accounts, configure server and sync, inspect conflicts, and create, join, switch or remove spaces and manage invitations and members. Password operations require a compatible CLI with account RPC; login accepts a two-step verification code. Revoke one member or all members. |
-| Install | Select an instruction mode, detect targets, inject or remove instructions, and prepare or install host plugins. Changing instruction mode rewrites instructions for all enabled agents without changing plugins; disabling an agent removes its injected instructions but keeps its plugin. Some plugins require the host UI to finish installation. DSH instruction injection overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back up the target first. |
+| Configure Agent | Select an instruction mode, detect targets, inject or remove instructions, and prepare or install host plugins. Changing instruction mode rewrites instructions for all enabled agents without changing plugins; disabling an agent removes its injected instructions but keeps its plugin. Some plugins require the host UI to finish installation. DSH instruction injection overwrites `~/.dsh/AGENTS.md` and removes a symlink at that path; inspect and back up the target first. |
 | Access Grants | Create, inspect and revoke read-only subtree grants, including inherited access. |
 | Settings | Change theme, layout, language, login startup, automatic Runtime connection and updates, channels, work and diary modes, and data directory; import/export memories, back up the database, import shared material, and import/export client settings. |
 | Updates | Configure automatic updates and check intervals separately for the client and Runtime. Check, download, cancel and apply client updates, or check and install or update the CLI. With automatic restart enabled, the client can restart after downloading when no business operation is running. |
@@ -26,11 +26,13 @@ The graph displays up to 300 nodes per page, with cross-page relationships, zoom
 
 ## Screen walkthrough {#screen-walkthrough}
 
-The page and tray screenshots show the Client 2 0.2.23 frontend running in a browser with simulated data. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
+The page and tray screenshots show the Client 2 0.2.24 frontend running in a browser with simulated data. Accounts, counts and task states are examples. These images illustrate the interface; they are not native acceptance results for each platform. Some interface text is still Chinese when English is selected.
 
 ### Overview and tray {#overview-and-tray}
 
 Use **Overview** to check the Runtime connection, local and cloud totals, pending sync and model activity. Select **Sync now** when a cloud account is configured. The counts and any conflicts depend on the active account and workspace.
+
+During initial setup, **Get started** lists Runtime, account, local-key and agent configuration status. A local-only library does not require sign-in, so that item may remain incomplete. The key item checks for local keys; it does not confirm that recovery material has been backed up.
 
 ![Overview with Runtime, sync and model status](/client2/overview-en.png)
 
@@ -72,6 +74,8 @@ Download the required weights before selecting and applying an engine. Applying 
 
 The page also configures the quality-recall service, switches recall mode, schedules background indexing and recalculates vectors. A benchmark can stop after its current request returns. Uninstalling models removes the model files; download them again when needed.
 
+The client uses parallel downloads for the baseline model and individual weights. Once baseline files are ready, the models page attempts to schedule indexing; check the result shown on the page. **Cancel current task** targets a model task reported by the Runtime and should not be assumed to cancel the client download.
+
 ![Model and index controls](/client2/models-en.png)
 
 The panels below show retrieval, indexing and the quality-recall service. The address and model are examples.
@@ -92,13 +96,13 @@ The panel below shows sync and server settings. The address is an example.
 
 ### Connect agents and manage access {#connect-agents-and-manage-access}
 
-On **Install**, inspect the target, select an instruction mode and enable an agent. Review the result, then finish any host-specific installation or hook approval in the agent. Disabling an agent removes injected instructions but keeps the plugin. Changing the mode rewrites instructions for enabled agents. Review the DSH path and back it up before injection. The [plugin pages](plugins/) explain each host.
+On **Configure Agent**, inspect the target, select an instruction mode and enable an agent. Review the result, then finish any host-specific installation or hook approval in the agent. Disabling an agent removes injected instructions but keeps the plugin. Changing the mode rewrites instructions for enabled agents. Review the DSH path and back it up before injection. The [plugin pages](plugins/) explain each host.
 
-Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Install page in client 0.2.23 does not offer a Codex file preview.
+Choose **Details** beside an agent to inspect its destination and plugin information. Enabling an agent can change the destination file immediately, so review existing content first. The Configure Agent page in client 0.2.24 does not offer a Codex file preview.
 
 Some targets are initially collapsed; choose **Show … more** to see them. Instruction modes are normal, read-only and off. After selecting one, choose **Apply and rewrite enabled prompts**.
 
-![Instruction mode and agent list on the Install page](/client2/injection-en.png)
+![Instruction mode and agent list on the Configure Agent page](/client2/injection-en.png)
 
 Use **Access Grants** to inspect, create or revoke read-only access to a memory subtree, including inherited grants. An invitation or grant can convey access to data; share it only with trusted recipients.
 
@@ -115,6 +119,8 @@ If a write shows an unconfirmed result, choose **Query original request** in **O
 Settings also controls workspace mode, diary recording, fonts and reading typography. The interface language and CLI display language are configured separately. A client-settings backup does not contain memory keys; save memory exports and database backups separately.
 
 On **Updates**, configure automatic client downloads, automatic client restart and automatic installation of the client-managed Runtime separately. Choose a check interval for the client and Runtime independently. If automatic restart is off, choose **Restart & apply** after downloading; client updates are not applied while a business operation is running.
+
+Choose the desktop and CLI / Runtime release channels separately on **Updates**. Changing channels does not automatically downgrade an installed version.
 
 ![Client settings page](/client2/settings-en.png)
 
