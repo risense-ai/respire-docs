@@ -60,6 +60,10 @@ Diary search finds fragments from a query; choose **Expand** beside a result to 
 
 ![Organization suggestions and move plan](/client2/organize-en.png)
 
+The panel below shows the AI organize scope and actions.
+
+![AI organize scope and actions](/client2/organize-ai-en.png)
+
 ### Models and index {#models-and-index}
 
 Open **Models & Index** to see model and index tasks. Choose a download source, prepare weights and select an available inference engine. The page also offers inference checks, index preparation, recall configuration and a nine-round benchmark. Weights are separate downloads; engine and provider availability depend on the installed Runtime and hardware.
@@ -70,11 +74,21 @@ The page also configures the quality-recall service, switches recall mode, sched
 
 ![Model and index controls](/client2/models-en.png)
 
+The panels below show retrieval, indexing and the quality-recall service. The address and model are examples.
+
+![Recall mode and background index](/client2/models-retrieval-en.png)
+
+![Quality-recall service settings](/client2/models-service-en.png)
+
 ### Accounts and spaces {#accounts-and-spaces}
 
 Open **Accounts & Spaces** to sign in, recover keys or initialize a new offline library. The same page manages saved accounts, sync, spaces, invitations and members. Keep recovery material and invitations private. Removing a space removes its corresponding local space and data.
 
 ![Accounts and spaces](/client2/accounts-en.png)
+
+The panel below shows sync and server settings. The address is an example.
+
+![Sync and server settings](/client2/accounts-sync-en.png)
 
 ### Connect agents and manage access {#connect-agents-and-manage-access}
 
@@ -103,6 +117,10 @@ Settings also controls workspace mode, diary recording, fonts and reading typogr
 On **Updates**, configure automatic client downloads, automatic client restart and automatic installation of the client-managed Runtime separately. Choose a check interval for the client and Runtime independently. If automatic restart is off, choose **Restart & apply** after downloading; client updates are not applied while a business operation is running.
 
 ![Client settings page](/client2/settings-en.png)
+
+The panel below shows data import and backup actions. Memory exports contain plaintext; store them securely.
+
+![Data import and backup actions](/client2/settings-backup-en.png)
 
 ![Desktop client and CLI updates page](/client2/updates-en.png)
 
