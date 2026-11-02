@@ -24,6 +24,8 @@ By default, the plugin recalls up to five titles on accepted user input; `recall
 
 Configure the installed `respire-memory` row in the Harness patch layer. Defaults: `enabled: true`, `rsrsPath: rsrs`, `recallLimit: 5`, `recallThreshold: 0`, `budgetChars: 1500`, `minPromptChars: 2`, `storeNudgeEvery: 1`, and `timeoutMs: 20000`. Set `storeNudgeEvery: 0` to disable reminders. The config row replaces the whole plugin config.
 
+If Client 2 manages the CLI, set `rsrsPath` to the executable’s absolute path. See the [plugin overview](./index.md#using-the-client-managed-cli) for its location; check the path again after updating the client-managed CLI.
+
 ## Privacy and troubleshooting
 
 Titles and receipts enter persistent model-visible messages and may reach the model provider. Credential detection is best-effort; remove secrets before submitting. The plugin does not manage the runtime or accounts. If recall fails, check `rsrs --version` and `rsrs --client-only status --json` in the Harness execution environment. Disable or remove the plugin through Harness plugin management.

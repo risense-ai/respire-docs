@@ -24,6 +24,8 @@
 
 在 Harness patch 层配置已安装的 `respire-memory` 条目。默认值：`enabled: true`、`rsrsPath: rsrs`、`recallLimit: 5`、`recallThreshold: 0`、`budgetChars: 1500`、`minPromptChars: 2`、`storeNudgeEvery: 1`、`timeoutMs: 20000`。设 `storeNudgeEvery: 0` 可关闭提醒。配置条目会整体替换插件配置。
 
+如果 CLI 由 Client 2 管理，`rsrsPath` 可以填写该可执行文件的绝对路径。定位方法见[插件总览](./index.md#using-the-client-managed-cli)；更新客户端管理的 CLI 后，请重新核对路径。
+
 ## 隐私与排障 {#privacy-and-troubleshooting}
 
 标题和回执会进入持久的模型可见消息，可能发送给模型提供商。凭据检测不能覆盖所有秘密，提交前请移除敏感内容。插件不管理 runtime 或账号。召回失败时，在 Harness 执行环境检查 `rsrs --version` 和 `rsrs --client-only status --json`。通过 Harness 插件管理停用或移除插件。

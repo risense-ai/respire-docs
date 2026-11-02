@@ -27,9 +27,9 @@ Prepare the CLI and Runtime as described below, then sign in and unlock the libr
 
 Client 2 can install the CLI and Runtime from its **Updates** page without npm. The client does not necessarily add the executable to PATH, so an agent may not discover it automatically.
 
-By default, the executable is under `~/.rsrs/client2/runtime/<version>/rsrs` (on Windows, `rsrs.exe`); replace `<version>` with the installed version. If `RSRS_DATA_DIR` is set for Client 2, use that directory instead of `~/.rsrs`. Configure the executable path using the host plugin’s supported setting, or make the directory available on the host’s PATH. Restart the host if needed, and verify its connection to the running Runtime. An update can change the versioned path, so check it again after updating.
+By default, the executable is under `~/.rsrs/client2/runtime/<version>/rsrs` (on Windows, `rsrs.exe`); replace `<version>` with the installed version. If `RSRS_DATA_DIR` is set for Client 2, use that directory instead of `~/.rsrs`. When entering a path in plugin settings, use the full absolute path; do not assume the plugin expands `~`. Alternatively, add the executable directory to the host’s PATH. Restart the host if needed, and verify its connection to the running Runtime. An update can change the versioned path, so check it again after updating.
 
-For Codex, set `RESPIRE_RSRS_PATH`; for Pi, use `--respire-rsrs`. Hermes and Qoder support `RESPIRE_BIN`. The host must receive the setting in its own environment.
+Codex accepts `RESPIRE_RSRS_PATH`, Pi accepts `--respire-rsrs`, and DSH has `rsrsPath`. ZCode, Kimi, Qoder and Hermes support `RESPIRE_BIN`; Dim and WorkBuddy accept `RESPITE_RSRS` or their own `rsrs` setting. Environment variables must reach the host process. Magpie connects directly to the local HTTP Runtime and does not need a CLI path in its plugin settings.
 
 ## Tuning
 
