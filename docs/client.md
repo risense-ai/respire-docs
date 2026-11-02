@@ -116,4 +116,4 @@ A lost write receipt does not prove that the write failed. The client keeps its 
 
 ## Packaging boundary {#packaging-boundary}
 
-Windows uses an executable and requires WebView2. macOS uses an app bundle; Linux requires GTK 3, WebKitGTK 4.1 and platform libraries. Desktop and CLI/native runtime are distributed separately. Verify platform prerequisites and release assets; the client does not bundle model weights. See [Windows packaging](windows-packaging.md) and [client integration](CLIENT-GUIDE.md).
+Windows uses an executable and requires WebView2. The macOS app bundle requires macOS 12 or later. Linux requires GTK 3, WebKitGTK 4.1, X11 client libraries and system libraries compatible with Ubuntu 22.04; it does not run directly on Alpine/musl. Desktop and CLI/native runtime are distributed separately. Verify platform prerequisites and release assets; the client does not bundle model weights. See [Windows packaging](windows-packaging.md) and [client integration](CLIENT-GUIDE.md).

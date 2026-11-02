@@ -6,10 +6,12 @@
 
 1. 打开 [Client 2 发布页](https://github.com/risense-ai/respire-client2/releases/latest)，选择与操作系统和处理器匹配的文件。发布页也提供校验和及版本说明。
 2. Windows x64 下载 `respire-windows-amd64.exe`，ARM64 下载 `respire-windows-arm64.exe`。将文件放在可写入的固定目录中，再运行它。系统需要 Windows 10 或更高版本及 WebView2。
-3. macOS 下载对应的 `respire-darwin-amd64.zip` 或 `respire-darwin-arm64.zip`，解压后将 `Respire.app` 保存在固定位置。应用尚未使用 Developer ID 签名或公证。
-4. Linux 下载对应的 `respire-linux-amd64.tar.gz` 或 `respire-linux-arm64.tar.gz`，解压后运行可执行文件。系统需要图形会话、GTK 3、WebKitGTK 4.1 和兼容的系统库。
+3. macOS 下载对应的 `respire-darwin-amd64.zip` 或 `respire-darwin-arm64.zip`，解压后将 `Respire.app` 保存在可写入的固定位置。系统需要 macOS 12 或更高版本；应用尚未使用 Developer ID 签名或公证。
+4. Linux 下载对应的 `respire-linux-amd64.tar.gz` 或 `respire-linux-arm64.tar.gz`，解压后运行可执行文件。系统需要图形会话、GTK 3、WebKitGTK 4.1、X11 客户端库，以及兼容 Ubuntu 22.04 的系统库。这些应用使用 glibc，不能直接在 Alpine/musl 上运行。
 
 使用桌面应用不需要安装 Node.js、npm、Go 或 Rust。桌面端和 CLI 分别发布，因此有桌面安装包不代表该平台一定有匹配的 Runtime。平台前提和验证范围见[平台支持](https://github.com/risense-ai/respire-client2/blob/main/docs/platforms.md)。
+
+例如，截至 [CLI 1.0.19](https://github.com/risense-ai/respire-cli/releases/tag/v1.0.19)，发布资产中没有 macOS Intel 对应的 CLI。使用 Intel Mac 时，请先检查所选版本是否提供匹配资产；客户端也可以连接已经运行的兼容本机 Runtime。
 
 ## 连接 Runtime {#connect-the-runtime}
 

@@ -116,4 +116,4 @@ AI 整理会向配置的服务发送选定记忆材料。高质量召回会发�
 
 ## 打包边界 {#packaging-boundary}
 
-Windows 使用可执行文件，需要 WebView2。macOS 使用应用包；Linux 需要 GTK 3、WebKitGTK 4.1 和平台库。桌面应用与 CLI/原生运行时分别分发。请核对平台依赖和发布资产；客户端不包含模型权重。见 [Windows 打包](windows-packaging.md)和[客户端集成](CLIENT-GUIDE.md)。
+Windows 使用可执行文件，需要 WebView2。macOS 应用包需要 macOS 12 或更高版本；Linux 需要 GTK 3、WebKitGTK 4.1、X11 客户端库及兼容 Ubuntu 22.04 的系统库，不能直接用于 Alpine/musl。桌面应用与 CLI/原生运行时分别分发。请核对平台依赖和发布资产；客户端不包含模型权重。见 [Windows 打包](windows-packaging.md)和[客户端集成](CLIENT-GUIDE.md)。

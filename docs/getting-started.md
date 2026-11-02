@@ -6,10 +6,12 @@ The desktop client is the recommended way to start. It provides a graphical inte
 
 1. Open [Client 2 releases](https://github.com/risense-ai/respire-client2/releases/latest) and choose the file for your operating system and processor. The release page lists checksums and version notes.
 2. On Windows, download `respire-windows-amd64.exe` for x64 or `respire-windows-arm64.exe` for ARM64 and run it from a permanent writable directory. Windows 10 or later and WebView2 are required.
-3. On macOS, download the matching `respire-darwin-amd64.zip` or `respire-darwin-arm64.zip`, extract it and keep `Respire.app` in a permanent location. The app is not Developer ID signed or notarized.
-4. On Linux, download the matching `respire-linux-amd64.tar.gz` or `respire-linux-arm64.tar.gz`, extract it and run the executable. A graphical session, GTK 3, WebKitGTK 4.1 and compatible system libraries are required.
+3. On macOS, download the matching `respire-darwin-amd64.zip` or `respire-darwin-arm64.zip`, extract it and keep `Respire.app` in a permanent writable location. macOS 12 or later is required. The app is not Developer ID signed or notarized.
+4. On Linux, download the matching `respire-linux-amd64.tar.gz` or `respire-linux-arm64.tar.gz`, extract it and run the executable. A graphical session, GTK 3, WebKitGTK 4.1, X11 client libraries and system libraries compatible with Ubuntu 22.04 are required. These applications use glibc and do not run directly on Alpine/musl.
 
 You do not need Node.js, npm, Go or Rust to use the desktop app. Desktop and CLI releases are separate; a desktop download does not guarantee a matching Runtime for every platform. See [platform support](https://github.com/risense-ai/respire-client2/blob/main/docs/platforms.md) for prerequisites and verification limits.
+
+For example, [CLI 1.0.19](https://github.com/risense-ai/respire-cli/releases/tag/v1.0.19) did not include an asset for Intel macOS. On an Intel Mac, check whether the chosen release provides a matching asset; the client can also connect to a compatible local Runtime that is already running.
 
 ## Connect the Runtime {#connect-the-runtime}
 
