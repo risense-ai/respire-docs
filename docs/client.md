@@ -24,6 +24,51 @@ Download a matching application from [client releases](https://github.com/risens
 
 The graph displays up to 300 nodes per page, with cross-page relationships, zoom, pan, node selection and dragging. Center the selected node with the control, or focus a node and press Enter or Space to open it. Directory filters apply only to loaded memories. Memory shortcuts include Ctrl/Command+K for search, Ctrl/Command+N for a new entry, Ctrl/Command+Z for eligible undo, Ctrl/Command+Shift+N to create a follow-up under the selected node, and Ctrl/Command+Shift+C for a node link. F2 edits, Delete or Backspace deletes, and arrow keys select, expand or collapse nodes. These shortcuts do not fire while a dialog is open or an input control is being edited. Undo retains one eligible operation, refuses a changed library and is not an atomic cross-client transaction.
 
+## Screen walkthrough {#screen-walkthrough}
+
+These screenshots show Client 2 version 0.2.17 with sample data. They illustrate the layout, not a live account or the exact appearance of later releases.
+
+### Overview and tray {#overview-and-tray}
+
+Use **Overview** to check the Runtime connection, local and cloud totals, pending sync and model activity. Select **Sync now** when a cloud account is configured. The counts and any conflicts depend on the active account and workspace.
+
+![Overview with Runtime, sync and model status](/client2/overview-en.png)
+
+The tray quick panel provides the same status at a glance, plus **Sync now** and **Open Respire**. The tray menu also offers Runtime and update actions. Closing the window hides it; quitting the client does not stop the Runtime.
+
+![Tray quick panel](/client2/quickpanel-en.png)
+
+### Memories and diary {#memories-and-diary}
+
+In **Memories**, choose tree, list, cards or graph. Select an entry to read it, or choose **New memory** to write one. Directory filters work on loaded entries; use the library search to search beyond them. Inspect similar entries before choosing a parent, merging or proceeding without deduplication.
+
+![Memory tree and search](/client2/memories-en.png)
+
+Use **Diary** to navigate by month or day, search dates and open a fragment with its neighbors. Use the **Organize** page to review grouping, similarity and structure suggestions; preview a move plan before applying it. AI organization requires a configured service and sends the selected material to it.
+
+### Models and index {#models-and-index}
+
+Open **Models & Index** to see model and index tasks. Choose a download source, prepare weights and select an available inference engine. The page also offers inference checks, index preparation, recall configuration and a nine-round benchmark. Weights are separate downloads; engine and provider availability depend on the installed Runtime and hardware.
+
+![Model and index controls](/client2/models-en.png)
+
+### Accounts and spaces {#accounts-and-spaces}
+
+Open **Accounts & Spaces** to sign in, recover keys or initialize a new offline library. The same page manages saved accounts, sync, spaces, invitations and members. Keep recovery material and invitations private. Removing a space removes its corresponding local space and data.
+
+![Accounts and spaces](/client2/accounts-en.png)
+
+### Connect agents and manage access {#connect-agents-and-manage-access}
+
+On **Install**, inspect the target, select an instruction mode and enable an agent. Review the result, then finish any host-specific installation or hook approval in the agent. Disabling an agent removes injected instructions but keeps the plugin. Changing the mode rewrites instructions for enabled agents. Review the DSH path and back it up before injection. The [plugin pages](plugins/) explain each host.
+
+Use **Access Grants** to inspect, create or revoke read-only access to a memory subtree, including inherited grants. An invitation or grant can convey access to data; share it only with trusted recipients.
+
+### Settings, updates and diagnostics {#settings-updates-and-diagnostics}
+
+Use **Settings** for appearance, language, startup, Runtime connection and data import or export. **Updates** manages the desktop and CLI separately; inspect their channels and download status before applying changes. **Operations** lists request IDs and session receipts, while **Diagnostics** shows connection health and can export diagnostics. Check diagnostic output before sharing it.
+
+
 ## Data and failure boundaries {#data-and-failure-boundaries}
 
 JSON memory exports and shared materials contain plaintext. Key exports and recovery materials can unlock data; space invitations contain access and decryption capability. Protect these files and share them only with trusted recipients. Removing a space deletes its corresponding local space and data. Forgetting local identity removes the session and decryption material but retains encrypted memories; unlocking again requires recovery material. Changing the data directory keeps the old directory and does not copy memories or keys; the new directory needs its own session and keys. Normal memory deletion can propagate through sync; permanent ciphertext purge cannot be undone. Merging replaces source entries, while unselected children are promoted according to Runtime rules.
