@@ -24,7 +24,7 @@ memTools 是基于 Tauri 2 的桌面快捷记录工具，面向本机 rsrs runti
 
 ## 安装 {#install}
 
-从 GitHub Releases 下载 `memtools-<version>.exe`（免安装）、`.msi` 或 NSIS `.exe`。发布包未做代码签名与公证：Windows 会提示“未知发布者”；macOS 若被 Gatekeeper 拦住，可在 Finder 里右键应用选「打开」，或执行 `xattr -dr com.apple.quarantine /Applications/memTools.app`，也可到「系统设置 → 隐私与安全性 → 仍要打开」。下载与机器架构匹配的 dmg：Apple Silicon 用 `aarch64`；Intel Mac 需要 `x64` 或 universal 包，旧版本没有提供。
+从 GitHub Releases 下载 `memtools-<version>.exe`（免安装）、`.msi` 或 NSIS `.exe`。发布包未做代码签名与公证：Windows 会提示“未知发布者”；macOS 若被 Gatekeeper 拦住，可在 Finder 里右键应用选「打开」，或执行 `xattr -dr com.apple.quarantine /Applications/memTools.app`，也可到「系统设置 → 隐私与安全性 → 仍要打开」。从 0.8.1 起 macOS 包为 universal（Apple Silicon 与 Intel 通用）；旧版本只提供 `aarch64`，Intel Mac 需用新版本。
 
 首次启动会检测 `rsrs` 命令，缺失时用 npm / pnpm 全局安装 CLI。runtime 仍需自己在 15169 端口运行；只有你在 rsrs 面板点「确认重启」后，memTools 才会代为重启。
 
