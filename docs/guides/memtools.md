@@ -5,6 +5,7 @@ memTools is a Tauri 2 desktop quick-capture app for the local rsrs runtime. It i
 - Repository: <https://github.com/risense-ai/respire-memtool>
 - Connection: MCP over HTTP (JSON-RPC 2.0) to `http://127.0.0.1:15169/mcp`
 - Hotkey: `Ctrl+Alt+R` toggles the panel; `Esc` and the close button only hide it to the tray
+- Window: drag any edge or corner to resize (minimum `360×400`); the panel remembers its size and position. Narrow windows move secondary graph controls into the **Display** menu and trim the legend; wide windows split the capture view into content and destination columns
 
 ## What it does
 

@@ -5,6 +5,7 @@ memTools 是基于 Tauri 2 的桌面快捷记录工具，面向本机 rsrs runti
 - 仓库：<https://github.com/risense-ai/respire-memtool>
 - 连接方式：MCP over HTTP（JSON-RPC 2.0），默认 `http://127.0.0.1:15169/mcp`
 - 热键：`Ctrl+Alt+R` 唤起或隐藏小窗；`Esc` 与关闭按钮只隐藏到托盘
+- 窗口：拖四边或四角即可改大小（最小 `360×400`），并记住上次的尺寸与位置。窄窗把图谱的次要按钮收进「显示」菜单、图例只留必要说明；宽窗把「写内容 / 选挂点」分成左右两栏
 
 ## 能做什么 {#what-it-does}
 
