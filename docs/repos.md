@@ -20,6 +20,7 @@ flowchart TB
 | [respire-site](https://github.com/risense-ai/respire-site) | Marketing website source |
 | [respire-releases](https://github.com/risense-ai/respire-releases) | Release information and matching binary assets |
 | [respire-core](https://github.com/risense-ai/respire-core) | Model execution and memory operations; binary SDK |
+| [respire-memtool](https://github.com/risense-ai/respire-memtool) | Tauri desktop quick-capture companion; see the [memTools guide](/guides/memtools) |
 
 ## AI tool plugins
 

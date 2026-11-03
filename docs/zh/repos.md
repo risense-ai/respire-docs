@@ -20,6 +20,7 @@ flowchart TB
 | [respire-site](https://github.com/risense-ai/respire-site) | 营销官网源码 |
 | [respire-releases](https://github.com/risense-ai/respire-releases) | 发布信息与匹配的二进制产物 |
 | [respire-core](https://github.com/risense-ai/respire-core) | 模型执行与记忆操作；二进制 SDK |
+| [respire-memtool](https://github.com/risense-ai/respire-memtool) | Tauri 桌面快捷记录小工具；见 [memTools 指南](/zh/guides/memtools) |
 
 ## AI 工具插件 {#ai-tool-plugins}
 
