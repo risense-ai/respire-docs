@@ -17,6 +17,7 @@ memTools is a Tauri 2 desktop quick-capture app for the local rsrs runtime. It i
 | Diary | Written as `importance=trivial`, skipping duplicate checks and tree attachment |
 | Review | Recent memories, keyword search, semantic `rsrs recall`, reminders for `【触发】` dates, read-only 3D graph from `onememory.db` |
 | Capture surfaces | System tray, browser extension, Windows selection bubble, Explorer "add to knowledge base" |
+| Knowledge base | Files, folders, a page URL, or selected text go through the AI window, Explorer, the selection bubble, or the browser extension; each item becomes a folder with `original/` and `<title>.md` |
 | Updating | Reads `update.json` from GitHub Releases, verifies SHA-256, self-replaces on Windows |
 
 `memtools.exe --ai` opens the AI window directly.
@@ -47,6 +48,19 @@ Layout of one ingested item:
 ```
 
 The agent writes the result into rsrs following the change / merge / attach / store-new rules, and records the file path plus device in the body.
+
+### Ingest material
+
+1. Open the AI window from the top-bar **AI** button or with `memtools.exe --ai`. Closing the window only hides it; the button or `--ai` brings it back.
+2. Choose the **Knowledge base directory** on first use. The choice is stored in `knowledge_base.json` and overrides `config.toml`.
+3. Add material in any of these ways:
+   - **Add folder**, or drag files and folders onto the window.
+   - Paste a path into the path field, or a page URL into the URL field.
+   - Explorer right-click → **Add to memTools knowledge base** (Windows only).
+   - Selection bubble → **AI 调研**, or the browser extension's right-click items; both enqueue through `POST /kb/add`.
+4. Pick the agent and model (below), then follow the task list. The agent copies the original, writes `<title>.md`, keeps research notes for URLs and selected text, and stores a memory with the change / merge / attach / store-new rules.
+
+Limits: only text-like files are parsed. PDF, Word, and other binary files are copied into `original/` and registered, but their body is not extracted; convert them to text first. Defaults: 20 MB per file, 50 files per task, 600 seconds per task.
 
 ### Agent sources
 
@@ -111,6 +125,22 @@ Output parsers:
 | `qoder-json` | `{"type":"result","result":"…"}` |
 
 The binding keeps the interface choice above `config.toml`: `knowledge_base.json` stores the source, binary, model, and — for custom sources — the argument template, environment, and output parser. Clearing a field falls back to `config.toml`.
+
+### Knowledge base settings
+
+The AI window stores its choices in `knowledge_base.json`, on top of `config.toml`:
+
+| Key | Default | Meaning |
+|---|---|---|
+| `knowledge_base.enabled` | `true` | Set `false` to reject `POST /kb/add` |
+| `knowledge_base.root` | empty | Root directory; first-use picker |
+| `knowledge_base.agent_kind` | `opencode` | `opencode` / `qoder` / `custom` |
+| `knowledge_base.agent_model` | empty | `provider/model` for this window |
+| `knowledge_base.max_file_mb` | `20` | Per-file limit in MB |
+| `knowledge_base.max_files` | `50` | Files per task |
+| `knowledge_base.timeout_secs` | `600` | Agent timeout in seconds |
+| `knowledge_base.context_menu` | `true` | Explorer right-click menu (Windows) |
+| `knowledge_base.research_websearch` | `true` | Web research for URLs and selected text |
 
 ## Platform notes
 

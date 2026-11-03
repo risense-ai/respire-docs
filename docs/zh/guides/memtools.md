@@ -17,6 +17,7 @@ memTools 是基于 Tauri 2 的桌面快捷记录工具，面向本机 rsrs runti
 | 日记 | 以 `importance=trivial` 直接落库，跳过判重与挂树 |
 | 回看 | 最近记忆、关键词搜索、`rsrs recall` 语义搜索、`【触发】` 日期提醒、只读 3D 图谱（读 `onememory.db`） |
 | 入口 | 系统托盘、浏览器扩展、Windows 划词悬浮、资源管理器右键「添加到知识库」 |
+| 知识库 | 文件、文件夹、网页地址、选中文字，经 AI 窗口、资源管理器、划词面板或浏览器扩展送入；一条资料一个文件夹，含 `original/` 与 `<title>.md` |
 | 更新 | 读 GitHub Releases 的 `update.json`，校验 SHA-256，Windows 上自替换重启 |
 
 `memtools.exe --ai` 可直接打开 AI 窗口。
@@ -47,6 +48,19 @@ AI 窗口是独立窗口（顶栏 **AI** 按钮打开），既能和本机 agent
 ```
 
 整理完成后由 agent 按 rsrs 的「改 / 并 / 挂 / 存」规范写入记忆，正文里带上文件路径与设备。
+
+### 提取资料 {#ingest-material}
+
+1. 顶栏 **AI** 按钮或 `memtools.exe --ai` 打开 AI 窗口。点关闭只隐藏窗口，按钮或 `--ai` 可再唤起。
+2. 首次使用先选**知识库目录**。选择保存在 `knowledge_base.json`，优先于 `config.toml`。
+3. 任选一种方式投料：
+   - 点**添加文件夹**，或把文件、文件夹直接拖进窗口。
+   - 在路径框粘贴路径，或在网页框粘贴页面地址。
+   - 资源管理器右键 →「添加到 memTools 知识库」（仅 Windows）。
+   - 划词面板「AI 调研」，或浏览器扩展右键的「AI 调研这段 / 解析此页」；两者都经 `POST /kb/add` 入队。
+4. 选好 agent 与模型（见下），在任务列表看进度。agent 会复制原件、写 `<title>.md`、为网页与选中文字保留调研记录，并按 rsrs 的「改 / 并 / 挂 / 存」写入记忆。
+
+限制：只解析文本类文件。PDF、Word 等二进制文件会复制到 `original/` 并登记，但不提取正文，需先转成文本。默认单文件 20 MB、单任务 50 个文件、单任务 600 秒超时。
 
 ### 来源（agent） {#agent-sources}
 
@@ -111,6 +125,22 @@ output = "json"                                   # text | json | opencode-json 
 | `qoder-json` | `{"type":"result","result":"…"}` |
 
 界面选择优先于 `config.toml`：`knowledge_base.json` 会记录来源、可执行文件、模型，以及自定义来源的参数模板、环境变量与输出解析；字段留空则回落到 `config.toml`。
+
+### 知识库设置 {#knowledge-base-settings}
+
+AI 窗口的选择保存在 `knowledge_base.json`，叠加在 `config.toml` 之上：
+
+| 键 | 默认值 | 说明 |
+|---|---|---|
+| `knowledge_base.enabled` | `true` | 设为 `false` 后拒绝 `POST /kb/add` |
+| `knowledge_base.root` | 空 | 根目录；首次使用在窗口里选 |
+| `knowledge_base.agent_kind` | `opencode` | `opencode` / `qoder` / `custom` |
+| `knowledge_base.agent_model` | 空 | 本窗口使用的 `provider/model` |
+| `knowledge_base.max_file_mb` | `20` | 单文件上限（MB） |
+| `knowledge_base.max_files` | `50` | 单任务文件数上限 |
+| `knowledge_base.timeout_secs` | `600` | agent 超时（秒） |
+| `knowledge_base.context_menu` | `true` | 资源管理器右键菜单（Windows） |
+| `knowledge_base.research_websearch` | `true` | 网页与选中文字是否联网调研 |
 
 ## 平台差异 {#platform-notes}
 
