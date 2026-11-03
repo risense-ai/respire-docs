@@ -24,7 +24,7 @@ memTools is a Tauri 2 desktop quick-capture app for the local rsrs runtime. It i
 
 ## Install
 
-Download from GitHub Releases: `memtools-<version>.exe` (portable), `.msi`, or the NSIS `.exe`. Release builds are unsigned, so Windows warns about an unknown publisher and macOS needs an explicit allow in System Settings.
+Download from GitHub Releases: `memtools-<version>.exe` (portable), `.msi`, or the NSIS `.exe`. Release builds are unsigned and not notarized, so Windows warns about an unknown publisher. On macOS, if Gatekeeper refuses the app, right-click it in Finder and choose **Open**, or run `xattr -dr com.apple.quarantine /Applications/memTools.app`; **System Settings → Privacy & Security → Open Anyway** also works. Pick the DMG that matches the Mac: `aarch64` for Apple Silicon; Intel Macs need an `x64` or universal build, which older releases do not provide.
 
 On first start memTools checks for the `rsrs` command and installs the CLI through npm or pnpm when it is missing. The runtime itself still has to be running on port 15169; memTools never stops or restarts it unless you confirm the restart in the rsrs panel.
 
