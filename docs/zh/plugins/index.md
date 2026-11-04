@@ -18,9 +18,10 @@ Respire 为不同宿主提供独立插件。各插件的召回、存储、收尾
 | <img src="/agents/pi.png" alt="" width="24" height="24"> [Pi](./pi.md) | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` | 结算后后台检查 |
 | <img src="/agents/dsh.png" alt="" width="24" height="24"> [DSH](./dsh.md) | [respire-dsh](https://github.com/risense-ai/respire-dsh) | `plugin_manager` | `package.json` | 每轮至多一次提醒 |
 | <img src="/agents/magpie.svg" alt="" width="24" height="24"> [Magpie](./magpie.md) | [respire-magpie](https://github.com/risense-ai/respire-magpie) | `magpie plugin add` | `package.json` | 回复后后台归档 |
+| [OpenClaw](./openclaw.md) | [respire-openclaw](https://github.com/risense-ai/respire-openclaw) | `openclaw plugins install` | `openclaw.plugin.json` | 无（无可阻塞的回合结束钩子；「收尾必存」由简则承担） |
 | MiniMax Code | [respire-minimax-code](https://github.com/risense-ai/respire-minimax-code) | 本地插件目录或官方 Marketplace V1 包 | `.minimax-plugin/plugin.json` | `{"decision":"block","reason":…}` |
 
-各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md) · [MiniMax Code](./minimax-code.md)
+各宿主页：[ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md) · [MiniMax Code](./minimax-code.md) · [OpenClaw](./openclaw.md)
 
 先按下方说明准备 CLI 和 Runtime，再按宿主页登录及解锁。缺少引擎时，部分旧版插件会提示运行 `rsrs-cli` 安装命令；是否执行由用户决定。
 

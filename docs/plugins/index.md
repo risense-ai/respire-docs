@@ -18,9 +18,10 @@ Select a host name for installation, usage, configuration and troubleshooting. D
 | <img src="/agents/pi.png" alt="" width="24" height="24"> [Pi](./pi.md) | [respire-pi](https://github.com/risense-ai/respire-pi) | `pi install npm:@rsrsai/pi` | `package.json` | background check after settlement |
 | <img src="/agents/dsh.png" alt="" width="24" height="24"> [DSH](./dsh.md) | [respire-dsh](https://github.com/risense-ai/respire-dsh) | `plugin_manager` | `package.json` | at most one reminder per turn |
 | <img src="/agents/magpie.svg" alt="" width="24" height="24"> [Magpie](./magpie.md) | [respire-magpie](https://github.com/risense-ai/respire-magpie) | `magpie plugin add` | `package.json` | background archive after response |
+| [OpenClaw](./openclaw.md) | [respire-openclaw](https://github.com/risense-ai/respire-openclaw) | `openclaw plugins install` | `openclaw.plugin.json` | none (no blocking end-of-turn hook; rules carry "store before finishing") |
 | MiniMax Code | [respire-minimax-code](https://github.com/risense-ai/respire-minimax-code) | Local plugin directory or official Marketplace V1 package | `.minimax-plugin/plugin.json` | `{"decision":"block","reason":…}` |
 
-Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md) · [MiniMax Code](./minimax-code.md)
+Per-host pages: [ZCode](./zcode.md) · [Kimi Code](./kimi.md) · [Dim](./dimcode.md) · [Qoder](./qoder.md) · [WorkBuddy](./workbuddy.md) · [Hermes](./hermes.md) · [Codex](./codex.md) · [Pi](./pi.md) · [DSH](./dsh.md) · [Magpie](./magpie.md) · [MiniMax Code](./minimax-code.md) · [OpenClaw](./openclaw.md)
 
 Prepare the CLI and Runtime as described below, then sign in and unlock the library according to the host page. Some older adapters suggest installing `rsrs-cli` when the engine is missing; the user decides whether to run it.
 
