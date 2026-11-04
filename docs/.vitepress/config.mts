@@ -1,12 +1,94 @@
 import { defineConfig } from 'vitepress'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
+const SITE = 'https://docs.rsrs.rs'
+const image = `https://rsrs.rs/memory-fiber-sculpture.png`
+
+function canonicalPath(page: string) {
+  const clean = page.replace(/\.md$/, '')
+  return clean === 'index' ? '/' : `/${clean.replace(/\/index$/, '/')}`
+}
+
+function faqSchema(content: string, url: string) {
+  if (!/\/(?:zh\/)?faq$/.test(url)) return null
+  const rows = [...content.matchAll(/<tr><td>(.*?)<\/td><td>(.*?)<\/td><\/tr>/g)]
+  if (!rows.length) return null
+  const text = (value: string) => value.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    url,
+    mainEntity: rows.map(([, question, answer]) => ({
+      '@type': 'Question',
+      name: text(question),
+      acceptedAnswer: { '@type': 'Answer', text: text(answer) },
+    })),
+  }
+}
 
 const editPattern = `https://github.com/risense-ai/respire-docs/edit/${process.env.CF_PAGES_BRANCH || 'main'}/docs/:path`
 
 export default defineConfig({
   title: 'Respire',
-  description: 'Local-first AI memory: architecture, interfaces and development',
+  description: 'Local-first AI memory: installation, AI tool integration, architecture and development guides',
   lang: 'en',
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/icon.svg' }]],
+  lastUpdated: true,
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/icon.svg' }],
+    ['meta', { property: 'og:site_name', content: 'Respire documentation' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:image', content: image }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
+  ],
+  sitemap: {
+    hostname: SITE,
+    transformItems: (items) => items.filter((item) => item.url !== 'README' && item.url !== 'zh/README'),
+  },
+  transformPageData(pageData, { siteConfig }) {
+    const source = readFileSync(join(siteConfig.srcDir, pageData.filePath), 'utf8')
+    const paragraphs = [...source.matchAll(/^([^#<>\n][^\n]*)$/gm)]
+    const text = paragraphs.map(([, paragraph]) => paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]/g, '').trim()).find((paragraph) => paragraph.length >= 40)
+    return { description: pageData.frontmatter.description || text?.slice(0, 220) }
+  },
+  transformHead({ page, pageData, title, content }) {
+    if (page === '404.md' || page === 'README.md' || page === 'zh/README.md') return [['meta', { name: 'robots', content: 'noindex,follow' }]]
+    const path = canonicalPath(page)
+    const url = `${SITE}${path}`
+    const zh = page.startsWith('zh/')
+    const englishPath = zh ? page.slice(3) : page
+    const chinesePath = zh ? page : `zh/${page}`
+    const alternates = [
+      ['en', `${SITE}${canonicalPath(englishPath)}`],
+      ['zh-Hans', `${SITE}${canonicalPath(chinesePath)}`],
+      ['x-default', `${SITE}${canonicalPath(englishPath)}`],
+    ].map(([hreflang, href]) => ['link', { rel: 'alternate', hreflang, href }] as const)
+    const description = pageData.description || pageData.frontmatter.description
+    const documentTitle = title.replace(/ \| Respire$/, '')
+    const schema = faqSchema(content, url) ?? {
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: documentTitle,
+      description,
+      url,
+      inLanguage: zh ? 'zh-Hans' : 'en',
+      image,
+      isPartOf: { '@type': 'WebSite', name: 'Respire documentation', url: SITE },
+      publisher: { '@type': 'Organization', name: 'Respire', url: 'https://rsrs.rs/', logo: image },
+      ...(pageData.lastUpdated ? { dateModified: new Date(pageData.lastUpdated).toISOString() } : {}),
+    }
+    return [
+      ['link', { rel: 'canonical', href: url }],
+      ...alternates,
+      ['meta', { property: 'og:title', content: documentTitle }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { property: 'og:url', content: url }],
+      ['meta', { property: 'og:locale', content: zh ? 'zh_CN' : 'en_US' }],
+      ['meta', { name: 'twitter:title', content: documentTitle }],
+      ['meta', { name: 'twitter:description', content: description }],
+      ['script', { type: 'application/ld+json' }, JSON.stringify(schema)],
+    ]
+  },
   cleanUrls: true,
   metaChunk: true,
   locales: {
@@ -64,6 +146,7 @@ export default defineConfig({
             { text: 'Pi', link: '/zh/plugins/pi' },
             { text: 'DSH', link: '/zh/plugins/dsh' },
             { text: 'Magpie', link: '/zh/plugins/magpie' },
+            { text: 'OpenClaw', link: '/zh/plugins/openclaw' },
             { text: 'MiniMax Code', link: '/zh/plugins/minimax-code' },
             { text: '通用包（Agent Plugins）', link: '/zh/plugins/general' },
           ] },
@@ -193,6 +276,7 @@ export default defineConfig({
         { text: 'Pi', link: '/plugins/pi' },
         { text: 'DSH', link: '/plugins/dsh' },
         { text: 'Magpie', link: '/plugins/magpie' },
+        { text: 'OpenClaw', link: '/plugins/openclaw' },
         { text: 'MiniMax Code', link: '/plugins/minimax-code' },
         { text: 'General (Agent Plugins)', link: '/plugins/general' },
       ] },

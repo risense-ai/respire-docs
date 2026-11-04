@@ -1,0 +1,39 @@
+# Respire documentation
+
+> Official English and Simplified Chinese guides for Respire, a local-first memory layer for AI tools, the rsrs CLI, desktop client and encrypted synchronization.
+
+## Getting started
+
+- [Documentation overview](https://docs.rsrs.rs/): Product components, responsibilities and links to core guides.
+- [Getting started](https://docs.rsrs.rs/getting-started): Install the desktop client, connect the Runtime, connect an AI tool and create a memory.
+- [Standalone CLI installation](https://docs.rsrs.rs/cli-install): Install and verify the rsrs CLI for terminal workflows.
+- [CLI commands](https://docs.rsrs.rs/cli): Memory, synchronization, runtime and administration commands.
+- [Walkthrough](https://docs.rsrs.rs/walkthrough): A practical introduction to the main Respire workflows.
+- [Desktop client](https://docs.rsrs.rs/client): Interface, account, model, integration and diagnostics guide.
+- [Frequently asked questions](https://docs.rsrs.rs/faq): Answers about accounts, security, models, injection and version compatibility.
+
+## AI tool integrations
+
+- [AI tool plugins](https://docs.rsrs.rs/plugins/): Compare supported hosts, install adapters and configure recall and storage.
+- [AI tool injection](https://docs.rsrs.rs/injection): Configure managed instructions and understand the scope of injected context.
+- [Plugin development](https://docs.rsrs.rs/plugin-dev): Build host integrations using supported Respire interfaces.
+
+## Architecture and development
+
+- [Architecture](https://docs.rsrs.rs/architecture): Local storage, retrieval, encryption and synchronization data flow.
+- [Data model](https://docs.rsrs.rs/data-model): Memory records, categories, associations and state.
+- [Sync and keys](https://docs.rsrs.rs/sync-and-keys): Encryption, identity, device keys and synchronization boundaries.
+- [Development](https://docs.rsrs.rs/development): Repository setup, build prerequisites and verification.
+- [Repositories](https://docs.rsrs.rs/repos): Official Respire source repositories and their responsibilities.
+
+## 中文文档
+
+- [文档概览](https://docs.rsrs.rs/zh/): Respire 组件、职责与核心指南入口。
+- [开始使用](https://docs.rsrs.rs/zh/getting-started): 安装客户端、连接 Runtime、配置 AI 工具并创建记忆。
+- [AI 工具插件](https://docs.rsrs.rs/zh/plugins/): 各 AI 宿主的安装、配置和故障排查指南。
+- [架构](https://docs.rsrs.rs/zh/architecture): 本地存储、检索、加密和同步的数据流。
+
+## Official links
+
+- [Respire website](https://rsrs.rs/): Product overview, download links and official channels.
+- [GitHub organization](https://github.com/risense-ai): Official Respire source code and releases.
