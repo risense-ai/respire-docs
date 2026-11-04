@@ -5,18 +5,18 @@
 ## 安装 {#install}
 
 ```bash
-# 本地检出（开发）：
+# from a local checkout (dev):
 git clone https://github.com/risense-ai/respire-openclaw.git
 cd respire-openclaw && npm install && npm run build
 openclaw plugins install --link ./respire-openclaw
 
-# 或从 GitHub：
+# or from GitHub:
 openclaw plugins install git:github.com/risense-ai/respire-openclaw
 ```
 
 引擎（`rsrs`）自动发现（缺失时插件把 `npm i -g rsrs-cli@latest` 交给 agent 代跑，同会话内恢复召回与落库）。
 
-### 开启会话钩子权限
+### 开启会话钩子权限 {#enable-conversation-hooks}
 
 每轮召回钩子属于改写 prompt 的会话钩子，OpenClaw 对非内置插件要求显式授权。在 `openclaw.json`：
 
@@ -43,7 +43,7 @@ openclaw plugins install git:github.com/risense-ai/respire-openclaw
 | 每会话首个 prompt | 注入简则（系统上下文）＋一次状态探测：引擎未装/未登录/库空/缺模型的引导（探测按 `status_ttl_ms` 缓存） |
 | 每轮（`before_prompt_build`） | 自动 `rsrs recall --titles`：标题档注入——只给分数 + 短 id + 标题，预算截断；斜杠命令 token 召回前自动剥除；默认直出不过滤 |
 | 存料前缀 | 「记：」/「存：」/「记住：」/`remember:`/`store:` → 插件本身不写库，回执为 pending 交接文，交模型判重（update > merge > attach > new）后经工具或 CLI 落库 |
-| Agent 工具 | `respire_recall` / `respire_show` / `respire_chain` / `respire_remember` / `respire_update` / `respire_attach` / `respire_status`；important 无已读父本不落库 |
+| Agent 工具 | `respire_recall` / `respire_show` / `respire_chain` / `respire_remember` / `respire_update` / `respire_attach` / `respire_status`；`important` 无已读父本不落库 |
 | `/nomem` 前缀 | 本轮跳过召回 |
 | 快捷指令 | `/respire-recall <query>`、`/respire-status`、`/respire-sync` |
 

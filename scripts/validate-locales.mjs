@@ -45,6 +45,31 @@ for (const file of walk(dist).filter((item) => item.endsWith('.html'))) {
   const html = fs.readFileSync(file, 'utf8');
   const relative = path.relative(dist, file).replaceAll(path.sep, '/');
   const url = new URL(relative.replace(/(?:^|\/)index\.html$/, '/').replace(/\.html$/, ''), 'https://docs.rsrs.rs/');
+  const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
+  if (relative === '404.html' || relative === 'README.html' || relative === 'zh/README.html') {
+    assert.ok(html.includes('name="robots" content="noindex,follow"'));
+    assert.ok(!html.includes('rel="canonical"'));
+    assert.ok(!html.includes('application/ld+json'));
+    assert.ok(!sitemap.includes(`<loc>${url.href}</loc>`));
+    continue;
+  }
+  assert.ok(sitemap.includes(`<loc>${url.href}</loc>`), `Sitemap URL: ${relative}`)
+  assert.equal(html.includes(`rel="canonical" href="${url.href}"`), true, `Self-canonical: ${relative}`);
+  const englishPath = relative.startsWith('zh/') ? `/${relative.slice(3)}` : `/${relative}`;
+  const chinesePath = relative.startsWith('zh/') ? `/${relative}` : `/zh/${relative}`;
+  const canonicalUrl = (page) => new URL(page.replace(/(?:^|\/)index\.html$/, '/').replace(/\.html$/, ''), 'https://docs.rsrs.rs/').href;
+  assert.equal(html.includes(`hreflang="en" href="${canonicalUrl(englishPath)}"`), true, `English hreflang: ${relative}`);
+  assert.equal(html.includes(`hreflang="zh-Hans" href="${canonicalUrl(chinesePath)}"`), true, `Chinese hreflang: ${relative}`);
+  assert.equal(html.includes('hreflang="x-default"'), true, `Default hreflang: ${relative}`);
+  assert.equal((html.match(/rel="canonical"/g) || []).length, 1, `One canonical: ${relative}`);
+  assert.equal(html.includes('property="og:image"'), true, `Social image: ${relative}`);
+  assert.ok(html.includes('name="description"'), true, `Description: ${relative}`);
+  assert.ok(!html.includes('Local-first AI memory: installation, AI tool integration, architecture and development guides') || relative === '404.html', `Unique page description: ${relative}`);
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)];
+  assert.ok(schemas.length >= 1, `Structured data: ${relative}`);
+  for (const match of schemas) {
+    assert.ok(JSON.parse(match[1])['@context'] === 'https://schema.org', `Structured data: ${relative}`);
+  }
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const value = match[1].replaceAll('&amp;', '&');
     if (/^(?:https?:|mailto:|data:|javascript:)/.test(value)) continue;
