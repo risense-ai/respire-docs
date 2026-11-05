@@ -46,7 +46,7 @@ const sections = files.map((file) => {
   return `## ${title}\n\nSource: https://docs.rsrs.rs${canonical(rel)}\n\n${absoluteLinks(body, rel)}`;
 });
 
-const header = `# Respire documentation �� full text
+const header = `# Respire documentation — full text
 
 > Complete Markdown source for the official English and Simplified Chinese Respire documentation.
 

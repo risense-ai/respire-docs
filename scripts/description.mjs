@@ -9,7 +9,7 @@ export function extractDescription(source) {
     .filter(value => value.length >= 40);
   const text = paragraphs[0];
   if (!text || text.length <= 220) return text;
-  const ends = [...text.matchAll(/[������]|[.!?](?=\s|$)/g)].map(match => match.index + 1);
+  const ends = [...text.matchAll(/[\u3002\uff1f\uff01]|[.!?](?=\s|$)/g)].map(match => match.index + 1);
   const end = ends.filter(index => index <= 220).at(-1) ?? ends[0];
   return end ? text.slice(0, end).trim() : text;
 }
