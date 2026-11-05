@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { absoluteLinks } from './llms-links.mjs';
 
 const root = fileURLToPath(new URL('../docs', import.meta.url));
 const output = fileURLToPath(new URL('../docs/.vitepress/dist/llms-full.txt', import.meta.url));
@@ -42,10 +43,10 @@ const sections = files.map((file) => {
   const source = readFileSync(file, 'utf8').replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '');
   const title = titleOf(source, rel.replace(/\.md$/, ''));
   const body = source.replace(/^#\s+.+\n+/, '').trim();
-  return `## ${title}\n\nSource: https://docs.rsrs.rs${canonical(rel)}\n\n${body}`;
+  return `## ${title}\n\nSource: https://docs.rsrs.rs${canonical(rel)}\n\n${absoluteLinks(body, rel)}`;
 });
 
-const header = `# Respire documentation — full text
+const header = `# Respire documentation �� full text
 
 > Complete Markdown source for the official English and Simplified Chinese Respire documentation.
 

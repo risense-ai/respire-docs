@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { extractDescription } from '../../scripts/description.mjs'
 
 const SITE = 'https://docs.rsrs.rs'
 const image = `https://rsrs.rs/memory-fiber-sculpture.png`
@@ -9,30 +10,6 @@ const image = `https://rsrs.rs/memory-fiber-sculpture.png`
 function canonicalPath(page: string) {
   const clean = page.replace(/\.md$/, '')
   return clean === 'index' ? '/' : `/${clean.replace(/\/index$/, '/')}`
-}
-
-function clipSentence(text: string, max = 220) {
-  if (text.length <= max) return text
-  const window = text.slice(0, max)
-  const end = Math.max(
-    window.lastIndexOf('. '),
-    window.lastIndexOf('。'),
-    window.lastIndexOf('? '),
-    window.lastIndexOf('？'),
-    window.lastIndexOf('! '),
-    window.lastIndexOf('！'),
-  )
-  return end >= 80 ? window.slice(0, end + 1).trim() : `${window.trim()}…`
-}
-
-function extractDescription(source: string) {
-  const body = source
-    .replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '')
-    .replace(/```[\s\S]*?```/g, '')
-  const paragraphs = [...body.matchAll(/^([^#<>|`*+\-\s\[][^\n]*)$/gm)]
-    .map(([, paragraph]) => paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]/g, '').trim())
-    .filter((paragraph) => paragraph.length >= 40)
-  return paragraphs.length ? clipSentence(paragraphs[0]) : undefined
 }
 
 function faqSchema(content: string, url: string) {
@@ -121,48 +98,48 @@ export default defineConfig({
   locales: {
     root: { label: 'English', lang: 'en' },
     zh: {
-      label: '简体中文',
+      label: '��������',
       lang: 'zh-Hans',
-      description: '本地优先的 AI 记忆：架构、接口与开发',
+      description: '�������ȵ� AI ���䣺�ܹ����ӿ��뿪��',
       themeConfig: {
-        outline: { level: [2, 3], label: '本页目录' },
-        docFooter: { prev: '上一页', next: '下一页' },
-        editLink: { pattern: editPattern, text: '在 GitHub 上编辑此页' },
-        langMenuLabel: '切换语言',
-        sidebarMenuLabel: '菜单',
-        returnToTopLabel: '返回顶部',
-        skipToContentLabel: '跳转到内容',
-        darkModeSwitchLabel: '外观',
-        lightModeSwitchTitle: '切换到浅色模式',
-        darkModeSwitchTitle: '切换到深色模式',
+        outline: { level: [2, 3], label: '��ҳĿ¼' },
+        docFooter: { prev: '��һҳ', next: '��һҳ' },
+        editLink: { pattern: editPattern, text: '�� GitHub �ϱ༭��ҳ' },
+        langMenuLabel: '�л�����',
+        sidebarMenuLabel: '�˵�',
+        returnToTopLabel: '���ض���',
+        skipToContentLabel: '��ת������',
+        darkModeSwitchLabel: '���',
+        lightModeSwitchTitle: '�л���ǳɫģʽ',
+        darkModeSwitchTitle: '�л�����ɫģʽ',
         notFound: {
-          title: '页面未找到',
-          quote: '此页面不存在，请检查地址或返回首页。',
-          linkLabel: '返回中文首页',
-          linkText: '返回首页',
+          title: 'ҳ��δ�ҵ�',
+          quote: '��ҳ�治���ڣ������ַ�򷵻���ҳ��',
+          linkLabel: '����������ҳ',
+          linkText: '������ҳ',
         },
         logoLink: { link: 'https://rsrs.rs/zh/', target: '_self' },
         nav: [
-          { text: '首页', link: 'https://rsrs.rs/zh/', target: '_self' },
-          { text: '概览', link: '/zh/' },
-          { text: '快速开始', link: '/zh/getting-started' },
-          { text: '接口', link: '/zh/cli-api' },
-          { text: '开发', link: '/zh/development' },
+          { text: '��ҳ', link: 'https://rsrs.rs/zh/', target: '_self' },
+          { text: '����', link: '/zh/' },
+          { text: '���ٿ�ʼ', link: '/zh/getting-started' },
+          { text: '�ӿ�', link: '/zh/cli-api' },
+          { text: '����', link: '/zh/development' },
         ],
         sidebar: [
-          { text: '概览', link: '/zh/' },
-          { text: '仓库', link: '/zh/repos' },
-          { text: '使用 Respire', items: [
-            { text: '快速开始', link: '/zh/getting-started' },
-            { text: '操作演练', link: '/zh/walkthrough' },
-            { text: 'CLI 命令', link: '/zh/cli' },
-            { text: '客户端', link: '/zh/client' },
-            { text: '本地 Web', link: '/zh/product/web' },
-            { text: 'AI 工具注入', link: '/zh/injection' },
-            { text: '常见问题', link: '/zh/faq' },
+          { text: '����', link: '/zh/' },
+          { text: '�ֿ�', link: '/zh/repos' },
+          { text: 'ʹ�� Respire', items: [
+            { text: '���ٿ�ʼ', link: '/zh/getting-started' },
+            { text: '��������', link: '/zh/walkthrough' },
+            { text: 'CLI ����', link: '/zh/cli' },
+            { text: '�ͻ���', link: '/zh/client' },
+            { text: '���� Web', link: '/zh/product/web' },
+            { text: 'AI ����ע��', link: '/zh/injection' },
+            { text: '��������', link: '/zh/faq' },
           ] },
-          { text: 'AI 工具插件', items: [
-            { text: '总览', link: '/zh/plugins/' },
+          { text: 'AI ���߲��', items: [
+            { text: '����', link: '/zh/plugins/' },
             { text: 'ZCode', link: '/zh/plugins/zcode' },
             { text: 'Kimi Code', link: '/zh/plugins/kimi' },
             { text: 'Dim', link: '/zh/plugins/dimcode' },
@@ -175,42 +152,42 @@ export default defineConfig({
             { text: 'Magpie', link: '/zh/plugins/magpie' },
             { text: 'OpenClaw', link: '/zh/plugins/openclaw' },
             { text: 'MiniMax Code', link: '/zh/plugins/minimax-code' },
-            { text: '通用包（Agent Plugins）', link: '/zh/plugins/general' },
+            { text: 'ͨ�ð���Agent Plugins��', link: '/zh/plugins/general' },
           ] },
-          { text: '操作指南', items: [
-            { text: 'Windows 安装', link: '/zh/guides/windows-install' },
-            { text: '迁移与升级', link: '/zh/guides/migrate-and-upgrade' },
-            { text: '批量整理提取记忆', link: '/zh/guides/batch-tidy-extracted' },
-            { text: '示例：注入豆包', link: '/zh/guides/agent-example-doubao' },
-            { text: '技能仓库安装与使用', link: '/zh/guides/skills-repo' },
-            { text: 'memTools 桌面小工具', link: '/zh/guides/memtools' },
+          { text: '����ָ��', items: [
+            { text: 'Windows ��װ', link: '/zh/guides/windows-install' },
+            { text: 'Ǩ��������', link: '/zh/guides/migrate-and-upgrade' },
+            { text: '����������ȡ����', link: '/zh/guides/batch-tidy-extracted' },
+            { text: 'ʾ����ע�붹��', link: '/zh/guides/agent-example-doubao' },
+            { text: '���ֿܲⰲװ��ʹ��', link: '/zh/guides/skills-repo' },
+            { text: 'memTools ����С����', link: '/zh/guides/memtools' },
           ] },
-          { text: '架构', items: [
-            { text: '数据流', link: '/zh/architecture' },
-            { text: '运行流程', link: '/zh/architecture-internals' },
-            { text: '宿主运行时与升级', link: '/zh/runtime' },
-            { text: '数据模型', link: '/zh/data-model' },
-            { text: '记忆关联', link: '/zh/associations' },
-            { text: '同步与密钥', link: '/zh/sync-and-keys' },
-            { text: '同步 v2', link: '/zh/sync-v2-rollout' },
+          { text: '�ܹ�', items: [
+            { text: '������', link: '/zh/architecture' },
+            { text: '��������', link: '/zh/architecture-internals' },
+            { text: '��������ʱ������', link: '/zh/runtime' },
+            { text: '����ģ��', link: '/zh/data-model' },
+            { text: '�������', link: '/zh/associations' },
+            { text: 'ͬ������Կ', link: '/zh/sync-and-keys' },
+            { text: 'ͬ�� v2', link: '/zh/sync-v2-rollout' },
             { text: 'Core SDK', link: '/zh/product/core' },
           ] },
-          { text: '接口', items: [
+          { text: '�ӿ�', items: [
             { text: 'CLI JSON', link: '/zh/cli-api' },
             { text: 'Runtime RPC', link: '/zh/runtime-rpc' },
-            { text: 'RPC 参考（1.0.17-dev.14）', link: '/zh/runtime-rpc-commands' },
-            { text: '服务端 API', link: '/zh/server' },
-            { text: '请求边界', link: '/zh/server-request-boundaries' },
-            { text: '契约', link: '/zh/contracts' },
+            { text: 'RPC �ο���1.0.17-dev.14��', link: '/zh/runtime-rpc-commands' },
+            { text: '����� API', link: '/zh/server' },
+            { text: '����߽�', link: '/zh/server-request-boundaries' },
+            { text: '��Լ', link: '/zh/contracts' },
           ] },
-          { text: '构建与部署', items: [
-            { text: '开发', link: '/zh/development' },
-            { text: '服务端部署', link: '/zh/server-deployment' },
-            { text: 'Windows 打包', link: '/zh/windows-packaging' },
-            { text: '客户端集成', link: '/zh/CLIENT-GUIDE' },
-            { text: '检索基准测试', link: '/zh/benchmark' },
-            { text: '插件', link: '/zh/plugin-dev' },
-            { text: '网站', link: '/zh/product/site' },
+          { text: '�����벿��', items: [
+            { text: '����', link: '/zh/development' },
+            { text: '����˲���', link: '/zh/server-deployment' },
+            { text: 'Windows ���', link: '/zh/windows-packaging' },
+            { text: '�ͻ��˼���', link: '/zh/CLIENT-GUIDE' },
+            { text: '������׼����', link: '/zh/benchmark' },
+            { text: '���', link: '/zh/plugin-dev' },
+            { text: '��վ', link: '/zh/product/site' },
           ] },
         ],
       },
@@ -239,17 +216,17 @@ export default defineConfig({
         locales: {
           zh: {
             translations: {
-              button: { buttonText: '搜索', buttonAriaLabel: '搜索文档' },
+              button: { buttonText: '����', buttonAriaLabel: '�����ĵ�' },
               modal: {
-                displayDetails: '显示详细列表',
-                resetButtonTitle: '重置搜索',
-                backButtonTitle: '关闭搜索',
-                noResultsText: '没有找到相关结果',
+                displayDetails: '��ʾ��ϸ�б�',
+                resetButtonTitle: '��������',
+                backButtonTitle: '�ر�����',
+                noResultsText: 'û���ҵ���ؽ��',
                 footer: {
-                  selectText: '选择', selectKeyAriaLabel: '回车键',
-                  navigateText: '切换', navigateUpKeyAriaLabel: '上箭头',
-                  navigateDownKeyAriaLabel: '下箭头', closeText: '关闭',
-                  closeKeyAriaLabel: 'Esc 键',
+                  selectText: 'ѡ��', selectKeyAriaLabel: '�س���',
+                  navigateText: '�л�', navigateUpKeyAriaLabel: '�ϼ�ͷ',
+                  navigateDownKeyAriaLabel: '�¼�ͷ', closeText: '�ر�',
+                  closeKeyAriaLabel: 'Esc ��',
                 },
               },
             },
