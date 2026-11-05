@@ -86,4 +86,6 @@ for (const file of walk(dist).filter((item) => item.endsWith('.html'))) {
     links++;
   }
 }
-console.log(`Locales verified: ${sources.length} page pairs; stable anchors, technical identifiers, executable examples, language metadata and ${links} internal links/resources.`);
+const llmsFull = path.join(dist, 'llms-full.txt');
+assert.ok(fs.existsSync(llmsFull) && fs.statSync(llmsFull).size > 1000, 'llms-full.txt');
+console.log(`Locales verified: ${sources.length} page pairs; stable anchors, technical identifiers, executable examples, language metadata, llms-full.txt and ${links} internal links/resources.`);

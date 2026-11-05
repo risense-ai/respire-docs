@@ -1,3 +1,7 @@
+---
+description: CLI 命令如何到达本地 Runtime、Core、存储与同步服务端。
+---
+
 # Runtime 流程 {#runtime-flow}
 
 ```mermaid
