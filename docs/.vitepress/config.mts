@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { spawnSync } from 'node:child_process'
 
 const SITE = 'https://docs.rsrs.rs'
 const image = `https://rsrs.rs/memory-fiber-sculpture.png`
@@ -8,6 +9,30 @@ const image = `https://rsrs.rs/memory-fiber-sculpture.png`
 function canonicalPath(page: string) {
   const clean = page.replace(/\.md$/, '')
   return clean === 'index' ? '/' : `/${clean.replace(/\/index$/, '/')}`
+}
+
+function clipSentence(text: string, max = 220) {
+  if (text.length <= max) return text
+  const window = text.slice(0, max)
+  const end = Math.max(
+    window.lastIndexOf('. '),
+    window.lastIndexOf('。'),
+    window.lastIndexOf('? '),
+    window.lastIndexOf('？'),
+    window.lastIndexOf('! '),
+    window.lastIndexOf('！'),
+  )
+  return end >= 80 ? window.slice(0, end + 1).trim() : `${window.trim()}…`
+}
+
+function extractDescription(source: string) {
+  const body = source
+    .replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '')
+    .replace(/```[\s\S]*?```/g, '')
+  const paragraphs = [...body.matchAll(/^([^#<>|`*+\-\s\[][^\n]*)$/gm)]
+    .map(([, paragraph]) => paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]/g, '').trim())
+    .filter((paragraph) => paragraph.length >= 40)
+  return paragraphs.length ? clipSentence(paragraphs[0]) : undefined
 }
 
 function faqSchema(content: string, url: string) {
@@ -46,10 +71,12 @@ export default defineConfig({
     transformItems: (items) => items.filter((item) => item.url !== 'README' && item.url !== 'zh/README'),
   },
   transformPageData(pageData, { siteConfig }) {
-    const source = readFileSync(join(siteConfig.srcDir, pageData.filePath), 'utf8')
-    const paragraphs = [...source.matchAll(/^([^#<>\n][^\n]*)$/gm)]
-    const text = paragraphs.map(([, paragraph]) => paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`]/g, '').trim()).find((paragraph) => paragraph.length >= 40)
-    return { description: pageData.frontmatter.description || text?.slice(0, 220) }
+    const file = join(siteConfig.srcDir, pageData.filePath)
+    const source = readFileSync(file, 'utf8')
+    const committedAt = spawnSync('git', ['log', '-1', '--format=%cI', '--', file], { encoding: 'utf8' })
+    if (committedAt.status !== 0) throw new Error(`Unable to determine document update time: ${file}`)
+    const lastUpdated = committedAt.stdout.trim() ? Date.parse(committedAt.stdout.trim()) : undefined
+    return { description: pageData.frontmatter.description || extractDescription(source) || siteConfig.site.description, lastUpdated }
   },
   transformHead({ page, pageData, title, content }) {
     if (page === '404.md' || page === 'README.md' || page === 'zh/README.md') return [['meta', { name: 'robots', content: 'noindex,follow' }]]

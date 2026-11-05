@@ -1,3 +1,7 @@
+---
+description: How a CLI command reaches the local Runtime, Core, storage and sync server.
+---
+
 # Runtime flow
 
 ```mermaid

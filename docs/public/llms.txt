@@ -2,6 +2,10 @@
 
 > Official English and Simplified Chinese guides for Respire, a local-first memory layer for AI tools, the rsrs CLI, desktop client and encrypted synchronization.
 
+## Full text
+
+- [Complete documentation](https://docs.rsrs.rs/llms-full.txt): Every English and Chinese page in one Markdown file.
+
 ## Getting started
 
 - [Documentation overview](https://docs.rsrs.rs/): Product components, responsibilities and links to core guides.
