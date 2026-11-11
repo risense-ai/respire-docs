@@ -8,21 +8,21 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 | Date | [Ideas](#ideas) | Feedback | Requests | Bugs |
 | --- | --- | --- | --- | --- |
-| [2026-11-11](#day-2026-11-11) | 6 | 12 | 8 | 1 |
-| [2026-11-10](#day-2026-11-10) | 0 | 4 | 3 | 1 |
-| [2026-11-09](#day-2026-11-09) | 9 | 6 | 4 | 2 |
+| [2026-11-11](#day-2026-11-11) | 7 | 12 | 8 | 1 |
+| [2026-11-10](#day-2026-11-10) | 4 | 4 | 3 | 1 |
+| [2026-11-09](#day-2026-11-09) | 4 | 6 | 4 | 2 |
 
 ## Ideas {#ideas}
 
-15 ideas (5 done, 4 in progress). Clustered from chat, code/docs/commits and rsrs development memory; in-progress items stay unticked and unverified ones are left blank. One row per idea.
+15 ideas (5 done, 4 in progress). The list grows with genuinely new ideas: one row per topic, never repeated by day; done items are ticked, in-progress items say in progress; statements, reviews, test conclusions and forwarded material are not listed here.
 
 ### Not implemented {#ideas-open}
 
 - [~] Pick models and schedule work by task weight —— in progress
 - [ ] Compress prompts to save tokens
+- [ ] Make chat-history import a separate package used by CLI/GUI
 - [~] Cache optimisation to cut recall latency to about one third —— in progress
 - [~] Let memtool curate memory on a schedule and when idle —— in progress
-- [ ] Make chat-history import a separate package used by CLI/GUI
 - [ ] Match edgeever's polish and interface quality in the CLI
 - [~] Bundle the runtime and CLI in the installer with automatic setup —— in progress
 - [ ] Support serverless peer-to-peer connections established with a pairing code
@@ -31,11 +31,11 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 ### Implemented {#ideas-done}
 
-- [x] Open plugin ecosystem: standard features in the client, experiments in memtool, user-built plugins —— respire-docs/docs/plugins/index.md:7-14
-- [x] Have an agent watch WeChat groups on a schedule and update the document —— commit 31ae10b
 - [x] Complete the Respire plugin for the Magpie host —— commit a3ae9b3
+- [x] Open plugin ecosystem: standard features in the client, experiments in memtool, user-built plugins —— repos.md:27 + plugin-ecosystem.md:5-14
 - [x] Keep a persistent idea list as a living document —— memory c044fcdc
-- [x] Keep a standalone npm release for GUI-less environments —— respire-cli/npm/artifact-manifest.json
+- [x] Have an agent watch WeChat groups on a schedule and update the document —— wechat-memory/bin/nightly.sh + respire-wechat-feedback.timer
+- [x] Keep a standalone npm release for GUI-less environments —— respire-cli/npm/artifact-manifest.json + respire-cli/npm/scripts/release-publication.mjs
 
 ## 2026-11-11 {#day-2026-11-11}
 
