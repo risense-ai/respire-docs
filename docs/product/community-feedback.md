@@ -1,6 +1,6 @@
 # Community feedback {#community-feedback}
 
-> This page is compiled automatically from two WeChat groups that discuss this project. Only ideas, feedback, requests and bugs are kept. Speakers appear in order of first appearance as 参与者A/B/C...; WeChat ids, phone numbers, emails, keys, contracts and internal business figures are removed. Raw chat logs are never published or committed.
+> This page is compiled automatically from two WeChat groups that discuss this project. Only ideas, feedback, requests and bugs are kept. Speakers appear in order of first appearance as 参与者A/B/C... (each group is numbered independently); WeChat ids, phone numbers, emails, keys, contracts and internal business figures are removed. Raw chat logs are never published or committed.
 
 A rolling, de-identified digest of what users and contributors actually said about Respire in the WeChat groups, collected by a scheduled job every night and grouped by day.
 
@@ -8,7 +8,7 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 | Date | Ideas | Feedback | Requests | Bugs |
 | --- | --- | --- | --- | --- |
-| [2026-11-11](#day-2026-11-11) | 5 | 10 | 2 | 3 |
+| [2026-11-11](#day-2026-11-11) | 5 | 10 | 2 | 1 |
 | [2026-11-10](#day-2026-11-10) | 4 | 4 | 3 | 1 |
 | [2026-11-09](#day-2026-11-09) | 4 | 6 | 4 | 2 |
 
@@ -29,11 +29,11 @@ A rolling, de-identified digest of what users and contributors actually said abo
 - **参与者J** · 13:06 · Memory Leap Board — The group-chat idea is good and worth continuing.
 - **参与者L** · 15:48 · Memory Leap Board — Ordinary users can simply run what exists today and act as early testers.
 - **参与者G** · 16:51 · Memory Leap Board — After wiring starmem in it is not as lively as expected; the user asks whether there is a configuration trick.
-- **参与者G** · 16:56 · Memory Leap Board — Tried astrbot but has not connected it to starmem yet; views starmem as the better base layer.
+- **参与者W** · 16:56 · Memory Leap Board — Tried astrbot but has not connected it to starmem yet; views starmem as the better base layer.
 - **参与者G** · 16:57 · Memory Leap Board — Connected deskpet directly to starmem; after a full day of use the responses feel sluggish.
 - **参与者L** · 19:28 · Memory Leap Board — Measured CPU use of the new rsrs build is nearly imperceptible.
-- **参与者L** · 19:36 · Memory Leap Board — On review the logic looks fine; the problem is more likely version-related.
-- **参与者L** · 19:38 · Memory Leap Board — Once this build ships, the everyday performance issues should be gone.
+- **参与者A** · 19:36 · Memory Leap Board — On review the logic looks fine; the problem is more likely version-related.
+- **参与者J** · 19:38 · Memory Leap Board — Once this build ships, the everyday performance issues should be gone.
 
 ### Requests {#request-2026-11-11}
 
@@ -43,8 +43,6 @@ A rolling, de-identified digest of what users and contributors actually said abo
 ### Bugs {#bug-2026-11-11}
 
 - **参与者J** · 19:35 · Memory Leap Board — A relatively large change brought six major issues, and fixes are still in progress.
-- **参与者J** · 19:35 · Memory Leap Board — This merge is a large change; six significant problems were found and are being fixed.
-- **参与者L** · 19:36 · Memory Leap Board — The logic itself is probably fine; the failure is more likely a version mismatch.
 
 ## 2026-11-10 {#day-2026-11-10}
 
