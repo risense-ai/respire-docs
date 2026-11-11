@@ -8,32 +8,28 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 | Date | [Ideas](#ideas) | Feedback | Requests | Bugs |
 | --- | --- | --- | --- | --- |
-| [2026-11-11](#day-2026-11-11) | 5 | 10 | 2 | 1 |
-| [2026-11-10](#day-2026-11-10) | 4 | 4 | 3 | 1 |
-| [2026-11-09](#day-2026-11-09) | 4 | 6 | 4 | 2 |
+| [2026-11-11](#day-2026-11-11) | 0 | 10 | 2 | 1 |
+| [2026-11-10](#day-2026-11-10) | 0 | 4 | 3 | 1 |
+| [2026-11-09](#day-2026-11-09) | 9 | 6 | 4 | 2 |
 
 ## Ideas {#ideas}
 
-A persistent list of 13 ideas (3 implemented). One row per idea, status updated in place and never duplicated by day; a checkbox is only ticked with code, commit or documentation evidence, and left open otherwise.
+9 ideas (4 done, 3 in progress). Clustered from chat, code/docs/commits and rsrs development memory; in-progress items stay unticked and unverified ones are left blank. One row per idea.
 
 ### Not implemented {#ideas-open}
 
-- [ ] **IDEA-02** · First 2026-11-09 · Last 2026-11-09 · Memory Leap Board — Importing chat history from other harnesses should not live in the runtime; it looks better as a separate package that the CLI and GUI call. (evidence: no implementation evidence found)
-- [ ] **IDEA-03** · First 2026-11-09 · Last 2026-11-09 · Memory Leap Board — Scheduling by task weight looks like a worthwhile optimisation direction. (evidence: no implementation evidence found)
-- [ ] **IDEA-04** · First 2026-11-09 · Last 2026-11-09 · Memory Leap Board — The prompt can be compressed further: drop repeated framing and examples, save 415 characters per round, roughly 50% fewer tokens. (evidence: no implementation evidence found)
-- [ ] **IDEA-06** · First 2026-11-10 · Last 2026-11-10 · Memory Leap Board — memtool can already call a local model; timing and idle-time handling are being added so memory curation runs automatically. (evidence: no implementation evidence found)
-- [ ] **IDEA-07** · First 2026-11-10 · Last 2026-11-10 · Memory Leap Board — Positioning stays: the client carries official, standardised features, experimental work lives in memtool, and users may write their own plugins. (evidence: no implementation evidence found)
-- [ ] **IDEA-08** · First 2026-11-10 · Last 2026-11-10 · Memory Leap Board — Next step could be cache optimisation, cutting recall latency to roughly one third. (evidence: no implementation evidence found)
-- [ ] **IDEA-09** · First 2026-11-11 · Last 2026-11-11 · Memory Leap Board — Have another model write the plan first, then let the cabinet execute it; a full night of cabinet runs held up. (evidence: no implementation evidence found)
-- [ ] **IDEA-10** · First 2026-11-11 · Last 2026-11-11 · Memory Leap Board — Pick models per task: stronger models for architecture and planning, cheaper ones for execution. (evidence: no implementation evidence found)
-- [ ] **IDEA-11** · First 2026-11-11 · Last 2026-11-11 · Memory Leap Board — Even with bge-m3 alone, retrieval should feel good enough now. (evidence: no implementation evidence found)
-- [ ] **IDEA-12** · First 2026-11-11 · Last 2026-11-11 · Memory Leap Board — Shared a runnable agent-architecture reference: 35 patterns, 283 tests and four learning paths. (evidence: no implementation evidence found)
+- [~] Pick models and schedule work by task weight —— in progress
+- [ ] Compress prompts to save tokens
+- [~] Cache optimisation to cut recall latency to about one third —— in progress
+- [~] Let memtool curate memory on a schedule and when idle —— in progress
+- [ ] Make chat-history import a separate package used by CLI/GUI
 
 ### Implemented {#ideas-done}
 
-- [x] **IDEA-01** · First 2026-11-09 · Last 2026-11-09 · Respire seed users — A user asked whether a magpie plugin should be built. (evidence: respire-docs/docs/plugins/magpie.md and docs/repos.md:44 (respire-magpie plugin shipped))
-- [x] **IDEA-05** · First 2026-11-10 · Last 2026-11-10 · Memory Leap Board — The team needs an idea pool, written down in a document. (evidence: respire-docs/docs/product/community-feedback.md#ideas and wechat-memory/state/ideas.json (this list is the idea pool))
-- [x] **IDEA-13** · First 2026-11-11 · Last 2026-11-11 · Memory Leap Board — Having an agent watch the WeChat groups and update a designated document when new discussion appears looks like the most workable approach. (evidence: wechat-memory/bin/nightly.sh and wechat-memory/prompts/nightly-feedback.md (systemd timer respire-wechat-feedback.timer, daily 23:00))
+- [x] Open plugin ecosystem: standard features in the client, experiments in memtool, user-built plugins —— respire-docs/docs/plugins/index.md:7-14
+- [x] Have an agent watch WeChat groups on a schedule and update the document —— commit 31ae10b
+- [x] Complete the Respire plugin for the Magpie host —— commit a3ae9b3
+- [x] Keep a persistent idea list as a living document —— memory c044fcdc
 
 ## 2026-11-11 {#day-2026-11-11}
 
