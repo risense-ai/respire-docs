@@ -8,7 +8,7 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 | Date | [Ideas](#ideas) | Feedback | Requests | Bugs |
 | --- | --- | --- | --- | --- |
-| [2026-11-11](#day-2026-11-11) | 6 | 13 | 7 | 1 |
+| [2026-11-11](#day-2026-11-11) | 6 | 12 | 8 | 1 |
 | [2026-11-10](#day-2026-11-10) | 0 | 4 | 3 | 1 |
 | [2026-11-09](#day-2026-11-09) | 9 | 6 | 4 | 2 |
 
@@ -53,7 +53,6 @@ A rolling, de-identified digest of what users and contributors actually said abo
 - **参与者L** · 19:28 · Memory Leap Board — Measured CPU use of the new rsrs build is nearly imperceptible.
 - **参与者A** · 19:36 · Memory Leap Board — On review the logic looks fine; the problem is more likely version-related.
 - **参与者J** · 19:38 · Memory Leap Board — Once this build ships, the everyday performance issues should be gone.
-- **参与者A** · 21:22 · Memory Leap Board — Believes packaging the client as an installer would further lower the barrier to entry.
 
 ### Requests {#request-2026-11-11}
 
@@ -62,6 +61,7 @@ A rolling, de-identified digest of what users and contributors actually said abo
 - **参与者J** · 21:13 · Memory Leap Board — Hopes the Respire CLI can match edgeever in polish and interface quality, with an equally good-looking UI.
 - **参与者G** · 21:15 · Memory Leap Board — Suggests adding serverless peer-to-peer connections set up with a pairing code.
 - **参与者A** · 21:20 · Memory Leap Board — Asks when the Respire client will ship and says they will help with integration testing after the release.
+- **参与者A** · 21:22 · Memory Leap Board — Believes packaging the client as an installer would further lower the barrier to entry.
 - **参与者J** · 21:22 · Memory Leap Board — Wants the client to bundle the CLI and install it automatically, so users no longer need to fetch it separately through npm.
 - **参与者A** · 21:23 · Memory Leap Board — Wants the CLI to keep being published on npm so it remains usable on servers and other environments without a GUI.
 
