@@ -8,7 +8,7 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 | Date | [Ideas](#ideas) | Feedback | Requests | Bugs |
 | --- | --- | --- | --- | --- |
-| [2026-11-11](#day-2026-11-11) | 0 | 10 | 2 | 1 |
+| [2026-11-11](#day-2026-11-11) | 0 | 12 | 2 | 1 |
 | [2026-11-10](#day-2026-11-10) | 0 | 4 | 3 | 1 |
 | [2026-11-09](#day-2026-11-09) | 9 | 6 | 4 | 2 |
 
@@ -35,10 +35,12 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 ### Feedback {#feedback-2026-11-11}
 
+- **参与者L** · 12:59 · Memory Leap Board — Test feedback: having another model write the plan first and then handing it to the cabinet works; the cabinet ran a full night without problems.
 - **参与者A** · 13:00 · Memory Leap Board — The cabinet mode works well.
 - **参与者A** · 13:04 · Memory Leap Board — On copying existing solutions: don't copy, go your own way.
 - **参与者J** · 13:06 · Memory Leap Board — The group-chat idea is good and worth continuing.
 - **参与者L** · 15:48 · Memory Leap Board — Ordinary users can simply run what exists today and act as early testers.
+- **参与者L** · 16:46 · Memory Leap Board — Product assessment: even with bge-m3 alone, retrieval should feel good enough now.
 - **参与者G** · 16:51 · Memory Leap Board — After wiring starmem in it is not as lively as expected; the user asks whether there is a configuration trick.
 - **参与者W** · 16:56 · Memory Leap Board — Tried astrbot but has not connected it to starmem yet; views starmem as the better base layer.
 - **参与者G** · 16:57 · Memory Leap Board — Connected deskpet directly to starmem; after a full day of use the responses feel sluggish.
