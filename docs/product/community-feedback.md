@@ -8,7 +8,7 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 | Date | Ideas | Feedback | Requests | Bugs |
 | --- | --- | --- | --- | --- |
-| [2026-11-11](#day-2026-11-11) | 5 | 8 | 2 | 0 |
+| [2026-11-11](#day-2026-11-11) | 5 | 8 | 2 | 2 |
 | [2026-11-10](#day-2026-11-10) | 4 | 4 | 3 | 1 |
 | [2026-11-09](#day-2026-11-09) | 4 | 6 | 4 | 2 |
 
@@ -37,6 +37,11 @@ A rolling, de-identified digest of what users and contributors actually said abo
 
 - **参与者A** · 13:13 · Memory Leap Board — Can each of the six ministries be assigned its own model?
 - **参与者A** · 18:19 · Memory Leap Board — Should a memory-equipped agent be built to handle curation?
+
+### Bugs {#bug-2026-11-11}
+
+- **参与者J** · 19:35 · Memory Leap Board — A relatively large change brought six major issues, and fixes are still in progress.
+- **参与者L** · 19:36 · Memory Leap Board — The logic itself is probably fine; the failure is more likely a version mismatch.
 
 ## 2026-11-10 {#day-2026-11-10}
 
